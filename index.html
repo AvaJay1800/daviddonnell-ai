@@ -131,20 +131,7 @@
       color: var(--text);
     }
 
-    .nav-logo .dot {
-      width: 36px; height: 36px;
-      background: var(--green);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 1rem;
-      color: #0d0e1a;
-      flex-shrink: 0;
-    }
-
-    .nav-links {
+.nav-links {
       display: flex;
       gap: 32px;
       list-style: none;
@@ -218,19 +205,12 @@
     }
 
     .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--green-glow);
-      border: 1px solid rgba(0, 212, 170, 0.25);
-      color: var(--green);
-      padding: 6px 16px;
-      border-radius: 100px;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-bottom: 28px;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 20px;
+      letter-spacing: 0.01em;
     }
 
     .hero h1 {
@@ -633,7 +613,6 @@
   <!-- Nav -->
   <nav>
     <a href="#" class="nav-logo">
-      <div class="dot">D</div>
       David Donnell
     </a>
     <ul class="nav-links">
@@ -655,9 +634,11 @@
         for your <span class="accent">business</span>
       </h1>
       <p>
-        You've got a business to run. I help small business owners find where AI can
-        genuinely add value, set up the right tools, and free up your time for the
-        work only you can do.
+        I'm David. Most small business owners I work with aren't looking for AI.
+        They're looking for relief: fewer things falling through the cracks, less time
+        on tasks that shouldn't take a person, more room to focus on the work that
+        actually moves the needle. We find those pain points first, then figure out
+        where AI fits.
       </p>
       <div class="hero-ctas">
         <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">Book a Free 30-Min Call</a>
