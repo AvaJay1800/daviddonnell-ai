@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>David Donnell, AI Adviser | Denver, CO</title>
+  <meta name="description" content="David Donnell helps small businesses in the Denver Front Range find and implement AI tools that actually save time. $1,000 AI Readiness Audit delivered in 5 business days." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://daviddonnell.com/" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://daviddonnell.com/" />
+  <meta property="og:title" content="David Donnell, AI Adviser | Denver, CO" />
+  <meta property="og:description" content="Practical AI consulting for small businesses in the Denver Front Range. AI Readiness Audit: $1,000, delivered in 5 business days." />
+  <meta property="og:site_name" content="David Donnell" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="David Donnell, AI Adviser | Denver, CO" />
+  <meta name="twitter:description" content="Practical AI consulting for small businesses in the Denver Front Range. AI Readiness Audit: $1,000, delivered in 5 business days." />
+
+  <!-- Schema.org: Local Professional Service -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "David Donnell, AI Adviser",
+    "url": "https://daviddonnell.com",
+    "email": "davidadonnell@gmail.com",
+    "description": "AI consulting for small businesses in the Denver Front Range. AI Readiness Audits, implementation, and ongoing advisory.",
+    "areaServed": {
+      "@type": "GeoCircle",
+      "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 39.7392, "longitude": -104.9903 },
+      "geoRadius": "80000"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Denver",
+      "addressRegion": "CO",
+      "addressCountry": "US"
+    },
+    "priceRange": "$$",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "AI Readiness Audit",
+        "price": "1000",
+        "priceCurrency": "USD",
+        "description": "A prioritized audit of your operations to identify AI opportunities. Delivered in 5 business days."
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #00D4AA;
+      --green-dark: #00b891;
+      --green-glow: rgba(0, 212, 170, 0.18);
+      --bg: #0d0e1a;
+      --bg2: #12132a;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f0f8;
+      --muted: #8b8fad;
+      --radius: 16px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Background glow blobs */
+    .bg-blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 {
+      width: 600px; height: 600px;
+      background: rgba(0, 212, 170, 0.10);
+      top: -200px; left: -200px;
+    }
+    .blob-2 {
+      width: 500px; height: 500px;
+      background: rgba(80, 50, 200, 0.12);
+      bottom: 0; right: -150px;
+    }
+    @media (max-width: 768px) {
+      .bg-blob { display: none; }
+    }
+
+    /* Nav */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background: rgba(13, 14, 26, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-logo .dot {
+      width: 36px; height: 36px;
+      background: var(--green);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #0d0e1a;
+      flex-shrink: 0;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: #0d0e1a;
+    }
+    .btn-primary:hover {
+      background: var(--green-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0, 212, 170, 0.30);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--green);
+      border: 1.5px solid var(--green);
+    }
+    .btn-outline:hover {
+      background: var(--green-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn-lg {
+      padding: 16px 36px;
+      font-size: 1rem;
+      border-radius: 12px;
+    }
+
+    /* Layout */
+    section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* Hero */
+    .hero {
+      padding: 120px 0 100px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--green-glow);
+      border: 1px solid rgba(0, 212, 170, 0.25);
+      color: var(--green);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 28px;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.03em;
+      max-width: 780px;
+      margin: 0 auto 24px;
+    }
+
+    .hero h1 .accent { color: var(--green); }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 560px;
+      margin: 0 auto 44px;
+      line-height: 1.7;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Section headers */
+    .section-label {
+      display: inline-block;
+      color: var(--green);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* How It Works */
+    .how {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .how-header {
+      margin-bottom: 56px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 28px;
+      left: calc(16.6% + 14px);
+      right: calc(16.6% + 14px);
+      height: 1px;
+      background: linear-gradient(90deg, var(--green) 0%, rgba(0,212,170,0.2) 50%, var(--green) 100%);
+      opacity: 0.3;
+    }
+
+    .step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px 28px;
+      transition: border-color 0.2s;
+    }
+    .step:hover { border-color: rgba(0, 212, 170, 0.35); }
+
+    .step-num {
+      width: 40px; height: 40px;
+      background: var(--green-glow);
+      border: 1px solid rgba(0, 212, 170, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    .step h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+
+    /* Services */
+    .services {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .services-header {
+      margin-bottom: 56px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      border-color: rgba(0, 212, 170, 0.35);
+      transform: translateY(-3px);
+    }
+
+    .card-featured {
+      border-color: rgba(0, 212, 170, 0.3);
+      background: linear-gradient(135deg, rgba(0,212,170,0.06) 0%, rgba(255,255,255,0.03) 100%);
+    }
+
+    .card-tag {
+      display: inline-block;
+      background: var(--green-glow);
+      color: var(--green);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      width: fit-content;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .card-price {
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* Who I work with */
+    .clients {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .clients-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .client-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .client-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 20px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.2s;
+    }
+    .client-item:hover { border-color: rgba(0, 212, 170, 0.3); }
+
+    .client-item .check {
+      width: 22px; height: 22px;
+      min-width: 22px;
+      background: var(--green-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .client-item .check::after {
+      content: '';
+      width: 8px; height: 5px;
+      border-left: 2px solid var(--green);
+      border-bottom: 2px solid var(--green);
+      transform: rotate(-45deg) translate(1px, -1px);
+      display: block;
+    }
+
+    .client-item-text strong {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .client-item-text span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .stat-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 44px;
+      text-align: center;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-bottom: 28px;
+    }
+
+    .stat {
+      padding: 24px;
+      background: rgba(255,255,255,0.02);
+    }
+    .stat:first-child { border-radius: 12px 0 0 12px; }
+    .stat:last-child  { border-radius: 0 12px 12px 0; }
+
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green);
+      letter-spacing: -0.03em;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .stat-box p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 100px 0 120px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .cta-card {
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.08) 0%, rgba(80, 50, 200, 0.08) 100%);
+      border: 1px solid rgba(0, 212, 170, 0.2);
+      border-radius: 24px;
+      padding: 80px 60px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .cta-card h2 {
+      font-size: clamp(2rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .cta-card p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 480px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .cta-detail {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer .logo {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    footer .logo span { color: var(--green); }
+
+    footer p {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    footer a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      transition: color 0.2s;
+    }
+    footer a:hover { color: var(--green); }
+
+    /* Mobile */
+    @media (max-width: 900px) {
+      .cards { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .steps::before { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      .container { padding: 0 24px; }
+      .hero { padding: 80px 0 60px; }
+      .clients-inner { grid-template-columns: 1fr; gap: 40px; }
+      .cta-card { padding: 48px 28px; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="dot">D</div>
+      David Donnell
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#clients">Who I work with</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Book a Free Call</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">AI Adviser · Denver, CO</div>
+      <h1>
+        AI that actually works<br/>
+        for your <span class="accent">business</span>
+      </h1>
+      <p>
+        I help small businesses find, implement, and get real value from AI tools.
+        No jargon, no wasted spend, no vendor lock-in.
+      </p>
+      <div class="hero-ctas">
+        <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">Book a Free 30-Min Call</a>
+        <a href="#services" class="btn btn-outline btn-lg">See What I Do</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how" id="how">
+    <div class="container">
+      <div class="how-header">
+        <span class="section-label">How it works</span>
+        <h2 class="section-title">Simple, fast, no surprises</h2>
+        <p class="section-sub">
+          Most engagements start with a free call and move to an audit within a week.
+        </p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Free 30-min call</h3>
+          <p>We talk through your business, your current tools, and where you're losing time. No pitch, just a real conversation.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>AI Readiness Audit</h3>
+          <p>I review your operations and deliver a prioritized report of AI opportunities, specific to your business, in 5 business days.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Implement and move on</h3>
+          <p>You pick what to act on. I can help implement, or hand off a clear plan your team can run with on their own.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="services-header">
+        <span class="section-label">Services</span>
+        <h2 class="section-title">From audit to action</h2>
+        <p class="section-sub">
+          Most businesses are sitting on AI opportunities they don't know about.
+          I find them, prioritize them, and help you move fast.
+        </p>
+      </div>
+      <div class="cards">
+        <div class="card card-featured">
+          <span class="card-tag">Start here</span>
+          <h3>AI Readiness Audit</h3>
+          <p>
+            A focused review of your operations, tools, and workflows to identify
+            where AI can save time, reduce cost, or unlock new capacity. Delivered as a
+            clear, prioritized report with specific recommendations.
+          </p>
+          <div class="card-price">$1,000 flat · Delivered in 5 business days</div>
+        </div>
+        <div class="card">
+          <h3>AI Implementation</h3>
+          <p>
+            Hands-on help selecting and setting up the right tools for your business.
+            I handle vendor evaluation, configuration, and training so your team
+            can hit the ground running.
+          </p>
+          <div class="card-price">Custom pricing · Based on scope</div>
+        </div>
+        <div class="card">
+          <h3>Ongoing Advisory</h3>
+          <p>
+            A trusted resource in your corner as AI keeps evolving. Monthly check-ins,
+            tool recommendations, and strategic guidance to keep your business
+            ahead of the curve.
+          </p>
+          <div class="card-price">Monthly retainer · Available after audit</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who I work with -->
+  <section class="clients" id="clients">
+    <div class="container">
+      <div class="clients-inner">
+        <div>
+          <span class="section-label">Who I work with</span>
+          <h2 class="section-title">Built for small business owners</h2>
+          <p class="section-sub">
+            I work with entrepreneurs and operators in the Denver Front Range who want
+            practical results, not presentations.
+          </p>
+          <div class="client-list">
+            <div class="client-item">
+              <div class="check"></div>
+              <div class="client-item-text">
+                <strong>Trades &amp; Construction</strong>
+                <span>HVAC, plumbing, electrical, general contractors</span>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="check"></div>
+              <div class="client-item-text">
+                <strong>Small Business Owners</strong>
+                <span>Retailers, service businesses, solo operators and growing teams</span>
+              </div>
+            </div>
+            <div class="client-item">
+              <div class="check"></div>
+              <div class="client-item-text">
+                <strong>Healthcare &amp; Professional Services</strong>
+                <span>Clinics, consultants, and field service businesses</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="stat-box">
+            <div class="stat-row">
+              <div class="stat">
+                <div class="stat-num">10+</div>
+                <div class="stat-label">Hours saved per week</div>
+              </div>
+              <div class="stat">
+                <div class="stat-num">5</div>
+                <div class="stat-label">Business days to report</div>
+              </div>
+            </div>
+            <p>
+              Most clients identify 3 to 5 high-impact AI opportunities in the first audit alone.
+              We focus on tools that integrate with what you already use. No rip-and-replace.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="contact">
+    <div class="container">
+      <div class="cta-card">
+        <h2>Ready to put AI to work?</h2>
+        <p>
+          Book a free 30-minute call. We'll talk about your business, where you're losing time,
+          and whether an AI audit makes sense for you.
+        </p>
+        <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+          Book Your Free Call
+        </a>
+        <p class="cta-detail">No pressure. No pitch deck. Just a real conversation.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="logo">David Donnell <span>·</span> AI Adviser</div>
+    <p>Denver, CO · daviddonnell.com</p>
+    <a href="mailto:davidadonnell@gmail.com">davidadonnell@gmail.com</a>
+  </footer>
+
+</body>
+</html>
