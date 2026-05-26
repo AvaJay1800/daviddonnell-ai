@@ -588,6 +588,125 @@
     }
     footer a:hover { color: var(--green); }
 
+    /* Free Resource */
+    .free-resource {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .resource-card {
+      background: linear-gradient(135deg, rgba(0, 212, 170, 0.07) 0%, rgba(0, 212, 170, 0.02) 100%);
+      border: 1px solid rgba(0, 212, 170, 0.22);
+      border-radius: 24px;
+      padding: 64px;
+    }
+
+    .resource-card .section-sub {
+      max-width: 600px;
+      margin-bottom: 0;
+    }
+
+    .resource-teasers {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 32px 0 40px;
+    }
+
+    .teaser-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .teaser-dot {
+      width: 20px; height: 20px;
+      min-width: 20px;
+      background: var(--green-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .teaser-dot::after {
+      content: '';
+      width: 7px; height: 4px;
+      border-left: 2px solid var(--green);
+      border-bottom: 2px solid var(--green);
+      transform: rotate(-45deg) translate(1px, -1px);
+      display: block;
+    }
+
+    /* Email gate */
+    .email-gate {
+      display: none;
+      margin-top: 32px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 460px;
+    }
+    .email-gate.open { display: block; }
+
+    .email-gate h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .email-gate .gate-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 11px 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    .form-group input:focus { border-color: rgba(0, 212, 170, 0.5); }
+    .form-group input::placeholder { color: var(--muted); }
+
+    .gate-submit { margin-top: 8px; width: 100%; justify-content: center; }
+
+    .gate-confirm {
+      display: none;
+      color: var(--green);
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.6;
+      padding-top: 8px;
+    }
+
     /* Mobile */
     @media (max-width: 900px) {
       .cards { grid-template-columns: 1fr; }
@@ -602,6 +721,9 @@
       .clients-inner { grid-template-columns: 1fr; gap: 40px; }
       .cta-card { padding: 48px 28px; }
       footer { flex-direction: column; gap: 12px; text-align: center; }
+      .resource-card { padding: 36px 28px; }
+      .resource-teasers { grid-template-columns: 1fr; }
+      .email-gate { padding: 28px 24px; }
     }
   </style>
 </head>
@@ -618,6 +740,7 @@
     <ul class="nav-links">
       <li><a href="#how">How it works</a></li>
       <li><a href="#services">Services</a></li>
+      <li><a href="#resource">Free Resource</a></li>
       <li><a href="#clients">Who I work with</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -714,6 +837,59 @@
             ahead of the curve.
           </p>
           <div class="card-price">Monthly retainer · Available after your review</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Free Resource -->
+  <section class="free-resource" id="resource">
+    <div class="container">
+      <div class="resource-card">
+        <span class="section-label">Free Resource</span>
+        <h2 class="section-title">Start using AI today.<br>No tech skills required.</h2>
+        <p class="section-sub">
+          The Claude Prompt Pack for Small Businesses is a free collection of 10 copy-paste
+          prompts built for small business owners. No setup, no subscriptions, no learning
+          curve. Open Claude, paste a prompt, and get a useful result in under a minute.
+        </p>
+        <div class="resource-teasers">
+          <div class="teaser-item">
+            <div class="teaser-dot"></div>
+            <span>Respond to a bad review in 60 seconds</span>
+          </div>
+          <div class="teaser-item">
+            <div class="teaser-dot"></div>
+            <span>Write a quote follow-up that closes jobs</span>
+          </div>
+          <div class="teaser-item">
+            <div class="teaser-dot"></div>
+            <span>Ask for referrals without feeling awkward</span>
+          </div>
+          <div class="teaser-item">
+            <div class="teaser-dot"></div>
+            <span>Draft a trade job post in minutes</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-lg" onclick="openGate()">Get the Free Prompt Pack</button>
+
+        <div class="email-gate" id="emailGate">
+          <h3>Where should I send it?</h3>
+          <p class="gate-sub">Enter your details and your download will open automatically.</p>
+          <form id="gateForm" action="https://formspree.io/f/REPLACE_WITH_YOUR_ID" method="POST">
+            <div class="form-group">
+              <label for="gateFirstName">First name</label>
+              <input type="text" id="gateFirstName" name="firstName" placeholder="Jane" required />
+            </div>
+            <div class="form-group">
+              <label for="gateEmail">Email address</label>
+              <input type="email" id="gateEmail" name="email" placeholder="jane@yourbusiness.com" required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg gate-submit">Send me the prompts</button>
+          </form>
+          <p class="gate-confirm" id="gateConfirm">
+            Check your inbox — and your download should start automatically.
+          </p>
         </div>
       </div>
     </div>
@@ -830,6 +1006,32 @@
     <p>Denver, CO · daviddonnell.com</p>
     <a href="mailto:davidadonnell@gmail.com">davidadonnell@gmail.com</a>
   </footer>
+
+  <script>
+    function openGate() {
+      const gate = document.getElementById('emailGate');
+      gate.classList.add('open');
+      setTimeout(() => gate.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+
+    document.getElementById('gateForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      try {
+        await fetch(form.action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+      } catch (err) {
+        // still open the pack even if the network call fails
+      }
+      form.style.display = 'none';
+      document.getElementById('gateConfirm').style.display = 'block';
+      window.open('prompt-pack.html', '_blank');
+    });
+  </script>
 
 </body>
 </html>

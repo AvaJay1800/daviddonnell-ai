@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Prompt Pack for Small Businesses | David Donnell</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green: #00b891;
+      --green-light: #e6faf6;
+      --text: #0d0e1a;
+      --muted: #5a5f7a;
+      --border: #e2e4ef;
+      --bg: #ffffff;
+      --prompt-bg: #f7f8fc;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 48px;
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 14px;
+    }
+
+    /* Header */
+    .doc-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--green);
+      margin-bottom: 36px;
+    }
+
+    .doc-header-left .brand {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .doc-header-left .brand span {
+      color: var(--green);
+    }
+
+    .doc-header-left .url {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .doc-header-right {
+      text-align: right;
+    }
+
+    .doc-header-right .doc-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--green);
+    }
+
+    .doc-header-right .doc-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Intro */
+    .intro {
+      background: var(--green-light);
+      border-left: 3px solid var(--green);
+      border-radius: 0 8px 8px 0;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+
+    .intro h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .intro p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 620px;
+    }
+
+    /* How to use */
+    .how-to-use {
+      background: var(--prompt-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 24px;
+      margin-bottom: 40px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .how-to-use strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Prompt cards */
+    .prompt-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      page-break-inside: avoid;
+    }
+
+    .prompt-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 24px;
+      background: var(--prompt-bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .prompt-num {
+      width: 28px; height: 28px;
+      min-width: 28px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .prompt-header-text .prompt-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    .prompt-header-text .prompt-use {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .prompt-body {
+      padding: 20px 24px;
+    }
+
+    .prompt-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+
+    .prompt-text {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.7;
+      background: var(--prompt-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      font-style: italic;
+    }
+
+    .prompt-text .fill {
+      font-style: normal;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    /* Footer */
+    .doc-footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* Print styles */
+    @media print {
+      body { padding: 32px; font-size: 13px; }
+      .prompt-card { page-break-inside: avoid; }
+      .doc-header { page-break-after: avoid; }
+      a { color: var(--text); text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="doc-header-left">
+      <div class="brand">David Donnell<span> · AI Advisor</span></div>
+      <div class="url">daviddonnell.com</div>
+    </div>
+    <div class="doc-header-right">
+      <div class="doc-title">Free Resource</div>
+      <div class="doc-sub">Claude Prompt Pack for Small Businesses</div>
+    </div>
+  </div>
+
+  <!-- Intro -->
+  <div class="intro">
+    <h1>Claude Prompt Pack for Small Businesses</h1>
+    <p>
+      10 copy-paste prompts to help you get real work done with AI, starting today.
+      No technical setup required. Just open Claude at claude.ai, paste the prompt,
+      fill in the brackets, and you are ready to go.
+    </p>
+  </div>
+
+  <!-- How to use -->
+  <div class="how-to-use">
+    <strong>How to use this pack:</strong> Go to claude.ai (free account) or any AI chat tool.
+    Copy a prompt below, paste it into the chat, replace anything in
+    <strong>[brackets]</strong> with your real details, and hit send.
+    That is it. No tools to install, no accounts to set up beyond Claude itself.
+  </div>
+
+  <!-- Prompt 1 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">1</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Write a Quote or Estimate Follow-Up Email</div>
+        <div class="prompt-use">Use after a site visit or inquiry to follow up on a quote you gave.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        Write a professional, friendly email to a potential customer following up on a quote I gave them for <span class="fill">[describe the job]</span>. The estimate was $<span class="fill">[amount]</span>. I want to sound confident but not pushy. Keep it under 150 words.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 2 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">2</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Respond to a Negative Review</div>
+        <div class="prompt-use">Use when a bad review appears on Google or Yelp.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        A customer left this review: <span class="fill">[paste review]</span>. Write a professional, calm response that acknowledges their concern, briefly explains what happened (I will fill in the details), and invites them to contact me directly to make it right. Keep it under 100 words.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 3 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">3</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Write a Job Post for a Trade or Service Role</div>
+        <div class="prompt-use">Use when hiring a technician, assistant, or crew member.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        Write a job post for a <span class="fill">[job title]</span> position at my small <span class="fill">[industry]</span> business in <span class="fill">[city]</span>. We need someone with <span class="fill">[key skills]</span>. The pay is <span class="fill">[range]</span>. Write it in a straightforward, no-nonsense tone that will appeal to experienced tradespeople. Include what the day-to-day looks like and what we offer.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 4 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">4</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Follow Up After Completing a Job</div>
+        <div class="prompt-use">Use to ask for a review or referral after finishing work for a customer.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        Write a short, friendly follow-up message to send to a customer after I just completed a <span class="fill">[type of job]</span> for them. I want to thank them, make sure they are happy, and politely ask them to leave a Google review if they have a minute. Keep it casual and under 75 words.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 5 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">5</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Create a List of FAQs for My Business</div>
+        <div class="prompt-use">Use to build a website FAQ section or prepare for sales calls.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        I run a <span class="fill">[type of business]</span> in <span class="fill">[city]</span>. Generate a list of 8 frequently asked questions that my potential customers are likely to have, along with clear, helpful answers. Write the answers in a friendly, confident tone, like an experienced owner who has heard it all.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 6 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">6</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Write a Nextdoor or Facebook Post to Get Local Leads</div>
+        <div class="prompt-use">Use to promote your services in local community groups.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        Write a short post I can share in a local Facebook group or on Nextdoor to let neighbors know about my <span class="fill">[type of business]</span>. I am based in <span class="fill">[city/neighborhood]</span>. Make it friendly and helpful, not salesy. Mention that I am local, available, and happy to give free quotes. Under 100 words.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 7 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">7</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Summarize a Long Email Thread</div>
+        <div class="prompt-use">Use when a customer conversation has gone back and forth and you need to catch up fast.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        Here is an email thread with a customer: <span class="fill">[paste thread]</span>. Summarize the key points in 3-5 bullet points: what they want, what has been agreed to, any open questions, and what the next step should be.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 8 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">8</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Write a Simple Scope of Work</div>
+        <div class="prompt-use">Use before starting a job to set clear expectations with a customer.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        Write a simple one-page scope of work for a <span class="fill">[type of job]</span> I am doing for a customer. The work includes <span class="fill">[describe tasks]</span>. The total cost is $<span class="fill">[amount]</span>. Payment terms are <span class="fill">[terms]</span>. Include a section for both of us to sign and date. Keep the language plain and professional, not full of legal jargon.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 9 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">9</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Brainstorm Ways to Get More Referrals</div>
+        <div class="prompt-use">Use when word-of-mouth has slowed down and you want fresh ideas.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        I run a <span class="fill">[type of business]</span> and most of my customers come from referrals. Give me 8 specific, practical ideas to get more referrals from my existing customers. Focus on things a solo operator or small team can actually do without a big marketing budget.
+      </div>
+    </div>
+  </div>
+
+  <!-- Prompt 10 -->
+  <div class="prompt-card">
+    <div class="prompt-header">
+      <div class="prompt-num">10</div>
+      <div class="prompt-header-text">
+        <div class="prompt-title">Write a Monthly Newsletter for Customers</div>
+        <div class="prompt-use">Use to stay top-of-mind with past clients and generate repeat business.</div>
+      </div>
+    </div>
+    <div class="prompt-body">
+      <div class="prompt-label">Copy and paste this prompt</div>
+      <div class="prompt-text">
+        Write a short, friendly email newsletter I can send to my past customers this month. My business is <span class="fill">[type of business]</span> in <span class="fill">[city]</span>. Include a seasonal tip or reminder relevant to <span class="fill">[month]</span>, a brief update about my business, and a soft call to action encouraging them to reach out if they need anything. Keep it under 200 words and conversational.
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="doc-footer">
+    <span>David Donnell, AI Advisor · daviddonnell.com · davidadonnell@gmail.com</span>
+    <span>Free to share. Not for resale.</span>
+  </div>
+
+</body>
+</html>
