@@ -504,7 +504,11 @@
       border-top: 1px solid var(--border);
     }
 
-    .about-inner {
+    .about-head {
+      margin-bottom: 48px;
+    }
+
+    .about-cols {
       display: grid;
       grid-template-columns: 1fr 2fr;
       gap: 80px;
@@ -524,8 +528,23 @@
       font-weight: 600;
     }
 
+    .about-photo-wrap {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .about-photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
     @media (max-width: 768px) {
-      .about-inner { grid-template-columns: 1fr; gap: 32px; }
+      .about-head { margin-bottom: 28px; }
+      .about-cols { grid-template-columns: 1fr; gap: 32px; }
+      .about-photo-wrap { max-width: 240px; }
     }
 
     /* CTA */
@@ -764,8 +783,8 @@
         not in it.
       </h1>
       <p>
-        You've got a business to run. I help small business owners find where AI can
-        genuinely add value, set up the right tools, and free up your time for the
+        You've got a business to run. I help small business owners find where AI
+        actually saves time, set up the right tools, and get those hours back for the
         work only you can do.
       </p>
       <div class="hero-ctas">
@@ -813,7 +832,7 @@
         <h2 class="section-title">From review to action</h2>
         <p class="section-sub">
           Most businesses are losing time in places they haven't looked yet.
-          I find them, cut the noise, and help you act on what actually matters.
+          I find those spots and help you act on the ones that matter.
         </p>
       </div>
       <div class="cards">
@@ -832,7 +851,7 @@
           <p>
             Hands-on help selecting and setting up the right tools for your business.
             I handle vendor evaluation, configuration, and training so your team
-            can hit the ground running.
+            can start using it day one, without the trial and error.
           </p>
           <div class="card-price">Custom pricing · Based on scope</div>
         </div>
@@ -840,8 +859,8 @@
           <h3>Ongoing Advisory</h3>
           <p>
             A trusted resource in your corner as AI keeps evolving. Monthly check-ins,
-            tool recommendations, and strategic guidance to keep your business
-            ahead of the curve.
+            tool recommendations, and strategic guidance so you adopt what's worth
+            adopting and skip what isn't.
           </p>
           <div class="card-price">Monthly retainer · Available after your review</div>
         </div>
@@ -910,11 +929,15 @@
   <section class="about" id="about">
     <div class="container">
       <div class="about-inner">
-        <div>
+        <div class="about-head">
           <span class="section-label">About</span>
           <h2 class="section-title">David Donnell</h2>
         </div>
-        <div class="about-body">
+        <div class="about-cols">
+          <div class="about-photo-wrap">
+            <img class="about-photo" src="David%20Donnell%20portrait.jpg" alt="David Donnell, AI Advisor, in the Colorado Front Range foothills" loading="lazy" />
+          </div>
+          <div class="about-body">
           <p>
             I spent eight years designing enterprise software for construction and field operations
             teams at companies like Trimble, where the tools either fit how people
@@ -932,6 +955,7 @@
             I'd rather help a Front Range contractor free up ten hours a week than pitch remotely
             to clients I'll never meet.
           </p>
+          </div>
         </div>
       </div>
     </div>

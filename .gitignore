@@ -1,0 +1,20 @@
+# Internal / confidential client work — never publish to the website repo
+Aaron Stiner/
+Bowman Healthcare/
+Dans Hardwood LLC/
+Tony Tran/
+Shoreline Spirit/
+Leads generation/
+
+# Internal docs and source materials
+*.docx
+*.pdf
+Calendly_Intake_Questions.md
+Stripe_Deposit_Link_Setup.md
+Decision_Prompt_Name_and_Specialization.md
+Cowork_Audit_Prompt_*.md
+claude-code-prompt*.md
+
+# OS / editor cruft
+.DS_Store
+*.tmp
