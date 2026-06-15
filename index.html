@@ -16,6 +16,10 @@
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://daviddonnell.com/" />
 
+  <!-- Favicon + browser chrome -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <meta name="theme-color" content="#0d0e1a" />
+
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://daviddonnell.com/" />
@@ -798,9 +802,47 @@
       .resource-teasers { grid-template-columns: 1fr; }
       .email-gate { padding: 28px 24px; }
     }
+
+    /* Scroll-reveal micro-animations (active only when JS adds .js).
+       :where() keeps the hidden state at zero specificity so .reveal-in wins. */
+    .js :where(
+      .hero-badge, .hero h1, .hero p, .hero-ctas,
+      .how-header, .step,
+      .services-header, .card,
+      .clients-head, .client-list, .stat-box,
+      .about-head, .about-photo-wrap, .about-body,
+      .cta-card
+    ) {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: calc(var(--reveal-i, 0) * 80ms);
+      will-change: opacity, transform;
+    }
+    .js .reveal-in {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .js :where(
+        .hero-badge, .hero h1, .hero p, .hero-ctas,
+        .how-header, .step,
+        .services-header, .card,
+        .clients-head, .client-list, .stat-box,
+        .about-head, .about-photo-wrap, .about-body,
+        .cta-card
+      ) {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
   </style>
 </head>
 <body>
+  <script>document.documentElement.classList.add('js');</script>
 
   <div class="bg-blob blob-1"></div>
   <div class="bg-blob blob-2"></div>
@@ -1031,7 +1073,44 @@
   </footer>
 
   <script>
+    (function () {
+      var SEL = '.hero-badge, .hero h1, .hero p, .hero-ctas,' +
+                '.how-header, .step,' +
+                '.services-header, .card,' +
+                '.clients-head, .client-list, .stat-box,' +
+                '.about-head, .about-photo-wrap, .about-body,' +
+                '.cta-card';
+      var targets = Array.prototype.slice.call(document.querySelectorAll(SEL));
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+      // No IntersectionObserver or user prefers reduced motion: just show everything.
+      if (reduce || !('IntersectionObserver' in window)) {
+        targets.forEach(function (el) { el.classList.add('reveal-in'); });
+        return;
+      }
+
+      // Stagger each element by its position among reveal siblings (capped).
+      targets.forEach(function (el) {
+        var i = 0, sib = el.previousElementSibling;
+        while (sib) {
+          if (sib.matches && sib.matches(SEL)) i++;
+          sib = sib.previousElementSibling;
+        }
+        el.style.setProperty('--reveal-i', Math.min(i, 4));
+      });
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('reveal-in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+      targets.forEach(function (el) { io.observe(el); });
+    })();
+  </script>
 
 </body>
 </html>
