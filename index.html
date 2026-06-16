@@ -237,6 +237,19 @@
       transform: translateY(-1px);
     }
 
+    /* AI readiness button: teal→purple gradient border, airy fill */
+    .btn-ai {
+      color: var(--green);
+      border: 1.5px solid transparent;
+      background:
+        linear-gradient(transparent, transparent) padding-box,
+        linear-gradient(135deg, var(--green) 0%, #5032C8 100%) border-box;
+    }
+    .btn-ai:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(80, 50, 200, 0.28);
+    }
+
     .btn-lg {
       padding: 16px 36px;
       font-size: 1rem;
@@ -896,7 +909,7 @@
       </p>
       <div class="hero-ctas">
         <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">Book a Free 30-Min Call</a>
-        <a href="/readiness-check.html" class="btn btn-outline btn-lg"><svg class="ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 6.9 6.9 2.6-6.9 2.6L12 22.5l-2.6-6.9-6.9-2.6 6.9-2.6z"/></svg>Take the 2-Min AI Check</a>
+        <a href="/readiness-check.html" class="btn btn-ai btn-lg"><svg class="ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 6.9 6.9 2.6-6.9 2.6L12 22.5l-2.6-6.9-6.9-2.6 6.9-2.6z"/></svg>Take the 2-Min AI Check</a>
       </div>
     </div>
   </section>
