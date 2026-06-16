@@ -15,6 +15,13 @@ Decision_Prompt_Name_and_Specialization.md
 Cowork_Audit_Prompt_*.md
 claude-code-prompt*.md
 
+# Superseded source / internal docs — keep local, never publish
+ai-readiness-quiz.html
+Intake_Intro_Call_Script.md
+
+# Local tooling
+.claude/
+
 # OS / editor cruft
 .DS_Store
 *.tmp
