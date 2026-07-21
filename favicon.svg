@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
   <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="14"
-        fill="#0d0e1a" stroke="#00D4AA" stroke-opacity="0.25" stroke-width="1.5"/>
+        fill="#0d0e1a" stroke="#60a5fa" stroke-opacity="0.3" stroke-width="1.5"/>
   <text text-anchor="middle" dominant-baseline="central"
         font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="800"
         font-size="30" fill="#ffffff">

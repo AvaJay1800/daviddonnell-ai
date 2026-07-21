@@ -1,0 +1,307 @@
+/* ==========================================================================
+   David Donnell — design system
+   Shared tokens, texture overlays, and signature components.
+   Ported from the design system to vanilla CSS (no build step, no React).
+   Used by: index.html, readiness-check.html
+   ========================================================================== */
+
+:root {
+  /* --- Base navy ramp (cool, near-neutral) --- */
+  --navy-950: #0d0e1a;   /* brand base / theme-color */
+  --navy-925: #101120;
+  --navy-900: #141524;
+  --navy-850: #191a2c;
+  --navy-800: #1f2136;
+  --navy-750: #262842;
+  --navy-700: #30324f;
+
+  /* --- Text --- */
+  --text-primary:   #f5f6fb;
+  --text-secondary: #aeb3cb;
+  --text-muted:     #757b98;
+  --text-inverse:   #0d0e1a;
+
+  /* --- Lines & surfaces --- */
+  --border:        rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --surface-card:  #161727;
+  --surface-raised:#1c1e33;
+
+  /* --- Accents (oklch, shared L/C, hue varies) --- */
+  --accent-purple: oklch(0.68 0.15 295);
+  --accent-blue:   oklch(0.68 0.15 250);
+  --accent-green:  oklch(0.74 0.15 158);
+  --accent-purple-hex: #a78bfa;
+  --accent-blue-hex:   #60a5fa;
+  --accent-green-hex:  #4ade9f;
+  --accent: var(--accent-blue);
+
+  /* --- Signature gradient --- */
+  --gradient-brand: linear-gradient(115deg,
+    var(--accent-purple) 0%, var(--accent-blue) 48%, var(--accent-green) 100%);
+  --gradient-brand-soft: linear-gradient(115deg,
+    oklch(0.68 0.15 295 / 0.22), oklch(0.68 0.15 250 / 0.22), oklch(0.74 0.15 158 / 0.22));
+
+  /* --- Type --- */
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body:    "Instrument Sans", system-ui, -apple-system, sans-serif;
+  --font-mono:    "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --leading-tight: 1.08;
+  --leading-snug:  1.28;
+  --leading-normal: 1.6;
+  --tracking-tight: -0.02em;
+  --tracking-wide:  0.14em;
+
+  /* --- Spacing / layout --- */
+  --container: 1120px;
+  --container-narrow: 760px;
+
+  /* --- Radii --- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 40px oklch(0.68 0.15 260 / 0.28);
+
+  /* --- Motion --- */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur: 180ms;
+
+  /* --- Texture --- */
+  --texture-opacity: 0.055;
+}
+
+/* ==========================================================================
+   Texture overlays — add .tx to a positioned container, then a .tx-* variant.
+   ========================================================================== */
+
+.tx {
+  position: relative;
+  isolation: isolate;
+}
+.tx > * { position: relative; z-index: 1; }
+
+.tx::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: var(--texture-opacity);
+  background-repeat: repeat;
+}
+
+/* Film grain (fine noise) */
+.tx-grain::after {
+  background-image: url("assets/textures/grain.png");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+}
+
+/* Halftone dots */
+.tx-halftone::after {
+  background-image: radial-gradient(circle at center, rgba(255,255,255,0.85) 0.9px, transparent 1.2px);
+  background-size: 6px 6px;
+  mix-blend-mode: soft-light;
+  opacity: calc(var(--texture-opacity) * 1.7);
+}
+
+/* Paper / fibrous grain (coarse noise) */
+.tx-paper::after {
+  background-image: url("assets/textures/paper.png");
+  background-size: 300px 300px;
+  mix-blend-mode: overlay;
+  opacity: calc(var(--texture-opacity) * 1.4);
+}
+
+/* Dithered grit */
+.tx-dither::after {
+  background-image: url("assets/textures/dither.png");
+  background-size: 120px 120px;
+  mix-blend-mode: hard-light;
+  opacity: calc(var(--texture-opacity) * 1.3);
+}
+
+/* Colored bloom that pairs with the brand gradient (hero / CTA backgrounds) */
+.tx-bloom::before {
+  content: "";
+  position: absolute;
+  inset: -25% -10% auto -10%;
+  height: 65%;
+  z-index: 0;
+  pointer-events: none;
+  background: var(--gradient-brand-soft);
+  filter: blur(90px);
+  opacity: 0.55;
+}
+
+/* ==========================================================================
+   Type utilities
+   ========================================================================== */
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent-blue-hex);
+}
+
+/* Gradient-filled text — the headline accent */
+.gradient-text {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* ==========================================================================
+   Buttons — "gradient" is the signature CTA (transparent fill, gradient border)
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 12px 22px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: transform var(--dur) var(--ease),
+              background var(--dur) var(--ease),
+              box-shadow var(--dur) var(--ease),
+              border-color var(--dur) var(--ease);
+}
+
+.btn-sm { padding: 8px 16px; font-size: 0.875rem; border-radius: 10px; }
+.btn-lg { padding: 16px 30px; font-size: 1.0625rem; border-radius: 14px; }
+
+/* Signature gradient outline: gradient border via padding-box/border-box */
+.btn-gradient {
+  color: var(--text-primary);
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--navy-950), var(--navy-950)) padding-box,
+              var(--gradient-brand) border-box;
+}
+.btn-gradient:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-primary {
+  background: var(--text-primary);
+  color: var(--text-inverse);
+}
+.btn-primary:hover { background: #ffffff; transform: translateY(-1px); }
+
+.btn-secondary {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+}
+.btn-secondary:hover { transform: translateY(-1px); border-color: var(--text-muted); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+.btn-ghost:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); }
+
+/* ==========================================================================
+   Badge — small mono eyebrow pill
+   ========================================================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: var(--radius-pill);
+  line-height: 1;
+}
+.badge-neutral {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.badge-blue {
+  background: oklch(0.68 0.15 250 / 0.16);
+  color: var(--accent-blue-hex);
+  border: 1px solid oklch(0.68 0.15 250 / 0.4);
+}
+.badge-green {
+  background: oklch(0.74 0.15 158 / 0.16);
+  color: var(--accent-green-hex);
+  border: 1px solid oklch(0.74 0.15 158 / 0.4);
+}
+.badge-gradient {
+  color: var(--text-primary);
+  border: 1px solid transparent;
+  background: linear-gradient(var(--navy-900), var(--navy-900)) padding-box,
+              var(--gradient-brand) border-box;
+}
+
+/* ==========================================================================
+   Card — "gradient" variant marks the featured / priced offer
+   ========================================================================== */
+
+.ds-card {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--radius-lg);
+  padding: 26px 26px 24px;
+  font-family: var(--font-body);
+  color: var(--text-secondary);
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.ds-card:hover { border-color: var(--border-strong); }
+
+.ds-card-gradient {
+  border: 1.5px solid transparent;
+  background: linear-gradient(var(--surface-card), var(--surface-card)) padding-box,
+              var(--gradient-brand) border-box;
+}
+
+.card-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-blue-hex);
+  margin-bottom: 14px;
+}
+
+.card-footer {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+  .btn:hover { transform: none; }
+}

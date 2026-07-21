@@ -19,29 +19,33 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<!-- Design system: tokens, texture overlays, signature components -->
+<link rel="stylesheet" href="theme.css" />
 
 <style>
+  /* Legacy aliases mapped onto the design-system tokens in theme.css */
   :root {
-    --navy:    #0D0E1A;
-    --navy-2:  #16172a;
-    --card:    #1b1c30;
-    --teal:    #00D4AA;
-    --teal-dk: #04342C;
-    --text:    #EDEDF2;
-    --muted:   #9B9CB0;
-    --line:    rgba(255,255,255,0.10);
-    --amber:   #EF9F27;
-    --coral:   #E0724A;
-    --radius:  14px;
+    --navy:    var(--navy-950);
+    --navy-2:  var(--navy-900);
+    --card:    var(--surface-card);
+    --teal:    var(--accent-blue-hex);
+    --teal-dk: var(--text-inverse);
+    --text:    var(--text-primary);
+    --muted:   var(--text-secondary);
+    --line:    var(--border);
+    --amber:   #f5c451;
+    --coral:   #f4776b;
+    --radius:  var(--radius-lg);
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
   body {
     background: var(--navy);
     color: var(--text);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
+    font-family: var(--font-body);
+    line-height: var(--leading-normal);
     -webkit-font-smoothing: antialiased;
     display: flex;
     justify-content: center;
@@ -70,17 +74,18 @@
   }
   .eyebrow {
     display: flex; align-items: center; gap: 9px;
-    font-size: 12.5px; letter-spacing: 0.04em; color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11px; letter-spacing: 0.12em; color: var(--accent-blue-hex);
     text-transform: uppercase; margin-bottom: 16px;
   }
   .eyebrow svg { width: 18px; height: 18px; stroke: var(--muted); }
-  .eyebrow .ai-spark { fill: var(--teal); stroke: none; }
+  .eyebrow .ai-spark { fill: var(--accent-blue-hex); stroke: none; }
   .barwrap { height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin-bottom: 24px; }
-  .bar { height: 100%; width: 0%; background: var(--teal); border-radius: 999px; transition: width .35s ease; }
+  .bar { height: 100%; width: 0%; background: var(--gradient-brand); border-radius: 999px; transition: width .35s ease; }
   .qhead { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 18px; }
-  .qhead svg { width: 24px; height: 24px; stroke: var(--teal); flex-shrink: 0; margin-top: 2px; }
-  .qhead .qtext { font-size: 18px; font-weight: 600; line-height: 1.35; }
-  .step-label { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .qhead svg { width: 24px; height: 24px; stroke: var(--accent-blue-hex); flex-shrink: 0; margin-top: 2px; }
+  .qhead .qtext { font-family: var(--font-display); font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
+  .step-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
   .opts { display: flex; flex-direction: column; gap: 10px; }
   .opt, .pill {
     text-align: left; font: inherit; color: var(--text);
@@ -89,7 +94,7 @@
     transition: border-color .15s, background .15s; line-height: 1.4;
   }
   .opt:hover, .pill:hover { border-color: var(--teal); }
-  .opt.sel, .pill.sel { border-color: var(--teal); background: rgba(0,212,170,0.10); }
+  .opt.sel, .pill.sel { border-color: var(--accent-blue-hex); background: oklch(0.68 0.15 250 / 0.14); }
   /* Visible keyboard focus ring (accessible on the dark background) */
   .opt:focus-visible, .pill:focus-visible, .cta-btn:focus-visible, .retake:focus-visible {
     outline: 2px solid var(--teal);
@@ -99,7 +104,7 @@
   .pill { border-radius: 999px; padding: 9px 15px; font-size: 14.5px; }
   .hint { font-size: 13px; color: var(--muted); margin-top: 14px; }
   /* result */
-  .score-num { font-size: 52px; font-weight: 700; line-height: 1; }
+  .score-num { font-family: var(--font-display); font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
   .band {
     display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 600;
     padding: 6px 16px; border-radius: 999px; border: 1px solid;
@@ -110,14 +115,20 @@
     background: var(--navy-2); border: 1px solid var(--line);
     border-radius: 12px; padding: 18px; margin-bottom: 16px;
   }
-  .cta-box .lbl { font-size: 12.5px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .cta-box .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  /* Signature CTA — transparent fill, purple→blue→green gradient border */
   .cta-btn {
     display: block; width: 100%; text-align: center; text-decoration: none;
-    font-size: 15.5px; font-weight: 700; color: var(--teal-dk);
-    background: var(--teal); border: none; border-radius: 10px;
-    padding: 14px; cursor: pointer; transition: filter .15s;
+    font-family: var(--font-body);
+    font-size: 15.5px; font-weight: 600; color: var(--text-primary);
+    border: 1.5px solid transparent; border-radius: var(--radius-md);
+    background:
+      linear-gradient(var(--navy-950), var(--navy-950)) padding-box,
+      var(--gradient-brand) border-box;
+    padding: 14px; cursor: pointer;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
   }
-  .cta-btn:hover { filter: brightness(1.08); }
+  .cta-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-glow); }
   .retake { background: none; border: none; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; margin-top: 16px; }
   .retake:hover { color: var(--text); }
   .hidden { display: none; }
@@ -223,13 +234,13 @@ function showResult() {
   const pct = Math.round(score / max * 100);
   let band, color, blurb;
   if (pct >= 70) {
-    band = 'Ready to scale'; color = '#00D4AA';
+    band = 'Ready to scale'; color = '#4ade9f';
     blurb = "You've got solid habits in place. The biggest wins now come from automating follow-up and freeing your time, exactly what a focused plan can unlock.";
   } else if (pct >= 40) {
-    band = 'Some quick wins waiting'; color = '#EF9F27';
+    band = 'Some quick wins waiting'; color = '#f5c451';
     blurb = "You're doing a lot right, but a few leaks like slow follow-up or scattered tracking are likely costing you business. These are usually fast and inexpensive to fix.";
   } else {
-    band = 'Big opportunity'; color = '#E0724A';
+    band = 'Big opportunity'; color = '#f4776b';
     blurb = "There's real money being left on the table in how inquiries and admin are handled. The good news: the easiest, highest-impact improvements are still ahead of you.";
   }
 
