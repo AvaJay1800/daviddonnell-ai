@@ -175,7 +175,6 @@
       line-height: 1.1;
       text-decoration: none;
       cursor: pointer;
-      border: 1px solid transparent;
       font-family: var(--font-body);
       transition: transform var(--dur) var(--ease),
                   background var(--dur) var(--ease),
@@ -183,19 +182,9 @@
                   border-color var(--dur) var(--ease);
     }
 
-    /* Signature CTA — transparent fill, purple→blue→green gradient border.
-       Reserved for the single primary action per view. */
-    .btn-primary {
-      color: var(--text-primary);
-      border: 1.5px solid transparent;
-      background:
-        linear-gradient(var(--navy-950), var(--navy-950)) padding-box,
-        var(--gradient-brand) border-box;
-    }
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: var(--shadow-glow);
-    }
+    /* The signature gradient CTA is .btn-gradient, defined in theme.css.
+       Don't redefine .btn-primary here — theme.css uses it for the solid
+       light variant, and a partial override leaks its white hover fill. */
 
     /* Secondary actions — raised surface, so the gradient CTA stays the hero */
     .btn-outline,
@@ -892,7 +881,7 @@
       <li><a href="/readiness-check.html"><svg class="ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 6.9 6.9 2.6-6.9 2.6L12 22.5l-2.6-6.9-6.9-2.6 6.9-2.6z"/></svg>AI Readiness Check</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary">Book a Free Call</a>
+    <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient">Book a Free Call</a>
   </nav>
 
   <!-- Hero -->
@@ -909,7 +898,7 @@
         work only you can do.
       </p>
       <div class="hero-ctas">
-        <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">Book a Free 30-Min Call</a>
+        <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg">Book a Free 30-Min Call</a>
         <a href="/readiness-check.html" class="btn btn-ai btn-lg"><svg class="ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 6.9 6.9 2.6-6.9 2.6L12 22.5l-2.6-6.9-6.9-2.6 6.9-2.6z"/></svg>Take the 2-Min AI Check</a>
       </div>
     </div>
@@ -1089,7 +1078,7 @@
           Book a free 30-minute call. We'll talk about your business, where you're losing time,
           and whether a review makes sense for you.
         </p>
-        <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-lg">
+        <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg">
           Book Your Free Call
         </a>
         <p class="cta-detail">No pressure. No pitch deck. Just a real conversation.</p>
