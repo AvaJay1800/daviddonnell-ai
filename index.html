@@ -12,7 +12,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>David Donnell, Digital Advisor | Denver, CO</title>
-  <meta name="description" content="David Donnell helps small businesses in the Denver Front Range find and implement AI tools that actually save time. $750 AI Readiness Review delivered in 5 business days." />
+  <meta name="description" content="David Donnell builds micro apps, custom tools, and websites for small businesses in the Denver Front Range. Fixed prices, fast delivery, tools that fit how you actually work." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://daviddonnell.com/" />
 
@@ -24,13 +24,13 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://daviddonnell.com/" />
   <meta property="og:title" content="David Donnell, Digital Advisor | Denver, CO" />
-  <meta property="og:description" content="Practical AI consulting for small businesses in the Denver Front Range. AI Readiness Review: $750, delivered in 5 business days." />
+  <meta property="og:description" content="Micro apps, custom tools, and websites for small businesses in the Denver Front Range. Fixed prices, fast delivery." />
   <meta property="og:site_name" content="David Donnell" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="David Donnell, Digital Advisor | Denver, CO" />
-  <meta name="twitter:description" content="Practical AI consulting for small businesses in the Denver Front Range. AI Readiness Review: $750, delivered in 5 business days." />
+  <meta name="twitter:description" content="Micro apps, custom tools, and websites for small businesses in the Denver Front Range. Fixed prices, fast delivery." />
 
   <!-- Schema.org: Local Professional Service -->
   <script type="application/ld+json">
@@ -40,7 +40,7 @@
     "name": "David Donnell, Digital Advisor",
     "url": "https://daviddonnell.com",
     "email": "davidadonnell@gmail.com",
-    "description": "AI consulting for small businesses in the Denver Front Range. AI Readiness Reviews, implementation, and ongoing advisory.",
+    "description": "Micro apps, custom tools, and websites for small businesses in the Denver Front Range. Custom CMS builds, workflow automation, and AI readiness reviews.",
     "areaServed": {
       "@type": "GeoCircle",
       "geoMidpoint": { "@type": "GeoCoordinates", "latitude": 39.7392, "longitude": -104.9903 },
@@ -171,10 +171,6 @@
     /* Hero button is flex with its own gap — avoid double spacing,
        and nudge the star up ~1px to optically center it with the text */
     .btn .ai-spark { margin-right: 0; transform: translateY(-1px); }
-
-    /* Readiness-check nav link picks up the teal accent to match its star */
-    .nav-links a[href="/readiness-check.html"] { color: var(--green); }
-    .nav-links a[href="/readiness-check.html"]:hover { color: var(--green-dark); }
 
     .btn {
       display: inline-flex;
@@ -452,6 +448,32 @@
       color: var(--text-muted);
       font-weight: 400;
     }
+
+    /* Work / gallery */
+    .work {
+      padding: 100px 0;
+    }
+
+    .work-header {
+      margin-bottom: 56px;
+    }
+
+    .card .badge {
+      align-self: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .card-link {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent-blue-hex);
+      text-decoration: none;
+      transition: color var(--dur) var(--ease);
+    }
+    .card-link:hover { color: var(--text-primary); }
 
     /* Who I work with */
     .clients {
@@ -881,6 +903,7 @@
       .hero-badge, .hero h1, .hero p, .hero-ctas,
       .how-header, .step,
       .services-header, .card,
+      .work-header,
       .clients-head, .client-list, .stat-box,
       .about-head, .about-photo-wrap, .about-body, .about-skills,
       .cta-card
@@ -902,6 +925,7 @@
         .hero-badge, .hero h1, .hero p, .hero-ctas,
         .how-header, .step,
         .services-header, .card,
+        .work-header,
         .clients-head, .client-list, .stat-box,
         .about-head, .about-photo-wrap, .about-body, .about-skills,
         .cta-card
@@ -925,9 +949,9 @@
     <ul class="nav-links">
       <li><a href="#how">How it works</a></li>
       <li><a href="#services">Services</a></li>
+      <li><a href="#work">Work</a></li>
       <li><a href="#clients">Who I work with</a></li>
       <li><a href="#about">About</a></li>
-      <li><a href="/readiness-check.html"><svg class="ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 6.9 6.9 2.6-6.9 2.6L12 22.5l-2.6-6.9-6.9-2.6 6.9-2.6z"/></svg>AI Readiness Check</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
     <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient">Book a Free Call</a>
@@ -941,13 +965,13 @@
         not in it.
       </h1>
       <p>
-        You've got a business to run. I help small business owners find where AI
-        actually saves time, set up the right tools, and get those hours back for the
-        work only you can do.
+        You've got a business to run. I build small, custom tools&#8202;&mdash;&#8202;micro apps,
+        websites, and automations&#8202;&mdash;&#8202;that fit how you actually work and give you
+        your hours back.
       </p>
       <div class="hero-ctas">
         <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg">Book a Free 30-Min Call</a>
-        <a href="/readiness-check.html" class="btn btn-ai btn-lg"><svg class="ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 6.9 6.9 2.6-6.9 2.6L12 22.5l-2.6-6.9-6.9-2.6 6.9-2.6z"/></svg>Take the 2-Min AI Check</a>
+        <a href="#work" class="btn btn-ai btn-lg">See the Work</a>
       </div>
     </div>
   </section>
@@ -959,24 +983,24 @@
         <span class="section-label">How it works</span>
         <h2 class="section-title">Simple, fast, no surprises</h2>
         <p class="section-sub">
-          Most engagements start with a free call and move to a review within a week.
+          Most projects start with a free call and a fixed quote within a week.
         </p>
       </div>
       <div class="steps">
         <div class="step">
           <div class="step-num">01</div>
           <h3>Free 30-min call</h3>
-          <p>We talk through your business, your current tools, and where you're losing time. No pitch, just a real conversation.</p>
+          <p>We talk through your business and where the time is going. No pitch&#8202;&mdash;&#8202;if a $30-a-month off-the-shelf tool solves it, I'll tell you.</p>
         </div>
         <div class="step">
           <div class="step-num">02</div>
-          <h3>AI Readiness Review</h3>
-          <p>I review your operations and deliver a prioritized report of AI opportunities, specific to your business, in 5 business days.</p>
+          <h3>Fixed scope, fixed price</h3>
+          <p>I spec the smallest tool that fixes the problem and quote it flat. You know the price and the delivery date before any work starts.</p>
         </div>
         <div class="step">
           <div class="step-num">03</div>
-          <h3>Implement and move on</h3>
-          <p>You pick what to act on. I can help implement, or hand off a clear plan your team can run with on their own.</p>
+          <h3>Built, delivered, yours</h3>
+          <p>You get a working tool your team actually uses, with training included. No subscriptions to me, no hourly meter.</p>
         </div>
       </div>
     </div>
@@ -987,40 +1011,86 @@
     <div class="container">
       <div class="services-header">
         <span class="section-label">Services</span>
-        <h2 class="section-title">From review to action</h2>
+        <h2 class="section-title">Small tools, big hours back</h2>
         <p class="section-sub">
-          Most businesses are losing time in places they haven't looked yet.
-          I find those spots and help you act on the ones that matter.
+          Most businesses don't need big software. They need a few small tools
+          that fit how they already work.
         </p>
       </div>
       <div class="cards">
         <div class="card card-featured">
           <span class="card-tag">Start here</span>
-          <h3>AI Readiness Review</h3>
+          <h3>Micro Apps &amp; Custom Tools</h3>
           <p>
-            A focused review of your operations, tools, and workflows to identify
-            where AI can save time, reduce cost, or unlock new capacity. Delivered as a
-            clear, prioritized report with specific recommendations.
+            A small app that does exactly what your business needs&#8202;&mdash;&#8202;quote
+            builders, intake forms, calculators, dashboards, booking tools. Scoped
+            to the problem, built fast, and yours to keep.
           </p>
-          <div class="card-price">$750 flat · Delivered in 5 business days</div>
+          <div class="card-price">Fixed price per tool · Scoped on the free call</div>
         </div>
         <div class="card">
-          <h3>AI Implementation</h3>
+          <h3>Websites &amp; Custom CMS</h3>
           <p>
-            Hands-on help selecting and setting up the right tools for your business.
-            I handle vendor evaluation, configuration, and training so your team
-            can start using it day one, without the trial and error.
+            A fast, professional website with a content manager built around how
+            you update things. Change your own photos, pricing, and hours&#8202;&mdash;&#8202;no
+            platform fees, no fighting a page builder.
           </p>
-          <div class="card-price">Custom pricing · Based on scope</div>
+          <div class="card-price">Flat project pricing · CMS included</div>
         </div>
         <div class="card">
-          <h3>Ongoing Advisory</h3>
+          <h3>Advisory &amp; Automation</h3>
           <p>
-            A trusted resource in your corner as AI keeps evolving. Monthly check-ins,
-            tool recommendations, and strategic guidance so you adopt what's worth
-            adopting and skip what isn't.
+            Not sure what to build first? I'll review your operations, find where
+            the time is leaking, and map out the tools worth building&#8202;&mdash;&#8202;AI
+            included where it actually helps.
           </p>
-          <div class="card-price">Monthly retainer · Available after your review</div>
+          <div class="card-price">AI Readiness Review · $750 flat</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Work / gallery -->
+  <section class="work" id="work">
+    <div class="container">
+      <div class="work-header">
+        <span class="section-label">Work</span>
+        <h2 class="section-title">Tools you can actually click</h2>
+        <p class="section-sub">
+          Live demos, not screenshots. Everything here is a real tool built for a
+          real business, sanitized so you can poke around.
+        </p>
+      </div>
+      <div class="cards">
+        <div class="card">
+          <span class="badge badge-blue">Demo coming soon</span>
+          <h3>Owner-Friendly CMS</h3>
+          <p>
+            A content manager built for a pet grooming studio. The owners update
+            photos, pricing, and reviews from a simple editor, and changes go live
+            in minutes. Zero monthly platform fees.
+          </p>
+          <div class="card-price">Client project · Sandbox demo in the works</div>
+        </div>
+        <div class="card">
+          <span class="badge badge-green">Live</span>
+          <h3>AI Readiness Check</h3>
+          <p>
+            A two-minute scored assessment that tailors its results to your
+            industry. An example of the interactive lead tools I build for
+            service businesses&#8202;&mdash;&#8202;try it yourself.
+          </p>
+          <a class="card-link" href="/readiness-check.html">Take the 2-minute check &rarr;</a>
+        </div>
+        <div class="card">
+          <span class="badge badge-neutral">In the shop</span>
+          <h3>Contractor Quote Builder</h3>
+          <p>
+            Line-item quotes with labor and materials, ready to send from a phone
+            before you leave the driveway. Currently on the workbench&#8202;&mdash;&#8202;check
+            back soon.
+          </p>
+          <div class="card-price">Demo build · In progress</div>
         </div>
       </div>
     </div>
@@ -1068,13 +1138,13 @@
                 <div class="stat-label">Hours saved per week</div>
               </div>
               <div class="stat">
-                <div class="stat-num">5</div>
-                <div class="stat-label">Business days to report</div>
+                <div class="stat-num">$0</div>
+                <div class="stat-label">Monthly fees · you own it</div>
               </div>
             </div>
             <p>
-              Most clients identify 3 to 5 high-impact AI opportunities in the first review alone.
-              We focus on tools that integrate with what you already use. No rip-and-replace.
+              I build the smallest tool that fixes the problem, and it integrates
+              with what you already use. No rip-and-replace, no subscriptions.
             </p>
         </div>
       </div>
@@ -1105,7 +1175,7 @@
             Most business owners I talk to aren't looking for AI. They're looking for fewer
             headaches. I start by understanding the real pain points in your day-to-day: what's
             repetitive, what's falling through the cracks, what takes three people when it should
-            take one. Then we figure out if and where AI actually helps.
+            take one. Then I build the smallest tool that fixes it.
           </p>
           <p>
             I've been in Denver since 2008 and I work almost exclusively with local businesses.
@@ -1135,10 +1205,11 @@
   <section class="cta-section" id="contact">
     <div class="container">
       <div class="cta-card tx tx-grain tx-bloom">
-        <h2>Ready to put AI to work?</h2>
+        <h2>Ready to get your hours back?</h2>
         <p>
-          Book a free 30-minute call. We'll talk about your business, where you're losing time,
-          and whether a review makes sense for you.
+          Book a free 30-minute call. Tell me what's eating your time, and we'll
+          figure out whether a small tool can fix it&#8202;&mdash;&#8202;and exactly what
+          it would cost.
         </p>
         <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg">
           Book Your Free Call
@@ -1160,6 +1231,7 @@
       var SEL = '.hero-badge, .hero h1, .hero p, .hero-ctas,' +
                 '.how-header, .step,' +
                 '.services-header, .card,' +
+                '.work-header,' +
                 '.clients-head, .client-list, .stat-box,' +
                 '.about-head, .about-photo-wrap, .about-body,' +
                 '.cta-card';
