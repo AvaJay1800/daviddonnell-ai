@@ -11,7 +11,7 @@
   </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>David Donnell, AI Advisor | Denver, CO</title>
+  <title>David Donnell, Digital Advisor | Denver, CO</title>
   <meta name="description" content="David Donnell helps small businesses in the Denver Front Range find and implement AI tools that actually save time. $750 AI Readiness Review delivered in 5 business days." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://daviddonnell.com/" />
@@ -23,13 +23,13 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://daviddonnell.com/" />
-  <meta property="og:title" content="David Donnell, AI Advisor | Denver, CO" />
+  <meta property="og:title" content="David Donnell, Digital Advisor | Denver, CO" />
   <meta property="og:description" content="Practical AI consulting for small businesses in the Denver Front Range. AI Readiness Review: $750, delivered in 5 business days." />
   <meta property="og:site_name" content="David Donnell" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="David Donnell, AI Advisor | Denver, CO" />
+  <meta name="twitter:title" content="David Donnell, Digital Advisor | Denver, CO" />
   <meta name="twitter:description" content="Practical AI consulting for small businesses in the Denver Front Range. AI Readiness Review: $750, delivered in 5 business days." />
 
   <!-- Schema.org: Local Professional Service -->
@@ -37,7 +37,7 @@
   {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    "name": "David Donnell, AI Advisor",
+    "name": "David Donnell, Digital Advisor",
     "url": "https://daviddonnell.com",
     "email": "davidadonnell@gmail.com",
     "description": "AI consulting for small businesses in the Denver Front Range. AI Readiness Reviews, implementation, and ongoing advisory.",
@@ -103,7 +103,10 @@
     h1, h2, h3 {
       font-family: var(--font-display);
       letter-spacing: var(--tracking-tight);
+      text-wrap: balance;
     }
+
+    p { text-wrap: pretty; }
 
     /* Nav */
     nav {
@@ -111,7 +114,7 @@
       top: 0;
       z-index: 100;
       display: flex;
-      align-items: center;
+      align-items: baseline;
       justify-content: space-between;
       padding: 20px 48px;
       background: rgba(13, 14, 26, 0.85);
@@ -122,14 +125,24 @@
 
     .nav-logo {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      gap: 2px;
       font-family: var(--font-display);
       font-weight: 700;
       font-size: 1.1rem;
       letter-spacing: -0.01em;
       text-decoration: none;
       color: var(--text);
+      line-height: 1.2;
+    }
+
+    .nav-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
     }
 
 .nav-links {
@@ -586,6 +599,41 @@
     }
     .about-body p:last-child { margin-bottom: 0; }
 
+    .about-subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 400;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .about-skills {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .skill-tag {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      letter-spacing: 0.03em;
+      color: var(--text-secondary);
+      background: var(--surface-raised);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      white-space: nowrap;
+    }
+
     .about-body strong {
       color: var(--text);
       font-weight: 600;
@@ -834,7 +882,7 @@
       .how-header, .step,
       .services-header, .card,
       .clients-head, .client-list, .stat-box,
-      .about-head, .about-photo-wrap, .about-body,
+      .about-head, .about-photo-wrap, .about-body, .about-skills,
       .cta-card
     ) {
       opacity: 0;
@@ -855,7 +903,7 @@
         .how-header, .step,
         .services-header, .card,
         .clients-head, .client-list, .stat-box,
-        .about-head, .about-photo-wrap, .about-body,
+        .about-head, .about-photo-wrap, .about-body, .about-skills,
         .cta-card
       ) {
         opacity: 1;
@@ -872,6 +920,7 @@
   <nav>
     <a href="#" class="nav-logo">
       David Donnell
+      <span class="nav-subtitle">Digital Advisor</span>
     </a>
     <ul class="nav-links">
       <li><a href="#how">How it works</a></li>
@@ -887,7 +936,6 @@
   <!-- Hero -->
   <section class="hero tx tx-grain tx-bloom">
     <div class="container">
-      <div class="hero-badge">AI Advisor · Denver, CO</div>
       <h1>
         Work on your <span class="accent">business,</span><br/>
         not in it.
@@ -1040,10 +1088,11 @@
         <div class="about-head">
           <span class="section-label">About</span>
           <h2 class="section-title">David Donnell</h2>
+          <p class="about-subtitle">Digital Advisor</p>
         </div>
         <div class="about-cols">
           <div class="about-photo-wrap">
-            <img class="about-photo" src="David%20Donnell%20portrait.jpg" alt="David Donnell, AI Advisor, in the Colorado Front Range foothills" loading="lazy" />
+            <img class="about-photo" src="David%20Donnell%20portrait.jpg" alt="David Donnell, Digital Advisor, in the Colorado Front Range foothills" loading="lazy" />
           </div>
           <div class="about-body">
           <p>
@@ -1063,6 +1112,19 @@
             I'd rather help a Front Range contractor free up ten hours a week than pitch remotely
             to clients I'll never meet.
           </p>
+          </div>
+        </div>
+        <div class="about-skills">
+          <span class="section-label">What I do</span>
+          <div class="skills-grid">
+            <span class="skill-tag">Product Design</span>
+            <span class="skill-tag">Claude Co-work Setup</span>
+            <span class="skill-tag">Buzz AI Setup</span>
+            <span class="skill-tag">Custom CMS Development</span>
+            <span class="skill-tag">AI Workflow Automation</span>
+            <span class="skill-tag">Website Design &amp; Development</span>
+            <span class="skill-tag">AI Readiness Assessment</span>
+            <span class="skill-tag">Process Optimization</span>
           </div>
         </div>
       </div>
@@ -1088,7 +1150,7 @@
 
   <!-- Footer -->
   <footer>
-    <div class="logo">David Donnell <span>·</span> AI Advisor</div>
+    <div class="logo">David Donnell <span>·</span> Digital Advisor</div>
     <p>Denver, CO · daviddonnell.com</p>
     <a href="mailto:davidadonnell@gmail.com">davidadonnell@gmail.com</a>
   </footer>
