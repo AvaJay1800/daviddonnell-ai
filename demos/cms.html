@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z45C4PE3RB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z45C4PE3RB');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Owner-Friendly CMS Demo | David Donnell</title>
+  <meta name="description" content="A live demo of the kind of content manager David Donnell builds for client websites. Edit a fictional lawn company's site and watch it update as you type." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <meta name="theme-color" content="#0d0e1a" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Owner-Friendly CMS Demo | David Donnell" />
+  <meta property="og:description" content="Edit a fictional lawn company's website and watch it update as you type. A working demo, not a screenshot." />
+  <meta property="og:site_name" content="David Donnell" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Design system: tokens, texture overlays, signature components -->
+  <link rel="stylesheet" href="../theme.css" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--navy-950);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ------------------------------------------------------------ top bar */
+    .demo-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13, 14, 26, 0.9);
+      flex-wrap: wrap;
+    }
+
+    .demo-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .back-link {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .back-link span { color: var(--text-muted); font-weight: 500; }
+    .back-link:hover span { color: var(--text-secondary); }
+
+    .demo-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .demo-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-reset {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-raised);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 9px 16px;
+      cursor: pointer;
+      transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
+    }
+    .btn-reset:hover { color: var(--text-primary); border-color: var(--text-muted); }
+
+    .btn-cta {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      padding: 9px 16px;
+      background: linear-gradient(var(--navy-950), var(--navy-950)) padding-box,
+                  var(--gradient-brand) border-box;
+      transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    .btn-cta:hover { transform: translateY(-1px); box-shadow: var(--shadow-glow); }
+
+    .btn-reset:focus-visible, .btn-cta:focus-visible, .tab:focus-visible {
+      outline: 2px solid var(--accent-blue-hex);
+      outline-offset: 2px;
+    }
+
+    /* ------------------------------------------------------------ intro note */
+    .demo-note {
+      padding: 10px 24px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      background: var(--navy-925);
+      border-bottom: 1px solid var(--border);
+      line-height: 1.5;
+    }
+    .demo-note strong { color: var(--text-primary); font-weight: 600; }
+
+    /* ------------------------------------------------------------ mobile tabs */
+    .tabs {
+      display: none;
+      gap: 8px;
+      padding: 12px 24px 0;
+    }
+    .tab {
+      flex: 1;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+    }
+    .tab.active {
+      color: var(--text-primary);
+      border-color: var(--accent-blue-hex);
+      background: oklch(0.68 0.15 250 / 0.12);
+    }
+
+    /* ------------------------------------------------------------ layout */
+    .demo-layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      min-height: 0;
+    }
+
+    /* ------------------------------------------------------------ editor */
+    .editor {
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+      padding: 24px 24px 48px;
+      max-height: calc(100vh - 110px);
+    }
+
+    .ed-section { margin-bottom: 32px; }
+
+    .ed-heading {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-blue-hex);
+      margin: 0 0 4px;
+    }
+
+    .ed-hint {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin: 0 0 14px;
+      line-height: 1.5;
+    }
+
+    .field { margin-bottom: 12px; }
+
+    .field label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .field input[type="text"],
+    .field textarea,
+    .field select {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 11px;
+      outline: none;
+      transition: border-color var(--dur) var(--ease);
+      -webkit-appearance: none;
+    }
+    .field textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--accent-blue-hex);
+    }
+    .field select {
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23757b98' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .toggle-row input[type="checkbox"] {
+      width: 18px; height: 18px;
+      accent-color: var(--accent-blue-hex);
+      cursor: pointer;
+    }
+    .toggle-row label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
+
+    /* list items (services, reviews) */
+    .ed-item {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .ed-item-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .ed-item-label {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .ed-item-tools { display: flex; gap: 4px; }
+
+    .icon-btn {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      line-height: 1;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      width: 26px; height: 26px;
+      cursor: pointer;
+      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    }
+    .icon-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
+    .icon-btn:disabled { opacity: 0.3; cursor: default; }
+    .icon-btn.danger:hover { color: #f4776b; border-color: #f4776b; }
+
+    .btn-add {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-blue-hex);
+      background: transparent;
+      border: 1px dashed var(--border-strong);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      transition: border-color var(--dur) var(--ease);
+    }
+    .btn-add:hover { border-color: var(--accent-blue-hex); }
+
+    .hours-row {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .hours-row .day {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .hours-row input {
+      width: 100%;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      outline: none;
+    }
+    .hours-row input:focus { border-color: var(--accent-blue-hex); }
+
+    .saved-note {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+    .saved-note.flash { color: var(--accent-green-hex); }
+
+    /* ------------------------------------------------------------ preview */
+    .preview-wrap {
+      overflow-y: auto;
+      max-height: calc(100vh - 110px);
+      background: var(--navy-900);
+      padding: 28px;
+    }
+
+    .browser-chrome {
+      max-width: 860px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border-strong);
+    }
+
+    .browser-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--navy-800);
+      padding: 10px 14px;
+    }
+    .browser-dots { display: flex; gap: 6px; }
+    .browser-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--navy-700);
+    }
+    .browser-url {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--navy-900);
+      border-radius: 6px;
+      padding: 5px 12px;
+      text-align: center;
+    }
+
+    /* ---------------- the fictional site (light theme, its own brand) ---- */
+    #site { background: #faf8f2; color: #2c3527; font-family: Georgia, "Times New Roman", serif; }
+
+    #site .s-banner {
+      background: #37502d;
+      color: #f3efdf;
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 9px 16px;
+      line-height: 1.4;
+    }
+
+    #site .s-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 22px 32px;
+      border-bottom: 2px solid #37502d;
+    }
+    #site .s-name { font-size: 1.45rem; font-weight: 700; letter-spacing: 0.01em; }
+    #site .s-phone {
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      font-size: 0.9rem;
+      color: #566349;
+      font-weight: 600;
+    }
+
+    #site .s-hero { text-align: center; padding: 56px 32px 48px; }
+    #site .s-tagline { font-size: 2rem; line-height: 1.25; margin: 0 auto 14px; max-width: 520px; }
+    #site .s-hero-sub {
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      color: #566349;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    #site .s-section { padding: 36px 32px; border-top: 1px solid #e2ddcc; }
+    #site .s-section h2 {
+      font-size: 1.25rem;
+      margin: 0 0 20px;
+      letter-spacing: 0.01em;
+    }
+
+    #site .s-services { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    #site .s-service {
+      background: #ffffff;
+      border: 1px solid #e2ddcc;
+      border-radius: 8px;
+      padding: 18px;
+    }
+    #site .s-service-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    #site .s-service-name { font-weight: 700; font-size: 1rem; }
+    #site .s-service-price {
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #37502d;
+      white-space: nowrap;
+    }
+    #site .s-service-desc {
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      font-size: 0.86rem;
+      color: #566349;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    #site .s-hours { max-width: 380px; }
+    #site .s-hours-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      font-size: 0.9rem;
+      padding: 7px 0;
+      border-bottom: 1px dotted #d8d2bd;
+    }
+    #site .s-hours-row .d { color: #566349; }
+
+    #site .s-reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    #site .s-review {
+      background: #f2eee1;
+      border-radius: 8px;
+      padding: 18px;
+    }
+    #site .s-stars { color: #b98b1e; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 8px; }
+    #site .s-review-text { font-style: italic; font-size: 0.92rem; line-height: 1.55; margin: 0 0 10px; }
+    #site .s-review-name {
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #566349;
+    }
+
+    #site .s-footer {
+      font-family: "Instrument Sans", system-ui, sans-serif;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #8a917c;
+      padding: 26px 32px;
+      border-top: 2px solid #37502d;
+    }
+
+    /* ------------------------------------------------------------ mobile */
+    @media (max-width: 900px) {
+      .demo-layout { grid-template-columns: 1fr; }
+      .tabs { display: flex; }
+      .editor, .preview-wrap { max-height: none; }
+      body.show-preview .editor { display: none; }
+      body:not(.show-preview) .preview-wrap { display: none; }
+      .editor { border-right: none; }
+      .preview-wrap { padding: 16px; }
+      .demo-bar { padding: 12px 16px; }
+      .demo-note { padding: 10px 16px; }
+      #site .s-hero { padding: 40px 20px 32px; }
+      #site .s-tagline { font-size: 1.5rem; }
+      #site .s-header, #site .s-section { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="demo-bar">
+    <div class="demo-bar-left">
+      <a class="back-link" href="/"><span>&larr;</span> David Donnell</a>
+      <span class="badge badge-green">Live demo</span>
+      <span class="demo-title">Owner-Friendly CMS</span>
+    </div>
+    <div class="demo-bar-right">
+      <button class="btn-reset" id="reset" type="button">&#8635; Reset demo</button>
+      <a class="btn-cta" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Want one? Book a free call</a>
+    </div>
+  </header>
+
+  <div class="demo-note">
+    You're editing the website of <strong>Green Feather Lawn &amp; Garden</strong>, a made-up company.
+    Type in the panel and watch the site update. Changes save in your browser only, so go wild.
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" id="tab-edit" type="button">Edit</button>
+    <button class="tab" id="tab-preview" type="button">Preview</button>
+  </div>
+
+  <main class="demo-layout">
+
+    <aside class="editor" id="editor" aria-label="Site editor">
+      <!-- Sections are rendered by JS -->
+    </aside>
+
+    <section class="preview-wrap" aria-label="Site preview">
+      <div class="browser-chrome">
+        <div class="browser-top">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url">greenfeatherlawn.com</div>
+        </div>
+        <div id="site" aria-live="polite"></div>
+      </div>
+    </section>
+
+  </main>
+
+<script>
+(function () {
+  var STORE_KEY = 'dd-cms-demo-v1';
+
+  var DEFAULT_CONTENT = {
+    name: 'Green Feather Lawn & Garden',
+    tagline: 'Your yard, off your plate.',
+    phone: '(303) 555-0142',
+    banner: { on: true, text: 'Fall cleanup slots are open. Book by October 15.' },
+    services: [
+      { name: 'Weekly mowing', price: '$45 / visit', desc: 'Mow, edge, and blow. Same crew, same day every week.' },
+      { name: 'Sprinkler blowout', price: '$85', desc: 'Lines cleared before the first freeze so nothing cracks.' },
+      { name: 'Fall cleanup', price: '$220', desc: 'Leaves hauled, beds cut back, gutters cleared at ground level.' },
+      { name: 'Garden bed refresh', price: 'from $150', desc: 'New mulch, edging, and a tidy-up of whatever summer left behind.' }
+    ],
+    hours: [
+      { day: 'Monday', time: '7am - 5pm' },
+      { day: 'Tuesday', time: '7am - 5pm' },
+      { day: 'Wednesday', time: '7am - 5pm' },
+      { day: 'Thursday', time: '7am - 5pm' },
+      { day: 'Friday', time: '7am - 5pm' },
+      { day: 'Saturday', time: '8am - noon' },
+      { day: 'Sunday', time: 'Closed' }
+    ],
+    reviews: [
+      { name: 'Maria T., Wheat Ridge', stars: 5, text: 'They show up when they say they will. That alone puts them ahead of everyone else I tried.' },
+      { name: 'Doug H., Arvada', stars: 5, text: 'Sprinkler blowout took fifteen minutes and they checked a leaky valve for free.' },
+      { name: 'Priya S., Lakewood', stars: 4, text: 'Yard looks great. Wish they worked Sundays, but that is my only complaint.' }
+    ]
+  };
+
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* private mode or blocked storage: run from memory */ }
+    return clone(DEFAULT_CONTENT);
+  }
+
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    var note = document.getElementById('saved-note');
+    if (note) {
+      note.classList.add('flash');
+      note.textContent = 'Saved just now';
+      clearTimeout(save._t);
+      save._t = setTimeout(function () {
+        note.classList.remove('flash');
+        note.textContent = 'Everything saves automatically';
+      }, 1200);
+    }
+  }
+
+  var state = load();
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /* ---------------------------------------------------------- site render */
+  function renderSite() {
+    var s = state;
+    var html = '';
+
+    if (s.banner.on && s.banner.text.trim()) {
+      html += '<div class="s-banner">' + esc(s.banner.text) + '</div>';
+    }
+
+    html += '<header class="s-header">' +
+      '<div class="s-name">' + esc(s.name) + '</div>' +
+      '<div class="s-phone">' + esc(s.phone) + '</div>' +
+      '</header>';
+
+    html += '<div class="s-hero">' +
+      '<h1 class="s-tagline">' + esc(s.tagline) + '</h1>' +
+      '<p class="s-hero-sub">Locally owned &middot; Denver west side</p>' +
+      '</div>';
+
+    if (s.services.length) {
+      html += '<div class="s-section"><h2>Services &amp; pricing</h2><div class="s-services">';
+      s.services.forEach(function (sv) {
+        html += '<div class="s-service">' +
+          '<div class="s-service-head">' +
+            '<span class="s-service-name">' + esc(sv.name) + '</span>' +
+            '<span class="s-service-price">' + esc(sv.price) + '</span>' +
+          '</div>' +
+          '<p class="s-service-desc">' + esc(sv.desc) + '</p>' +
+          '</div>';
+      });
+      html += '</div></div>';
+    }
+
+    html += '<div class="s-section"><h2>Hours</h2><div class="s-hours">';
+    s.hours.forEach(function (h) {
+      html += '<div class="s-hours-row"><span class="d">' + esc(h.day) + '</span><span>' + esc(h.time) + '</span></div>';
+    });
+    html += '</div></div>';
+
+    if (s.reviews.length) {
+      html += '<div class="s-section"><h2>What neighbors say</h2><div class="s-reviews">';
+      s.reviews.forEach(function (r) {
+        var stars = '';
+        for (var i = 0; i < 5; i++) stars += i < r.stars ? '★' : '☆';
+        html += '<div class="s-review">' +
+          '<div class="s-stars">' + stars + '</div>' +
+          '<p class="s-review-text">&ldquo;' + esc(r.text) + '&rdquo;</p>' +
+          '<div class="s-review-name">' + esc(r.name) + '</div>' +
+          '</div>';
+      });
+      html += '</div></div>';
+    }
+
+    html += '<footer class="s-footer">&copy; ' + new Date().getFullYear() + ' ' + esc(s.name) + ' &middot; ' + esc(s.phone) + '</footer>';
+
+    document.getElementById('site').innerHTML = html;
+  }
+
+  /* -------------------------------------------------------- editor render */
+  function field(label, value, key, kind) {
+    var tag = kind === 'textarea'
+      ? '<textarea data-key="' + key + '">' + esc(value) + '</textarea>'
+      : '<input type="text" data-key="' + key + '" value="' + esc(value) + '" />';
+    return '<div class="field"><label>' + label + '</label>' + tag + '</div>';
+  }
+
+  function itemTools(list, i, len) {
+    return '<div class="ed-item-tools">' +
+      '<button class="icon-btn" data-move="up" data-list="' + list + '" data-i="' + i + '" title="Move up" aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '>&uarr;</button>' +
+      '<button class="icon-btn" data-move="down" data-list="' + list + '" data-i="' + i + '" title="Move down" aria-label="Move down"' + (i === len - 1 ? ' disabled' : '') + '>&darr;</button>' +
+      '<button class="icon-btn danger" data-remove="' + list + '" data-i="' + i + '" title="Remove" aria-label="Remove">&#10005;</button>' +
+      '</div>';
+  }
+
+  function renderEditor() {
+    var s = state;
+    var html = '';
+
+    html += '<div class="ed-section">' +
+      '<h2 class="ed-heading">Business info</h2>' +
+      '<p class="ed-hint">The basics. These show in the header, hero, and footer.</p>' +
+      field('Business name', s.name, 'name') +
+      field('Tagline', s.tagline, 'tagline') +
+      field('Phone', s.phone, 'phone') +
+      '</div>';
+
+    html += '<div class="ed-section">' +
+      '<h2 class="ed-heading">Announcement banner</h2>' +
+      '<p class="ed-hint">A one-line notice across the top of the site. Turn it off when there is nothing to announce.</p>' +
+      '<div class="toggle-row"><input type="checkbox" id="banner-on" data-key="banner.on"' + (s.banner.on ? ' checked' : '') + ' /><label for="banner-on">Show the banner</label></div>' +
+      field('Banner text', s.banner.text, 'banner.text') +
+      '</div>';
+
+    html += '<div class="ed-section"><h2 class="ed-heading">Services &amp; pricing</h2>' +
+      '<p class="ed-hint">Add, remove, and reorder. The site updates as you type.</p>';
+    s.services.forEach(function (sv, i) {
+      html += '<div class="ed-item">' +
+        '<div class="ed-item-head"><span class="ed-item-label">Service ' + (i + 1) + '</span>' + itemTools('services', i, s.services.length) + '</div>' +
+        field('Name', sv.name, 'services.' + i + '.name') +
+        field('Price', sv.price, 'services.' + i + '.price') +
+        field('Description', sv.desc, 'services.' + i + '.desc', 'textarea') +
+        '</div>';
+    });
+    html += '<button class="btn-add" data-add="services" type="button">+ Add a service</button></div>';
+
+    html += '<div class="ed-section"><h2 class="ed-heading">Hours</h2>' +
+      '<p class="ed-hint">Plain text, so &ldquo;by appointment&rdquo; works too.</p>';
+    s.hours.forEach(function (h, i) {
+      html += '<div class="hours-row"><span class="day">' + esc(h.day.slice(0, 3)) + '</span>' +
+        '<input type="text" data-key="hours.' + i + '.time" value="' + esc(h.time) + '" aria-label="' + esc(h.day) + ' hours" /></div>';
+    });
+    html += '</div>';
+
+    html += '<div class="ed-section"><h2 class="ed-heading">Reviews</h2>' +
+      '<p class="ed-hint">Real sites pull these from Google. Here you get to write your own five-star press.</p>';
+    s.reviews.forEach(function (r, i) {
+      var opts = '';
+      for (var st = 5; st >= 1; st--) {
+        opts += '<option value="' + st + '"' + (r.stars === st ? ' selected' : '') + '>' + st + ' star' + (st > 1 ? 's' : '') + '</option>';
+      }
+      html += '<div class="ed-item">' +
+        '<div class="ed-item-head"><span class="ed-item-label">Review ' + (i + 1) + '</span>' + itemTools('reviews', i, s.reviews.length) + '</div>' +
+        field('Customer', r.name, 'reviews.' + i + '.name') +
+        '<div class="field"><label>Rating</label><select data-key="reviews.' + i + '.stars">' + opts + '</select></div>' +
+        field('Review', r.text, 'reviews.' + i + '.text', 'textarea') +
+        '</div>';
+    });
+    html += '<button class="btn-add" data-add="reviews" type="button">+ Add a review</button></div>';
+
+    html += '<p class="saved-note" id="saved-note">Everything saves automatically</p>';
+
+    document.getElementById('editor').innerHTML = html;
+  }
+
+  /* ------------------------------------------------------------- updates */
+  function setByPath(path, value) {
+    var parts = path.split('.');
+    var obj = state;
+    for (var i = 0; i < parts.length - 1; i++) obj = obj[parts[i]];
+    obj[parts[parts.length - 1]] = value;
+  }
+
+  var editor = document.getElementById('editor');
+
+  editor.addEventListener('input', function (e) {
+    var key = e.target.getAttribute('data-key');
+    if (!key) return;
+    var value;
+    if (e.target.type === 'checkbox') value = e.target.checked;
+    else if (e.target.tagName === 'SELECT') value = parseInt(e.target.value, 10);
+    else value = e.target.value;
+    setByPath(key, value);
+    renderSite();
+    save();
+  });
+
+  editor.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+
+    var add = btn.getAttribute('data-add');
+    if (add === 'services') {
+      state.services.push({ name: 'New service', price: '$0', desc: '' });
+    } else if (add === 'reviews') {
+      state.reviews.push({ name: 'Happy customer', stars: 5, text: '' });
+    }
+
+    var rem = btn.getAttribute('data-remove');
+    if (rem) state[rem].splice(parseInt(btn.getAttribute('data-i'), 10), 1);
+
+    var move = btn.getAttribute('data-move');
+    if (move) {
+      var list = state[btn.getAttribute('data-list')];
+      var i = parseInt(btn.getAttribute('data-i'), 10);
+      var j = move === 'up' ? i - 1 : i + 1;
+      if (j >= 0 && j < list.length) {
+        var tmp = list[i]; list[i] = list[j]; list[j] = tmp;
+      }
+    }
+
+    if (add || rem || move) {
+      renderEditor();
+      renderSite();
+      save();
+    }
+  });
+
+  var resetBtn = document.getElementById('reset');
+  var resetArmed = false;
+  var resetTimer;
+  resetBtn.addEventListener('click', function () {
+    if (!resetArmed) {
+      resetArmed = true;
+      resetBtn.textContent = 'Click again to reset';
+      resetTimer = setTimeout(function () {
+        resetArmed = false;
+        resetBtn.innerHTML = '&#8635; Reset demo';
+      }, 3000);
+      return;
+    }
+    clearTimeout(resetTimer);
+    resetArmed = false;
+    resetBtn.innerHTML = '&#8635; Reset demo';
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
+    state = clone(DEFAULT_CONTENT);
+    renderEditor();
+    renderSite();
+  });
+
+  /* --------------------------------------------------------- mobile tabs */
+  var tabEdit = document.getElementById('tab-edit');
+  var tabPreview = document.getElementById('tab-preview');
+  tabEdit.addEventListener('click', function () {
+    document.body.classList.remove('show-preview');
+    tabEdit.classList.add('active');
+    tabPreview.classList.remove('active');
+  });
+  tabPreview.addEventListener('click', function () {
+    document.body.classList.add('show-preview');
+    tabPreview.classList.add('active');
+    tabEdit.classList.remove('active');
+  });
+
+  renderEditor();
+  renderSite();
+})();
+</script>
+</body>
+</html>
