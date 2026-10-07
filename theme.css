@@ -390,6 +390,26 @@
 .t-quote .total { height: 15px; border-radius: 5px; background: #0E3B2D; margin-top: 3px; width: 58%; align-self: flex-end; }
 .t-quote .dep { height: 10px; border-radius: 4px; background: #E5F6DA; width: 58%; align-self: flex-end; }
 
+/* Food truck mini: warm menu page with butter accents */
+.t-melt { background: #F1EADC; justify-content: center; }
+.t-melt .page {
+  width: 68%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 9px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.t-melt .ban { height: 6px; border-radius: 3px; background: #FFF2CF; }
+.t-melt .brand { display: flex; align-items: center; gap: 5px; }
+.t-melt .dot { width: 10px; height: 10px; border-radius: 50%; background: #FFC94D; }
+.t-melt .ttl { width: 46%; height: 7px; border-radius: 3px; background: #3A2310; }
+.t-melt .mi { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.t-melt .mi .n { height: 6px; border-radius: 3px; background: #E6DCC8; flex: 1; max-width: 62%; }
+.t-melt .mi .p { width: 16%; height: 8px; border-radius: 4px; background: #FFC94D; }
+.t-melt .cta { width: 40%; height: 11px; border-radius: 999px; background: #FFC94D; align-self: center; margin-top: 2px; }
+
 /* Readiness check mini: the dark quiz card */
 .t-quiz { background: var(--navy-900); justify-content: center; align-items: center; }
 .t-quiz .qcard {

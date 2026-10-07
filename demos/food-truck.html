@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z45C4PE3RB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z45C4PE3RB');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Truck Menu Manager Demo | David Donnell</title>
+  <meta name="description" content="A live demo of a food truck website with a menu the owner edits themselves: items, prices, sold-out flags, the weekly schedule, and catering info. Built by David Donnell." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <meta name="theme-color" content="#F8F4EB" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Food Truck Menu Manager Demo | David Donnell" />
+  <meta property="og:description" content="Run a fictional grilled cheese truck: change the menu, mark a melt sold out, move the schedule, and watch the site keep up." />
+  <meta property="og:site_name" content="David Donnell" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Cheese Louise brand: tokens + core components -->
+  <link rel="stylesheet" href="cheese-louise.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ------------------------------------------------------------ top bar */
+    .demo-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 20px;
+      background: var(--surface-card);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+      color: var(--text-strong);
+    }
+    .back-link:hover { color: var(--crust-700); }
+    .back-link svg { width: 14px; height: 14px; }
+    .demo-note {
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .demo-note strong { color: var(--text-body); font-weight: var(--fw-bold); }
+    .demo-bar .spacer { flex: 1; }
+
+    /* ------------------------------------------------------------ tabs (mobile) */
+    .tabs { display: none; gap: var(--gap-grid); padding: var(--gap-grid) var(--gap-grid) 0; }
+    .tab {
+      flex: 1;
+      font-family: var(--font-sans);
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+      color: var(--text-muted);
+      background: var(--surface-card);
+      border: 1px solid transparent;
+      border-radius: var(--radius-pill);
+      padding: 10px;
+      cursor: pointer;
+    }
+    .tab.active {
+      color: var(--crust-900);
+      background: var(--butter-100);
+      border-color: var(--butter-400);
+    }
+    .tab:focus-visible { outline: none; border-color: var(--focus-ring); box-shadow: 0 0 0 3px var(--butter-100); }
+
+    /* ------------------------------------------------------------ app grid */
+    .app {
+      flex: 1;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 430px 1fr;
+      gap: var(--gap-grid);
+      padding: var(--gap-grid);
+      align-items: start;
+      min-height: 0;
+    }
+
+    /* ------------------------------------------------------------ sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding: var(--space-5) var(--space-3);
+      position: sticky;
+      top: var(--gap-grid);
+    }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 var(--space-2);
+    }
+    .wordmark {
+      font-size: 16px;
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--crust-900);
+      line-height: var(--lh-snug);
+      overflow-wrap: break-word;
+    }
+    .wordmark .accent { color: var(--tomato-500); }
+
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+
+    .promo {
+      margin-top: var(--space-8);
+      background: var(--butter-500);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .promo .lc-imageslot { height: 74px; }
+    .promo h3 {
+      font-size: var(--fs-base);
+      font-weight: var(--fw-extrabold);
+      color: var(--crust-900);
+      line-height: var(--lh-snug);
+      margin: 0;
+    }
+    .promo .lc-btn { background: var(--surface-card); color: var(--crust-900); }
+    .promo .lc-btn:hover { background: var(--butter-50); }
+
+    /* ------------------------------------------------------------ editor column */
+    .edit-col { display: flex; flex-direction: column; gap: var(--gap-grid); min-width: 0; }
+
+    .sections-card { padding: var(--space-4); }
+    .sections-card .lc-card-title { padding: 2px var(--space-2) var(--space-3); font-size: var(--fs-base); }
+
+    .editor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .saved-chip {
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--text-subtle);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+    .saved-chip.flash { color: var(--basil-500); }
+
+    .field { margin-bottom: var(--space-4); }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .toggle-row .lbl {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-semibold);
+      color: var(--text-body);
+      cursor: pointer;
+    }
+    .toggle-row.compact { margin-bottom: 0; }
+    .toggle-row.compact .lbl { font-size: var(--fs-sm); }
+
+    .ed-item {
+      background: var(--surface-sunken);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-2);
+    }
+    .ed-item-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-3);
+    }
+    .ed-item-label {
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--text-subtle);
+    }
+    .ed-item-tools { display: flex; gap: 5px; }
+    .ed-item .lc-input, .ed-item .lc-textarea, .ed-item .lc-select { background: var(--surface-card); }
+    .ed-item .field:last-child { margin-bottom: 0; }
+
+    .btn-add { width: 100%; margin-top: var(--space-2); }
+
+    .sched-row {
+      display: grid;
+      grid-template-columns: 52px 1.6fr 1fr;
+      gap: var(--space-2);
+      align-items: center;
+      margin-bottom: var(--space-2);
+    }
+    .sched-row .day {
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+      color: var(--text-muted);
+      padding-left: var(--space-2);
+    }
+
+    /* ------------------------------------------------------------ preview */
+    .preview-card {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      min-width: 0;
+    }
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px var(--space-2) 0;
+    }
+    .preview-frame {
+      background: var(--butter-50);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      overflow: hidden;
+    }
+    #site {
+      background: var(--neutral-0);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      max-height: 76vh;
+      overflow-y: auto;
+    }
+
+    /* ---------------- the food truck website ------------------------------ */
+    #site .s-banner {
+      background: var(--butter-100);
+      color: var(--crust-900);
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+      text-align: center;
+      padding: 9px 16px;
+      line-height: 1.4;
+    }
+    #site .s-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 28px;
+    }
+    #site .s-brand { display: flex; align-items: center; gap: 9px; }
+    #site .s-name {
+      font-size: var(--fs-lg);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--crust-900);
+    }
+    #site .s-name .accent { color: var(--tomato-500); }
+    #site .s-phone {
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+      color: var(--crust-800);
+      background: var(--butter-100);
+      border-radius: var(--radius-pill);
+      padding: 8px 14px;
+    }
+
+    #site .s-hero { text-align: center; padding: 40px 28px 34px; }
+    #site .s-eyebrow {
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--cheddar-500);
+      margin-bottom: 12px;
+    }
+    #site .s-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 4vw, var(--fs-d3));
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-display);
+      line-height: var(--lh-tight);
+      color: var(--crust-950);
+      margin: 0 auto 12px;
+      max-width: 420px;
+    }
+    #site .s-tagline .accent { color: var(--tomato-500); }
+    #site .s-hero-sub {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      margin: 0 0 20px;
+    }
+    #site .s-hero .lc-imageslot { height: 120px; margin-top: 28px; border-radius: var(--radius-lg); }
+
+    #site .s-section { padding: 30px 28px; }
+    #site .s-section h2 {
+      font-size: var(--fs-xl);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--crust-950);
+      margin: 0 0 16px;
+    }
+    #site .s-cat {
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin: 20px 0 8px;
+    }
+    #site .s-cat:first-of-type { margin-top: 0; }
+
+    #site .s-mi {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 14px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+    }
+    #site .s-mi:nth-child(odd) { background: var(--surface-row-alt); }
+    #site .s-mi-main { min-width: 0; }
+    #site .s-mi-name {
+      font-size: var(--fs-base);
+      font-weight: var(--fw-bold);
+      color: var(--text-strong);
+      display: inline;
+      margin-right: 7px;
+    }
+    #site .s-tag {
+      display: inline-block;
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-bold);
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      vertical-align: 2px;
+    }
+    #site .s-mi-desc {
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      line-height: var(--lh-normal);
+      margin: 3px 0 0;
+    }
+    #site .s-mi-price {
+      font-size: var(--fs-base);
+      font-weight: var(--fw-extrabold);
+      color: var(--crust-800);
+      white-space: nowrap;
+    }
+    #site .s-mi.soldout .s-mi-name,
+    #site .s-mi.soldout .s-mi-desc { color: var(--text-subtle); }
+    #site .s-mi.soldout .s-mi-price { color: var(--text-subtle); text-decoration: line-through; }
+
+    #site .s-find { background: var(--neutral-50); border-radius: var(--radius-lg); margin: 0 28px; padding: 22px; }
+    #site .s-find h2 { font-size: var(--fs-lg); margin-bottom: 12px; }
+    #site .s-day {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+    }
+    #site .s-day .d { font-weight: var(--fw-bold); color: var(--text-muted); font-size: var(--fs-sm); }
+    #site .s-day .spot { color: var(--text-strong); font-weight: var(--fw-bold); }
+    #site .s-day .spot.off { color: var(--text-subtle); font-weight: var(--fw-medium); }
+    #site .s-day .t { color: var(--text-muted); font-size: var(--fs-sm); font-weight: var(--fw-semibold); }
+    #site .s-day.today { background: var(--butter-100); }
+    #site .s-day.today .d { color: var(--crust-800); }
+    #site .s-today-chip {
+      display: inline-block;
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--butter-500);
+      color: var(--crust-900);
+      border-radius: var(--radius-pill);
+      padding: 3px 8px;
+      margin-left: 7px;
+    }
+
+    #site .s-catering {
+      background: var(--crust-800);
+      border-radius: var(--radius-xl);
+      margin: 30px 28px;
+      padding: 26px 24px;
+    }
+    #site .s-catering h2 {
+      font-size: var(--fs-xl);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--neutral-0);
+      margin: 0 0 10px;
+    }
+    #site .s-catering p {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      color: var(--butter-50);
+      line-height: var(--lh-normal);
+      margin: 0 0 16px;
+    }
+    #site .s-catering .note {
+      display: inline-block;
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      background: var(--butter-500);
+      color: var(--crust-900);
+      border-radius: var(--radius-pill);
+      padding: 7px 14px;
+    }
+
+    #site .s-footer {
+      text-align: center;
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+      color: var(--text-subtle);
+      padding: 22px 28px 26px;
+    }
+
+    /* ------------------------------------------------------------ responsive */
+    @media (max-width: 1240px) {
+      .app { grid-template-columns: var(--sidebar-width) minmax(340px, 1fr) 1fr; }
+    }
+    @media (max-width: 1080px) {
+      .app { grid-template-columns: 1fr 1fr; }
+      .sidebar {
+        grid-column: 1 / -1;
+        position: static;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-3) var(--space-2);
+      }
+      .sidebar .nav { flex-direction: row; flex-wrap: wrap; }
+      .promo { display: none; }
+      .brand-row { padding: 0; }
+    }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .tabs { display: flex; }
+      body.show-preview .edit-col { display: none; }
+      body:not(.show-preview) .preview-wrap { display: none; }
+      #site { max-height: none; }
+      .demo-bar { padding: 10px 14px; }
+      .demo-bar .demo-note { display: none; }
+      .sched-row { grid-template-columns: 44px 1fr; }
+      .sched-row .time-input { grid-column: 2; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="demo-bar">
+    <a class="back-link" href="/"><i data-lucide="arrow-left"></i>David Donnell</a>
+    <span class="lc-badge lc-badge-butter">Live demo</span>
+    <span class="demo-note">You're running the website of <strong>Cheese Louise</strong>, a made-up grilled cheese truck. Changes save in your browser only, so go wild.</span>
+    <span class="spacer"></span>
+    <button class="lc-btn lc-btn-outline lc-btn-sm" id="reset" type="button"><i data-lucide="rotate-ccw"></i>Reset demo</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" id="tab-edit" type="button">Edit</button>
+    <button class="tab" id="tab-preview" type="button">Preview</button>
+  </div>
+
+  <main class="app">
+
+    <aside class="sidebar" aria-label="Site navigation">
+      <div class="brand-row">
+        <span class="lc-mark"><i data-lucide="sandwich"></i></span>
+        <div class="wordmark" id="wordmark"></div>
+      </div>
+      <nav class="nav" aria-label="Demo sections">
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="layout-dashboard"></i>Dashboard</button>
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="shopping-bag"></i>Orders</button>
+        <button class="lc-nav-item active" type="button"><i data-lucide="globe"></i>Website<i data-lucide="arrow-right" class="arrow"></i></button>
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="settings"></i>Settings</button>
+      </nav>
+      <div class="promo">
+        <div class="lc-imageslot on-accent">your logo here</div>
+        <h3>Want a site your truck can update from the road?</h3>
+        <a class="lc-btn lc-btn-sm" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Book a free call</a>
+      </div>
+    </aside>
+
+    <div class="edit-col">
+      <div class="lc-card sections-card">
+        <h2 class="lc-card-title">Sections</h2>
+        <nav class="nav" id="sections" aria-label="Page sections"></nav>
+      </div>
+
+      <div class="lc-card" id="editor-card">
+        <div class="editor-head">
+          <h2 class="lc-card-title" id="editor-title"></h2>
+          <span class="saved-chip" id="saved-note">Autosaved</span>
+        </div>
+        <div id="editor"></div>
+      </div>
+    </div>
+
+    <section class="preview-wrap" aria-label="Site preview">
+      <div class="lc-card preview-card">
+        <div class="preview-head">
+          <h2 class="lc-card-title">Live preview</h2>
+          <span class="lc-badge lc-badge-neutral"><span class="lc-dot lc-dot-available"></span>Published</span>
+        </div>
+        <div class="preview-frame">
+          <div id="site" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+<script>
+(function () {
+  var STORE_KEY = 'dd-foodtruck-demo-v1';
+
+  var DEFAULT_CONTENT = {
+    name: 'Cheese Louise',
+    tagline: 'Comfort, pressed daily.',
+    phone: '(303) 555-0188',
+    email: 'hello@cheeselouise.com',
+    banner: { on: true, text: 'This Friday: Ratio Beerworks anniversary party. Truck opens at 5.' },
+    menu: [
+      { name: 'The Classic Louise', price: '$9',  cat: 'Melts',  tag: 'None',  soldOut: false, desc: 'Sharp cheddar on sourdough with tomato jam. The one that started it.' },
+      { name: 'Hot Gouda Summer',   price: '$12', cat: 'Melts',  tag: 'Spicy', soldOut: false, desc: 'Smoked gouda, bacon, and pickled jalapeño. Sweats optional.' },
+      { name: 'The Fun Guy',        price: '$11', cat: 'Melts',  tag: 'Veg',   soldOut: false, desc: 'Roasted mushrooms, swiss, caramelized onion, thyme butter.' },
+      { name: 'Mac Daddy',          price: '$12', cat: 'Melts',  tag: 'New',   soldOut: false, desc: 'Stuffed with mac and cheese, pressed until the edges crisp.' },
+      { name: 'Tomato Soup Dipper', price: '$4',  cat: 'Sides',  tag: 'Veg',   soldOut: false, desc: 'Creamy, dunkable, non-negotiable.' },
+      { name: 'Pickle Spears',      price: '$3',  cat: 'Sides',  tag: 'None',  soldOut: true,  desc: 'House-brined. They go fast, clearly.' },
+      { name: 'Strawberry Basil Lemonade', price: '$4', cat: 'Drinks', tag: 'None', soldOut: false, desc: 'Fresh squeezed, lightly sweet.' },
+      { name: 'Cold Brew',          price: '$4',  cat: 'Drinks', tag: 'None',  soldOut: false, desc: 'From our neighbors at Huckleberry.' }
+    ],
+    schedule: [
+      { day: 'Monday',    spot: 'Off. Even Louise rests.', time: '' },
+      { day: 'Tuesday',   spot: 'Zuni Street Brewing',     time: '11a - 2p' },
+      { day: 'Wednesday', spot: 'RiNo Art District',       time: '11a - 2:30p' },
+      { day: 'Thursday',  spot: 'Civic Center EATS',       time: '11a - 2p' },
+      { day: 'Friday',    spot: 'Ratio Beerworks',         time: '5p - 9p' },
+      { day: 'Saturday',  spot: 'City Park Farmers Market', time: '9a - 1p' },
+      { day: 'Sunday',    spot: "Sloan's Lake",            time: '11a - 3p' }
+    ],
+    catering: {
+      title: 'Louise comes to you',
+      text: 'Weddings, office lunches, brewery takeovers, block parties. We bring the truck, the griddle, and enough cheese to lose count. You bring the appetite.',
+      note: '25 person minimum. Book two weeks out.'
+    }
+  };
+
+  var SECTIONS = [
+    { id: 'truck',    label: 'Truck info',     icon: 'truck' },
+    { id: 'banner',   label: 'Banner',         icon: 'megaphone' },
+    { id: 'menu',     label: 'Menu',           icon: 'sandwich' },
+    { id: 'schedule', label: 'Find the truck', icon: 'map-pin' },
+    { id: 'catering', label: 'Catering',       icon: 'party-popper' }
+  ];
+
+  var CATEGORIES = ['Melts', 'Sides', 'Drinks'];
+  var TAGS = ['None', 'Veg', 'Spicy', 'New'];
+  var TAG_COLORS = {
+    Veg:   { bg: 'var(--basil-100)',  fg: 'var(--basil-500)' },
+    Spicy: { bg: 'var(--tomato-100)', fg: 'var(--tomato-500)' },
+    New:   { bg: 'var(--berry-100)',  fg: 'var(--berry-500)' }
+  };
+
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* private mode or blocked storage: run from memory */ }
+    return clone(DEFAULT_CONTENT);
+  }
+
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    var note = document.getElementById('saved-note');
+    note.classList.add('flash');
+    note.textContent = 'Saved just now';
+    clearTimeout(save._t);
+    save._t = setTimeout(function () {
+      note.classList.remove('flash');
+      note.textContent = 'Autosaved';
+    }, 1200);
+  }
+
+  var state = load();
+  var activeSection = 'menu';
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function refreshIcons() {
+    if (window.lucide) {
+      window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+    }
+  }
+
+  function wordmarkHtml(name) {
+    var words = String(name).trim().split(/\s+/);
+    if (words.length < 2) return '<span class="accent">' + esc(name) + '</span>';
+    var last = words.pop();
+    return esc(words.join(' ')) + ' <span class="accent">' + esc(last) + '</span>';
+  }
+
+  /* ---------------------------------------------------------- site render */
+  function todayIndex() {
+    // schedule array starts Monday; Date.getDay() starts Sunday
+    return (new Date().getDay() + 6) % 7;
+  }
+
+  function renderSite() {
+    var s = state;
+    var html = '';
+
+    if (s.banner.on && s.banner.text.trim()) {
+      html += '<div class="s-banner">' + esc(s.banner.text) + '</div>';
+    }
+
+    html += '<header class="s-header">' +
+      '<div class="s-brand"><span class="lc-mark"><i data-lucide="sandwich"></i></span>' +
+      '<span class="s-name">' + wordmarkHtml(s.name) + '</span></div>' +
+      '<span class="s-phone">' + esc(s.phone) + '</span>' +
+      '</header>';
+
+    html += '<div class="s-hero">' +
+      '<div class="s-eyebrow">Denver’s grilled cheese truck</div>' +
+      '<h1 class="s-tagline">' + wordmarkHtml(s.tagline) + '</h1>' +
+      '<p class="s-hero-sub">Find the truck, grab a melt, thank us later.</p>' +
+      '<a class="lc-btn lc-btn-primary">See today’s spot</a>' +
+      '<div class="lc-imageslot">truck photo</div>' +
+      '</div>';
+
+    if (s.menu.length) {
+      html += '<div class="s-section"><h2>On the menu</h2>';
+      CATEGORIES.forEach(function (cat) {
+        var items = s.menu.filter(function (it) { return it.cat === cat; });
+        if (!items.length) return;
+        html += '<div class="s-cat">' + esc(cat) + '</div>';
+        items.forEach(function (it) {
+          var tag = '';
+          if (it.tag && it.tag !== 'None' && TAG_COLORS[it.tag]) {
+            var c = TAG_COLORS[it.tag];
+            tag = '<span class="s-tag" style="background:' + c.bg + '; color:' + c.fg + '">' + esc(it.tag) + '</span>';
+          }
+          if (it.soldOut) {
+            tag += '<span class="s-tag" style="background:var(--neutral-100); color:var(--text-muted)">Sold out</span>';
+          }
+          html += '<div class="s-mi' + (it.soldOut ? ' soldout' : '') + '">' +
+            '<div class="s-mi-main"><span class="s-mi-name">' + esc(it.name) + '</span>' + tag +
+            '<p class="s-mi-desc">' + esc(it.desc) + '</p></div>' +
+            '<span class="s-mi-price">' + esc(it.price) + '</span>' +
+            '</div>';
+        });
+      });
+      html += '</div>';
+    }
+
+    var ti = todayIndex();
+    html += '<div class="s-find"><h2>Find the truck</h2>';
+    s.schedule.forEach(function (d, i) {
+      var isToday = i === ti;
+      var off = !d.time.trim();
+      html += '<div class="s-day' + (isToday ? ' today' : '') + '">' +
+        '<span class="d">' + esc(d.day.slice(0, 3)) + '</span>' +
+        '<span class="spot' + (off ? ' off' : '') + '">' + esc(d.spot) + (isToday ? '<span class="s-today-chip">Today</span>' : '') + '</span>' +
+        '<span class="t">' + esc(d.time) + '</span>' +
+        '</div>';
+    });
+    html += '</div>';
+
+    html += '<div class="s-catering">' +
+      '<h2>' + esc(s.catering.title) + '</h2>' +
+      '<p>' + esc(s.catering.text) + '</p>' +
+      '<span class="note">' + esc(s.catering.note) + '</span>' +
+      '</div>';
+
+    html += '<footer class="s-footer">&copy; ' + new Date().getFullYear() + ' ' + esc(s.name) + ' &middot; ' + esc(s.phone) + ' &middot; ' + esc(s.email) + '</footer>';
+
+    document.getElementById('site').innerHTML = html;
+    document.getElementById('wordmark').innerHTML = wordmarkHtml(s.name);
+    refreshIcons();
+  }
+
+  /* -------------------------------------------------------- editor render */
+  function field(label, value, key, kind) {
+    var tag = kind === 'textarea'
+      ? '<textarea class="lc-textarea" data-key="' + key + '">' + esc(value) + '</textarea>'
+      : '<input class="lc-input" type="text" data-key="' + key + '" value="' + esc(value) + '" />';
+    return '<div class="field"><label class="lc-label">' + label + '</label>' + tag + '</div>';
+  }
+
+  function selectField(label, value, key, options) {
+    var opts = '';
+    options.forEach(function (o) {
+      opts += '<option value="' + o + '"' + (value === o ? ' selected' : '') + '>' + o + '</option>';
+    });
+    return '<div class="field"><label class="lc-label">' + label + '</label><select class="lc-select" data-key="' + key + '">' + opts + '</select></div>';
+  }
+
+  function itemTools(i, len) {
+    return '<div class="ed-item-tools">' +
+      '<button class="lc-icon-btn" data-move="up" data-i="' + i + '" title="Move up" aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '><i data-lucide="arrow-up"></i></button>' +
+      '<button class="lc-icon-btn" data-move="down" data-i="' + i + '" title="Move down" aria-label="Move down"' + (i === len - 1 ? ' disabled' : '') + '><i data-lucide="arrow-down"></i></button>' +
+      '<button class="lc-icon-btn lc-danger" data-remove="' + i + '" title="Remove" aria-label="Remove"><i data-lucide="x"></i></button>' +
+      '</div>';
+  }
+
+  function renderSections() {
+    var html = '';
+    SECTIONS.forEach(function (sec) {
+      html += '<button class="lc-nav-item' + (sec.id === activeSection ? ' active' : '') + '" type="button" data-section="' + sec.id + '">' +
+        '<i data-lucide="' + sec.icon + '"></i>' + sec.label +
+        '<i data-lucide="arrow-right" class="arrow"></i></button>';
+    });
+    document.getElementById('sections').innerHTML = html;
+  }
+
+  function renderEditor() {
+    var s = state;
+    var html = '';
+    var section = SECTIONS.filter(function (x) { return x.id === activeSection; })[0];
+    document.getElementById('editor-title').textContent = 'Website · ' + section.label;
+
+    if (activeSection === 'truck') {
+      html += field('Truck name', s.name, 'name') +
+        field('Tagline', s.tagline, 'tagline') +
+        '<div class="field-row">' +
+        field('Phone', s.phone, 'phone') +
+        field('Email', s.email, 'email') +
+        '</div>';
+    }
+
+    if (activeSection === 'banner') {
+      html += '<div class="toggle-row">' +
+        '<label class="lc-switch"><input type="checkbox" id="banner-on" data-key="banner.on"' + (s.banner.on ? ' checked' : '') + ' /><span class="track"></span></label>' +
+        '<label class="lbl" for="banner-on">Show the banner</label>' +
+        '</div>' +
+        field('Banner text', s.banner.text, 'banner.text');
+    }
+
+    if (activeSection === 'menu') {
+      s.menu.forEach(function (it, i) {
+        html += '<div class="ed-item">' +
+          '<div class="ed-item-head"><span class="ed-item-label">Item ' + (i + 1) + '</span>' + itemTools(i, s.menu.length) + '</div>' +
+          '<div class="field-row">' +
+          field('Name', it.name, 'menu.' + i + '.name') +
+          field('Price', it.price, 'menu.' + i + '.price') +
+          '</div>' +
+          field('Description', it.desc, 'menu.' + i + '.desc', 'textarea') +
+          '<div class="field-row">' +
+          selectField('Category', it.cat, 'menu.' + i + '.cat', CATEGORIES) +
+          selectField('Tag', it.tag, 'menu.' + i + '.tag', TAGS) +
+          '</div>' +
+          '<div class="toggle-row compact">' +
+          '<label class="lc-switch"><input type="checkbox" id="so-' + i + '" data-key="menu.' + i + '.soldOut"' + (it.soldOut ? ' checked' : '') + ' /><span class="track"></span></label>' +
+          '<label class="lbl" for="so-' + i + '">Sold out today</label>' +
+          '</div>' +
+          '</div>';
+      });
+      html += '<button class="lc-btn lc-btn-outline btn-add" data-add="1" type="button"><i data-lucide="plus"></i>Add a menu item</button>';
+    }
+
+    if (activeSection === 'schedule') {
+      html += '<p class="lc-label" style="margin-bottom:12px">Leave the time empty for a day off.</p>';
+      s.schedule.forEach(function (d, i) {
+        html += '<div class="sched-row"><span class="day">' + esc(d.day.slice(0, 3)) + '</span>' +
+          '<input class="lc-input" type="text" data-key="schedule.' + i + '.spot" value="' + esc(d.spot) + '" aria-label="' + esc(d.day) + ' location" />' +
+          '<input class="lc-input time-input" type="text" data-key="schedule.' + i + '.time" value="' + esc(d.time) + '" placeholder="Time" aria-label="' + esc(d.day) + ' hours" /></div>';
+      });
+    }
+
+    if (activeSection === 'catering') {
+      html += field('Heading', s.catering.title, 'catering.title') +
+        field('Pitch', s.catering.text, 'catering.text', 'textarea') +
+        field('Fine print', s.catering.note, 'catering.note');
+    }
+
+    document.getElementById('editor').innerHTML = html;
+    refreshIcons();
+  }
+
+  /* ------------------------------------------------------------- updates */
+  function setByPath(path, value) {
+    var parts = path.split('.');
+    var obj = state;
+    for (var i = 0; i < parts.length - 1; i++) obj = obj[parts[i]];
+    obj[parts[parts.length - 1]] = value;
+  }
+
+  var editor = document.getElementById('editor');
+
+  editor.addEventListener('input', function (e) {
+    var key = e.target.getAttribute('data-key');
+    if (!key) return;
+    var value = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
+    setByPath(key, value);
+    renderSite();
+    save();
+  });
+
+  editor.addEventListener('change', function (e) {
+    var key = e.target.getAttribute('data-key');
+    if (!key || e.target.tagName !== 'SELECT') return;
+    setByPath(key, e.target.value);
+    renderSite();
+    save();
+  });
+
+  editor.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+
+    var changed = false;
+    if (btn.hasAttribute('data-add')) {
+      state.menu.push({ name: 'New melt', price: '$0', cat: 'Melts', tag: 'None', soldOut: false, desc: '' });
+      changed = true;
+    }
+    if (btn.hasAttribute('data-remove')) {
+      state.menu.splice(parseInt(btn.getAttribute('data-remove'), 10), 1);
+      changed = true;
+    }
+    var move = btn.getAttribute('data-move');
+    if (move) {
+      var i = parseInt(btn.getAttribute('data-i'), 10);
+      var j = move === 'up' ? i - 1 : i + 1;
+      if (j >= 0 && j < state.menu.length) {
+        var tmp = state.menu[i]; state.menu[i] = state.menu[j]; state.menu[j] = tmp;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      renderEditor();
+      renderSite();
+      save();
+    }
+  });
+
+  document.getElementById('sections').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-section]');
+    if (!btn) return;
+    activeSection = btn.getAttribute('data-section');
+    renderSections();
+    renderEditor();
+    refreshIcons();
+  });
+
+  /* Reset — click once to arm, again to confirm */
+  var resetBtn = document.getElementById('reset');
+  var resetArmed = false;
+  var resetTimer;
+  resetBtn.addEventListener('click', function () {
+    if (!resetArmed) {
+      resetArmed = true;
+      resetBtn.textContent = 'Click again to reset';
+      resetTimer = setTimeout(function () {
+        resetArmed = false;
+        resetBtn.innerHTML = '<i data-lucide="rotate-ccw"></i>Reset demo';
+        refreshIcons();
+      }, 3000);
+      return;
+    }
+    clearTimeout(resetTimer);
+    resetArmed = false;
+    resetBtn.innerHTML = '<i data-lucide="rotate-ccw"></i>Reset demo';
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
+    state = clone(DEFAULT_CONTENT);
+    renderSections();
+    renderEditor();
+    renderSite();
+  });
+
+  /* Mobile tabs */
+  var tabEdit = document.getElementById('tab-edit');
+  var tabPreview = document.getElementById('tab-preview');
+  tabEdit.addEventListener('click', function () {
+    document.body.classList.remove('show-preview');
+    tabEdit.classList.add('active');
+    tabPreview.classList.remove('active');
+  });
+  tabPreview.addEventListener('click', function () {
+    document.body.classList.add('show-preview');
+    tabPreview.classList.add('active');
+    tabEdit.classList.remove('active');
+  });
+
+  renderSections();
+  renderEditor();
+  renderSite();
+  window.addEventListener('load', refreshIcons);
+})();
+</script>
+</body>
+</html>
