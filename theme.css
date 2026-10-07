@@ -305,3 +305,104 @@
   .btn { transition: none; }
   .btn:hover { transform: none; }
 }
+
+/* ==========================================================================
+   Work gallery thumbnails — CSS-drawn demo previews.
+   Used by: index.html, work.html
+   ========================================================================== */
+
+.thumb {
+  height: 150px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  gap: 7px;
+  padding: 12px;
+  margin-bottom: 18px;
+  flex-shrink: 0;
+}
+.thumb span { display: block; }
+.thumb-light { background: #EDEEEB; }
+
+/* CMS demo mini: sidebar + editor + live site preview */
+.t-cms .t-sidebar {
+  width: 21%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.t-cms .nav-b { height: 5px; border-radius: 3px; background: #E2E4DF; }
+.t-cms .nav-b.on { background: #A6E287; }
+.t-cms .promo { margin-top: auto; height: 32px; border-radius: 6px; background: #8FD86A; }
+.t-cms .t-editor {
+  width: 30%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.t-cms .l { height: 4px; width: 42%; border-radius: 2px; background: #CCD0C9; }
+.t-cms .f { height: 10px; border: 1px solid #E2E4DF; border-radius: 5px; }
+.t-cms .t-site { flex: 1; background: #F3FBEE; border-radius: 8px; padding: 7px; display: flex; }
+.t-cms .inner {
+  flex: 1;
+  background: #fff;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+}
+.t-cms .ban { width: 100%; height: 6px; border-radius: 3px; background: #E5F6DA; }
+.t-cms .h { width: 72%; height: 8px; border-radius: 4px; background: #0E3B2D; margin-top: 5px; }
+.t-cms .h2 { width: 46%; height: 8px; border-radius: 4px; background: #2DB85C; }
+.t-cms .cta { width: 36%; height: 11px; border-radius: 999px; background: #8FD86A; margin-top: 5px; }
+
+/* Quote builder mini: the printable quote document */
+.t-quote { justify-content: center; }
+.t-quote .doc {
+  width: 64%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.t-quote .lh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #0E3B2D;
+  margin-bottom: 2px;
+}
+.t-quote .nm { width: 42%; height: 7px; border-radius: 3px; background: #0E3B2D; }
+.t-quote .nm.sm { width: 20%; height: 5px; background: #CCD0C9; }
+.t-quote .r { height: 9px; border-radius: 4px; background: #F6F7F5; }
+.t-quote .r.alt { background: #EDEEEB; }
+.t-quote .total { height: 15px; border-radius: 5px; background: #0E3B2D; margin-top: 3px; width: 58%; align-self: flex-end; }
+.t-quote .dep { height: 10px; border-radius: 4px; background: #E5F6DA; width: 58%; align-self: flex-end; }
+
+/* Readiness check mini: the dark quiz card */
+.t-quiz { background: var(--navy-900); justify-content: center; align-items: center; }
+.t-quiz .qcard {
+  width: 66%;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.t-quiz .prog { height: 5px; width: 55%; border-radius: 3px; background: var(--gradient-brand); }
+.t-quiz .q { height: 7px; width: 82%; border-radius: 3px; background: rgba(255, 255, 255, 0.28); }
+.t-quiz .opt { height: 13px; border: 1px solid var(--border-strong); border-radius: 6px; }
+.t-quiz .opt.sel { border-color: var(--accent-blue-hex); background: oklch(0.68 0.15 250 / 0.14); }

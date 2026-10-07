@@ -475,6 +475,21 @@
     }
     .card-link:hover { color: var(--text-primary); }
 
+    /* Whole gallery card is the link */
+    a.card { color: inherit; text-decoration: none; }
+    a.card:hover .card-link { color: var(--text-primary); }
+
+    .gallery-link {
+      display: inline-block;
+      margin-top: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--accent-blue-hex);
+      text-decoration: none;
+      transition: color var(--dur) var(--ease);
+    }
+    .gallery-link:hover { color: var(--text-primary); }
+
     /* Who I work with */
     .clients {
       padding: 100px 0;
@@ -949,7 +964,7 @@
     <ul class="nav-links">
       <li><a href="#how">How it works</a></li>
       <li><a href="#services">Services</a></li>
-      <li><a href="#work">Work</a></li>
+      <li><a href="/work.html">Work</a></li>
       <li><a href="#clients">Who I work with</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -1059,9 +1074,15 @@
           Live demos, not screenshots. Everything here is a real tool built for a
           real business, with the client's info swapped out so you can poke around.
         </p>
+        <a class="gallery-link" href="/work.html">View the full gallery &rarr;</a>
       </div>
       <div class="cards">
-        <div class="card">
+        <a class="card" href="/demos/cms.html">
+          <div class="thumb thumb-light t-cms" aria-hidden="true">
+            <div class="t-sidebar"><span class="nav-b"></span><span class="nav-b on"></span><span class="nav-b"></span><span class="promo"></span></div>
+            <div class="t-editor"><span class="l"></span><span class="f"></span><span class="l"></span><span class="f"></span><span class="f"></span></div>
+            <div class="t-site"><div class="inner"><span class="ban"></span><span class="h"></span><span class="h2"></span><span class="cta"></span></div></div>
+          </div>
           <span class="badge badge-green">Live</span>
           <h3>Owner-Friendly CMS</h3>
           <p>
@@ -1069,9 +1090,12 @@
             In the demo, you run a fictional lawn company: edit services, hours,
             and reviews and watch the site update as you type.
           </p>
-          <a class="card-link" href="/demos/cms.html">Open the demo &rarr;</a>
-        </div>
-        <div class="card">
+          <span class="card-link">Open the demo &rarr;</span>
+        </a>
+        <a class="card" href="/readiness-check.html">
+          <div class="thumb t-quiz" aria-hidden="true">
+            <div class="qcard"><span class="prog"></span><span class="q"></span><span class="opt"></span><span class="opt sel"></span><span class="opt"></span></div>
+          </div>
           <span class="badge badge-green">Live</span>
           <h3>AI Readiness Check</h3>
           <p>
@@ -1079,9 +1103,16 @@
             industry. The kind of interactive tool I build for service
             businesses. Try it yourself.
           </p>
-          <a class="card-link" href="/readiness-check.html">Take the 2-minute check &rarr;</a>
-        </div>
-        <div class="card">
+          <span class="card-link">Take the 2-minute check &rarr;</span>
+        </a>
+        <a class="card" href="/demos/quote-builder.html">
+          <div class="thumb thumb-light t-quote" aria-hidden="true">
+            <div class="doc">
+              <div class="lh"><span class="nm"></span><span class="nm sm"></span></div>
+              <span class="r"></span><span class="r alt"></span><span class="r"></span>
+              <span class="total"></span><span class="dep"></span>
+            </div>
+          </div>
           <span class="badge badge-green">Live</span>
           <h3>Contractor Quote Builder</h3>
           <p>
@@ -1089,8 +1120,8 @@
             math, and a clean printable quote. Ready to send from a phone before
             you leave the driveway.
           </p>
-          <a class="card-link" href="/demos/quote-builder.html">Open the demo &rarr;</a>
-        </div>
+          <span class="card-link">Open the demo &rarr;</span>
+        </a>
       </div>
     </div>
   </section>
