@@ -16,7 +16,7 @@
   <meta name="robots" content="index, follow" />
 
   <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
-  <meta name="theme-color" content="#0d0e1a" />
+  <meta name="theme-color" content="#F4F5F3" />
 
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Owner-Friendly CMS Demo | David Donnell" />
@@ -25,525 +25,446 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Design system: tokens, texture overlays, signature components -->
-  <link rel="stylesheet" href="../theme.css" />
+  <!-- Landscaping design system: tokens + core components -->
+  <link rel="stylesheet" href="landscape.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; }
-
-    body {
-      font-family: var(--font-body);
-      background: var(--navy-950);
-      color: var(--text-primary);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      -webkit-font-smoothing: antialiased;
-    }
+    body { min-height: 100vh; display: flex; flex-direction: column; }
 
     /* ------------------------------------------------------------ top bar */
     .demo-bar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 14px 24px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(13, 14, 26, 0.9);
+      gap: 12px;
       flex-wrap: wrap;
+      padding: 12px 20px;
+      background: var(--surface-card);
+      border-bottom: 1px solid var(--border-subtle);
     }
-
-    .demo-bar-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
-    }
-
     .back-link {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: var(--text-primary);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .back-link span { color: var(--text-muted); font-weight: 500; }
-    .back-link:hover span { color: var(--text-secondary); }
-
-    .demo-title {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
-
-    .demo-bar-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .btn-reset {
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      background: var(--surface-raised);
-      border: 1px solid var(--border-strong);
-      border-radius: 10px;
-      padding: 9px 16px;
-      cursor: pointer;
-      transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
-    }
-    .btn-reset:hover { color: var(--text-primary); border-color: var(--text-muted); }
-
-    .btn-cta {
       display: inline-flex;
       align-items: center;
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      text-decoration: none;
-      border: 1.5px solid transparent;
-      border-radius: 10px;
-      padding: 9px 16px;
-      background: linear-gradient(var(--navy-950), var(--navy-950)) padding-box,
-                  var(--gradient-brand) border-box;
-      transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+      gap: 7px;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+      color: var(--text-strong);
     }
-    .btn-cta:hover { transform: translateY(-1px); box-shadow: var(--shadow-glow); }
-
-    .btn-reset:focus-visible, .btn-cta:focus-visible, .tab:focus-visible {
-      outline: 2px solid var(--accent-blue-hex);
-      outline-offset: 2px;
-    }
-
-    /* ------------------------------------------------------------ intro note */
+    .back-link:hover { color: var(--forest-700); }
+    .back-link svg { width: 14px; height: 14px; }
     .demo-note {
-      padding: 10px 24px;
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      background: var(--navy-925);
-      border-bottom: 1px solid var(--border);
-      line-height: 1.5;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      line-height: 1.4;
     }
-    .demo-note strong { color: var(--text-primary); font-weight: 600; }
+    .demo-note strong { color: var(--text-body); font-weight: var(--fw-bold); }
+    .demo-bar .spacer { flex: 1; }
 
-    /* ------------------------------------------------------------ mobile tabs */
-    .tabs {
-      display: none;
-      gap: 8px;
-      padding: 12px 24px 0;
-    }
+    /* ------------------------------------------------------------ tabs (mobile) */
+    .tabs { display: none; gap: var(--gap-grid); padding: var(--gap-grid) var(--gap-grid) 0; }
     .tab {
       flex: 1;
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+      color: var(--text-muted);
       background: var(--surface-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      border: 1px solid transparent;
+      border-radius: var(--radius-pill);
       padding: 10px;
       cursor: pointer;
     }
     .tab.active {
-      color: var(--text-primary);
-      border-color: var(--accent-blue-hex);
-      background: oklch(0.68 0.15 250 / 0.12);
+      color: var(--forest-900);
+      background: var(--lime-100);
+      border-color: var(--lime-400);
     }
+    .tab:focus-visible { outline: none; border-color: var(--focus-ring); box-shadow: 0 0 0 3px var(--lime-100); }
 
-    /* ------------------------------------------------------------ layout */
-    .demo-layout {
+    /* ------------------------------------------------------------ app grid */
+    .app {
       flex: 1;
       display: grid;
-      grid-template-columns: 400px 1fr;
+      grid-template-columns: var(--sidebar-width) 430px 1fr;
+      gap: var(--gap-grid);
+      padding: var(--gap-grid);
+      align-items: start;
       min-height: 0;
     }
 
-    /* ------------------------------------------------------------ editor */
-    .editor {
-      border-right: 1px solid var(--border);
-      overflow-y: auto;
-      padding: 24px 24px 48px;
-      max-height: calc(100vh - 110px);
+    /* ------------------------------------------------------------ sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding: var(--space-5) var(--space-3);
+      position: sticky;
+      top: var(--gap-grid);
     }
-
-    .ed-section { margin-bottom: 32px; }
-
-    .ed-heading {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-blue-hex);
-      margin: 0 0 4px;
+    .wordmark {
+      font-size: 17px;
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--forest-900);
+      line-height: var(--lh-snug);
+      padding: 0 var(--space-2);
+      overflow-wrap: break-word;
     }
+    .wordmark .accent { color: var(--grass-600); }
 
-    .ed-hint {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin: 0 0 14px;
-      line-height: 1.5;
-    }
+    .nav { display: flex; flex-direction: column; gap: 4px; }
 
-    .field { margin-bottom: 12px; }
+    .promo {
+      margin-top: var(--space-8);
+      background: var(--lime-500);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .promo .lc-imageslot { height: 74px; }
+    .promo h3 {
+      font-size: var(--fs-base);
+      font-weight: var(--fw-extrabold);
+      color: var(--forest-900);
+      line-height: var(--lh-snug);
+      margin: 0;
+    }
+    .promo .lc-btn { background: var(--surface-card); color: var(--forest-900); }
+    .promo .lc-btn:hover { background: var(--lime-50); }
 
-    .field label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-secondary);
-      margin-bottom: 5px;
-    }
+    /* ------------------------------------------------------------ editor column */
+    .edit-col { display: flex; flex-direction: column; gap: var(--gap-grid); min-width: 0; }
 
-    .field input[type="text"],
-    .field textarea,
-    .field select {
-      width: 100%;
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 9px 11px;
-      outline: none;
-      transition: border-color var(--dur) var(--ease);
-      -webkit-appearance: none;
-    }
-    .field textarea { resize: vertical; min-height: 60px; line-height: 1.5; }
-    .field input:focus, .field textarea:focus, .field select:focus {
-      border-color: var(--accent-blue-hex);
-    }
-    .field select {
-      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23757b98' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 12px center;
-    }
+    .sections-card { padding: var(--space-4); }
+    .sections-card .lc-card-title { padding: 2px var(--space-2) var(--space-3); font-size: var(--fs-base); }
 
+    .editor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .saved-chip {
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--text-subtle);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+    .saved-chip.flash { color: var(--grass-600); }
+
+    .field { margin-bottom: var(--space-4); }
     .toggle-row {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
     }
-    .toggle-row input[type="checkbox"] {
-      width: 18px; height: 18px;
-      accent-color: var(--accent-blue-hex);
+    .toggle-row .lbl {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-semibold);
+      color: var(--text-body);
       cursor: pointer;
     }
-    .toggle-row label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; }
 
-    /* list items (services, reviews) */
     .ed-item {
-      background: var(--surface-card);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 14px;
-      margin-bottom: 10px;
+      background: var(--surface-sunken);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-2);
     }
-
     .ed-item-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: var(--space-3);
     }
-
     .ed-item-label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--text-subtle);
     }
+    .ed-item-tools { display: flex; gap: 5px; }
+    .ed-item .lc-input, .ed-item .lc-textarea, .ed-item .lc-select { background: var(--surface-card); }
 
-    .ed-item-tools { display: flex; gap: 4px; }
-
-    .icon-btn {
-      font-family: var(--font-body);
-      font-size: 0.8rem;
-      line-height: 1;
-      color: var(--text-muted);
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      width: 26px; height: 26px;
-      cursor: pointer;
-      transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
-    }
-    .icon-btn:hover { color: var(--text-primary); border-color: var(--border-strong); }
-    .icon-btn:disabled { opacity: 0.3; cursor: default; }
-    .icon-btn.danger:hover { color: #f4776b; border-color: #f4776b; }
-
-    .btn-add {
-      width: 100%;
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--accent-blue-hex);
-      background: transparent;
-      border: 1px dashed var(--border-strong);
-      border-radius: 10px;
-      padding: 10px;
-      cursor: pointer;
-      transition: border-color var(--dur) var(--ease);
-    }
-    .btn-add:hover { border-color: var(--accent-blue-hex); }
+    .btn-add { width: 100%; margin-top: var(--space-2); }
 
     .hours-row {
       display: grid;
-      grid-template-columns: 90px 1fr;
-      gap: 8px;
+      grid-template-columns: 86px 1fr;
+      gap: var(--space-2);
       align-items: center;
-      margin-bottom: 8px;
+      margin-bottom: var(--space-2);
     }
     .hours-row .day {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
       color: var(--text-muted);
+      padding-left: var(--space-2);
     }
-    .hours-row input {
-      width: 100%;
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 10px;
-      outline: none;
-    }
-    .hours-row input:focus { border-color: var(--accent-blue-hex); }
-
-    .saved-note {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
-    }
-    .saved-note.flash { color: var(--accent-green-hex); }
 
     /* ------------------------------------------------------------ preview */
-    .preview-wrap {
-      overflow-y: auto;
-      max-height: calc(100vh - 110px);
-      background: var(--navy-900);
-      padding: 28px;
+    .preview-card {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      min-width: 0;
     }
-
-    .browser-chrome {
-      max-width: 860px;
-      margin: 0 auto;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      border: 1px solid var(--border-strong);
-    }
-
-    .browser-top {
+    .preview-head {
       display: flex;
       align-items: center;
-      gap: 10px;
-      background: var(--navy-800);
-      padding: 10px 14px;
+      justify-content: space-between;
+      padding: 2px var(--space-2) 0;
     }
-    .browser-dots { display: flex; gap: 6px; }
-    .browser-dots span {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--navy-700);
+    .preview-frame {
+      background: var(--lime-50);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      overflow: hidden;
     }
-    .browser-url {
-      flex: 1;
-      font-family: var(--font-mono);
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      background: var(--navy-900);
-      border-radius: 6px;
-      padding: 5px 12px;
-      text-align: center;
+    #site {
+      background: var(--neutral-0);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      max-height: 76vh;
+      overflow-y: auto;
     }
 
-    /* ---------------- the fictional site (light theme, its own brand) ---- */
-    #site { background: #faf8f2; color: #2c3527; font-family: Georgia, "Times New Roman", serif; }
-
+    /* ---------------- the fictional website (vibrant green surface) ------ */
     #site .s-banner {
-      background: #37502d;
-      color: #f3efdf;
-      font-family: "Instrument Sans", system-ui, sans-serif;
-      font-size: 0.85rem;
+      background: var(--lime-100);
+      color: var(--forest-900);
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
       text-align: center;
       padding: 9px 16px;
       line-height: 1.4;
     }
-
     #site .s-header {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
-      padding: 22px 32px;
-      border-bottom: 2px solid #37502d;
+      padding: 18px 28px;
     }
-    #site .s-name { font-size: 1.45rem; font-weight: 700; letter-spacing: 0.01em; }
+    #site .s-name {
+      font-size: var(--fs-lg);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--forest-900);
+    }
+    #site .s-name .accent { color: var(--grass-600); }
     #site .s-phone {
-      font-family: "Instrument Sans", system-ui, sans-serif;
-      font-size: 0.9rem;
-      color: #566349;
-      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+      color: var(--forest-800);
+      background: var(--lime-100);
+      border-radius: var(--radius-pill);
+      padding: 8px 14px;
     }
 
-    #site .s-hero { text-align: center; padding: 56px 32px 48px; }
-    #site .s-tagline { font-size: 2rem; line-height: 1.25; margin: 0 auto 14px; max-width: 520px; }
+    #site .s-hero { text-align: center; padding: 44px 28px 36px; }
+    #site .s-eyebrow {
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--grass-600);
+      margin-bottom: 12px;
+    }
+    #site .s-tagline {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 4vw, var(--fs-d3));
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-display);
+      line-height: var(--lh-tight);
+      color: var(--forest-950);
+      margin: 0 auto 12px;
+      max-width: 420px;
+    }
+    #site .s-tagline .accent { color: var(--grass-500); }
     #site .s-hero-sub {
-      font-family: "Instrument Sans", system-ui, sans-serif;
-      color: #566349;
-      font-size: 0.95rem;
-      margin: 0;
-    }
-
-    #site .s-section { padding: 36px 32px; border-top: 1px solid #e2ddcc; }
-    #site .s-section h2 {
-      font-size: 1.25rem;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
       margin: 0 0 20px;
-      letter-spacing: 0.01em;
+    }
+    #site .s-hero .lc-imageslot { height: 120px; margin-top: 28px; border-radius: var(--radius-lg); }
+
+    #site .s-section { padding: 32px 28px; }
+    #site .s-section h2 {
+      font-size: var(--fs-xl);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--forest-950);
+      margin: 0 0 18px;
     }
 
-    #site .s-services { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    #site .s-services { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
     #site .s-service {
-      background: #ffffff;
-      border: 1px solid #e2ddcc;
-      border-radius: 8px;
-      padding: 18px;
+      background: var(--neutral-50);
+      border-radius: var(--radius-md);
+      padding: 16px;
     }
+    #site .s-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      margin-bottom: 12px;
+    }
+    #site .s-chip svg { width: 16px; height: 16px; }
     #site .s-service-head {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      gap: 10px;
-      margin-bottom: 8px;
+      gap: 8px;
+      margin-bottom: 6px;
     }
-    #site .s-service-name { font-weight: 700; font-size: 1rem; }
-    #site .s-service-price {
-      font-family: "Instrument Sans", system-ui, sans-serif;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #37502d;
-      white-space: nowrap;
-    }
-    #site .s-service-desc {
-      font-family: "Instrument Sans", system-ui, sans-serif;
-      font-size: 0.86rem;
-      color: #566349;
-      line-height: 1.5;
-      margin: 0;
-    }
+    #site .s-service-name { font-size: var(--fs-base); font-weight: var(--fw-bold); color: var(--text-strong); }
+    #site .s-service-price { font-size: var(--fs-sm); font-weight: var(--fw-extrabold); color: var(--grass-600); white-space: nowrap; }
+    #site .s-service-desc { font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--text-muted); line-height: var(--lh-normal); margin: 0; }
 
-    #site .s-hours { max-width: 380px; }
+    #site .s-hours-band { background: var(--neutral-50); border-radius: var(--radius-lg); margin: 0 28px; padding: 24px; }
+    #site .s-hours-band h2 { font-size: var(--fs-lg); margin-bottom: 14px; }
     #site .s-hours-row {
       display: flex;
       justify-content: space-between;
       gap: 16px;
-      font-family: "Instrument Sans", system-ui, sans-serif;
-      font-size: 0.9rem;
-      padding: 7px 0;
-      border-bottom: 1px dotted #d8d2bd;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      padding: 6px 0;
     }
-    #site .s-hours-row .d { color: #566349; }
+    #site .s-hours-row .d { color: var(--text-muted); font-weight: var(--fw-semibold); }
+    #site .s-hours-row .t { color: var(--text-strong); font-weight: var(--fw-bold); }
 
-    #site .s-reviews { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+    #site .s-reviews-panel {
+      background: var(--forest-800);
+      border-radius: var(--radius-xl);
+      margin: 32px 28px;
+      padding: 28px 24px;
+    }
+    #site .s-reviews-panel h2 { color: var(--neutral-0); }
+    #site .s-reviews { display: grid; gap: 10px; }
     #site .s-review {
-      background: #f2eee1;
-      border-radius: 8px;
-      padding: 18px;
+      background: var(--forest-700);
+      border-radius: var(--radius-md);
+      padding: 16px;
     }
-    #site .s-stars { color: #b98b1e; letter-spacing: 2px; font-size: 0.9rem; margin-bottom: 8px; }
-    #site .s-review-text { font-style: italic; font-size: 0.92rem; line-height: 1.55; margin: 0 0 10px; }
-    #site .s-review-name {
-      font-family: "Instrument Sans", system-ui, sans-serif;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #566349;
+    #site .s-stars { color: var(--sun-500); letter-spacing: 2px; font-size: var(--fs-md); margin-bottom: 8px; }
+    #site .s-review-text {
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      color: var(--lime-50);
+      line-height: var(--lh-normal);
+      margin: 0 0 10px;
     }
+    #site .s-review-name { font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--lime-300); }
 
     #site .s-footer {
-      font-family: "Instrument Sans", system-ui, sans-serif;
       text-align: center;
-      font-size: 0.8rem;
-      color: #8a917c;
-      padding: 26px 32px;
-      border-top: 2px solid #37502d;
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+      color: var(--text-subtle);
+      padding: 22px 28px 26px;
     }
 
-    /* ------------------------------------------------------------ mobile */
+    /* ------------------------------------------------------------ responsive */
+    @media (max-width: 1240px) {
+      .app { grid-template-columns: var(--sidebar-width) minmax(340px, 1fr) 1fr; }
+    }
+    @media (max-width: 1080px) {
+      .app { grid-template-columns: 1fr 1fr; }
+      .sidebar {
+        grid-column: 1 / -1;
+        position: static;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-3) var(--space-2);
+      }
+      .sidebar .nav { flex-direction: row; flex-wrap: wrap; }
+      .promo { display: none; }
+      .wordmark { padding: 0; }
+    }
     @media (max-width: 900px) {
-      .demo-layout { grid-template-columns: 1fr; }
+      .app { grid-template-columns: 1fr; }
       .tabs { display: flex; }
-      .editor, .preview-wrap { max-height: none; }
-      body.show-preview .editor { display: none; }
+      body.show-preview .edit-col { display: none; }
       body:not(.show-preview) .preview-wrap { display: none; }
-      .editor { border-right: none; }
-      .preview-wrap { padding: 16px; }
-      .demo-bar { padding: 12px 16px; }
-      .demo-note { padding: 10px 16px; }
-      #site .s-hero { padding: 40px 20px 32px; }
-      #site .s-tagline { font-size: 1.5rem; }
-      #site .s-header, #site .s-section { padding-left: 20px; padding-right: 20px; }
+      #site { max-height: none; }
+      .demo-bar { padding: 10px 14px; }
+      .demo-bar .demo-note { display: none; }
     }
   </style>
 </head>
 <body>
 
   <header class="demo-bar">
-    <div class="demo-bar-left">
-      <a class="back-link" href="/"><span>&larr;</span> David Donnell</a>
-      <span class="badge badge-green">Live demo</span>
-      <span class="demo-title">Owner-Friendly CMS</span>
-    </div>
-    <div class="demo-bar-right">
-      <button class="btn-reset" id="reset" type="button">&#8635; Reset demo</button>
-      <a class="btn-cta" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Want one? Book a free call</a>
-    </div>
+    <a class="back-link" href="/"><i data-lucide="arrow-left"></i>David Donnell</a>
+    <span class="lc-badge lc-badge-lime">Live demo</span>
+    <span class="demo-note">You're editing the website of <strong>Green Feather Lawn &amp; Garden</strong>, a made-up company. Changes save in your browser only, so go wild.</span>
+    <span class="spacer"></span>
+    <button class="lc-btn lc-btn-outline lc-btn-sm" id="reset" type="button"><i data-lucide="rotate-ccw"></i>Reset demo</button>
   </header>
-
-  <div class="demo-note">
-    You're editing the website of <strong>Green Feather Lawn &amp; Garden</strong>, a made-up company.
-    Type in the panel and watch the site update. Changes save in your browser only, so go wild.
-  </div>
 
   <div class="tabs">
     <button class="tab active" id="tab-edit" type="button">Edit</button>
     <button class="tab" id="tab-preview" type="button">Preview</button>
   </div>
 
-  <main class="demo-layout">
+  <main class="app">
 
-    <aside class="editor" id="editor" aria-label="Site editor">
-      <!-- Sections are rendered by JS -->
+    <aside class="sidebar" aria-label="CMS navigation">
+      <div class="wordmark" id="wordmark"></div>
+      <nav class="nav" aria-label="Demo sections">
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="layout-dashboard"></i>Dashboard</button>
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="inbox"></i>Leads</button>
+        <button class="lc-nav-item active" type="button"><i data-lucide="globe"></i>Website<i data-lucide="arrow-right" class="arrow"></i></button>
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="settings"></i>Settings</button>
+      </nav>
+      <div class="promo">
+        <div class="lc-imageslot on-lime">your logo here</div>
+        <h3>Want a CMS like this for your business?</h3>
+        <a class="lc-btn lc-btn-sm" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Book a free call</a>
+      </div>
     </aside>
 
-    <section class="preview-wrap" aria-label="Site preview">
-      <div class="browser-chrome">
-        <div class="browser-top">
-          <div class="browser-dots"><span></span><span></span><span></span></div>
-          <div class="browser-url">greenfeatherlawn.com</div>
+    <div class="edit-col">
+      <div class="lc-card sections-card">
+        <h2 class="lc-card-title">Sections</h2>
+        <nav class="nav" id="sections" aria-label="Page sections"></nav>
+      </div>
+
+      <div class="lc-card" id="editor-card">
+        <div class="editor-head">
+          <h2 class="lc-card-title" id="editor-title"></h2>
+          <span class="saved-chip" id="saved-note">Autosaved</span>
         </div>
-        <div id="site" aria-live="polite"></div>
+        <div id="editor"></div>
+      </div>
+    </div>
+
+    <section class="preview-wrap" aria-label="Site preview">
+      <div class="lc-card preview-card">
+        <div class="preview-head">
+          <h2 class="lc-card-title">Live preview</h2>
+          <span class="lc-badge lc-badge-neutral"><span class="lc-dot lc-dot-completed"></span>Published</span>
+        </div>
+        <div class="preview-frame">
+          <div id="site" aria-live="polite"></div>
+        </div>
       </div>
     </section>
 
@@ -551,7 +472,7 @@
 
 <script>
 (function () {
-  var STORE_KEY = 'dd-cms-demo-v1';
+  var STORE_KEY = 'dd-cms-demo-v2';
 
   var DEFAULT_CONTENT = {
     name: 'Green Feather Lawn & Garden',
@@ -580,6 +501,21 @@
     ]
   };
 
+  var SECTIONS = [
+    { id: 'business', label: 'Business info', icon: 'store' },
+    { id: 'banner',   label: 'Banner',        icon: 'megaphone' },
+    { id: 'services', label: 'Services',      icon: 'list' },
+    { id: 'hours',    label: 'Hours',         icon: 'clock' },
+    { id: 'reviews',  label: 'Reviews',       icon: 'star' }
+  ];
+
+  var SERVICE_CHIPS = [
+    { icon: 'sprout',   bg: 'var(--grass-100)', fg: 'var(--grass-600)' },
+    { icon: 'sun',      bg: 'var(--sun-100)',   fg: '#B8860B' },
+    { icon: 'hammer',   bg: 'var(--clay-100)',  fg: 'var(--clay-500)' },
+    { icon: 'droplets', bg: 'var(--sky-100)',   fg: 'var(--sky-500)' }
+  ];
+
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
 
   function load() {
@@ -593,23 +529,36 @@
   function save() {
     try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
     var note = document.getElementById('saved-note');
-    if (note) {
-      note.classList.add('flash');
-      note.textContent = 'Saved just now';
-      clearTimeout(save._t);
-      save._t = setTimeout(function () {
-        note.classList.remove('flash');
-        note.textContent = 'Everything saves automatically';
-      }, 1200);
-    }
+    note.classList.add('flash');
+    note.textContent = 'Saved just now';
+    clearTimeout(save._t);
+    save._t = setTimeout(function () {
+      note.classList.remove('flash');
+      note.textContent = 'Autosaved';
+    }, 1200);
   }
 
   var state = load();
+  var activeSection = 'business';
 
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
+  }
+
+  function refreshIcons() {
+    if (window.lucide) {
+      window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+    }
+  }
+
+  /* Wordmark: last word of the business name picks up the grass accent */
+  function wordmarkHtml(name) {
+    var words = String(name).trim().split(/\s+/);
+    if (words.length < 2) return '<span class="accent">' + esc(name) + '</span>';
+    var last = words.pop();
+    return esc(words.join(' ')) + ' <span class="accent">' + esc(last) + '</span>';
   }
 
   /* ---------------------------------------------------------- site render */
@@ -622,19 +571,24 @@
     }
 
     html += '<header class="s-header">' +
-      '<div class="s-name">' + esc(s.name) + '</div>' +
-      '<div class="s-phone">' + esc(s.phone) + '</div>' +
+      '<div class="s-name">' + wordmarkHtml(s.name) + '</div>' +
+      '<span class="s-phone">' + esc(s.phone) + '</span>' +
       '</header>';
 
     html += '<div class="s-hero">' +
-      '<h1 class="s-tagline">' + esc(s.tagline) + '</h1>' +
-      '<p class="s-hero-sub">Locally owned &middot; Denver west side</p>' +
+      '<div class="s-eyebrow">Locally owned &middot; Denver west side</div>' +
+      '<h1 class="s-tagline">' + wordmarkHtml(s.tagline) + '</h1>' +
+      '<p class="s-hero-sub">Design, mowing and seasonal care for homes across Denver.</p>' +
+      '<a class="lc-btn lc-btn-primary">Get a free quote</a>' +
+      '<div class="lc-imageslot">hero photo</div>' +
       '</div>';
 
     if (s.services.length) {
       html += '<div class="s-section"><h2>Services &amp; pricing</h2><div class="s-services">';
-      s.services.forEach(function (sv) {
+      s.services.forEach(function (sv, i) {
+        var chip = SERVICE_CHIPS[i % SERVICE_CHIPS.length];
         html += '<div class="s-service">' +
+          '<span class="s-chip" style="background:' + chip.bg + '; color:' + chip.fg + '"><i data-lucide="' + chip.icon + '"></i></span>' +
           '<div class="s-service-head">' +
             '<span class="s-service-name">' + esc(sv.name) + '</span>' +
             '<span class="s-service-price">' + esc(sv.price) + '</span>' +
@@ -645,14 +599,14 @@
       html += '</div></div>';
     }
 
-    html += '<div class="s-section"><h2>Hours</h2><div class="s-hours">';
+    html += '<div class="s-hours-band"><h2>Hours</h2>';
     s.hours.forEach(function (h) {
-      html += '<div class="s-hours-row"><span class="d">' + esc(h.day) + '</span><span>' + esc(h.time) + '</span></div>';
+      html += '<div class="s-hours-row"><span class="d">' + esc(h.day) + '</span><span class="t">' + esc(h.time) + '</span></div>';
     });
-    html += '</div></div>';
+    html += '</div>';
 
     if (s.reviews.length) {
-      html += '<div class="s-section"><h2>What neighbors say</h2><div class="s-reviews">';
+      html += '<div class="s-reviews-panel"><div class="s-section" style="padding:0"><h2>What neighbors say</h2><div class="s-reviews">';
       s.reviews.forEach(function (r) {
         var stars = '';
         for (var i = 0; i < 5; i++) stars += i < r.stars ? '★' : '☆';
@@ -662,88 +616,99 @@
           '<div class="s-review-name">' + esc(r.name) + '</div>' +
           '</div>';
       });
-      html += '</div></div>';
+      html += '</div></div></div>';
     }
 
     html += '<footer class="s-footer">&copy; ' + new Date().getFullYear() + ' ' + esc(s.name) + ' &middot; ' + esc(s.phone) + '</footer>';
 
     document.getElementById('site').innerHTML = html;
+    document.getElementById('wordmark').innerHTML = wordmarkHtml(s.name);
+    refreshIcons();
   }
 
   /* -------------------------------------------------------- editor render */
   function field(label, value, key, kind) {
     var tag = kind === 'textarea'
-      ? '<textarea data-key="' + key + '">' + esc(value) + '</textarea>'
-      : '<input type="text" data-key="' + key + '" value="' + esc(value) + '" />';
-    return '<div class="field"><label>' + label + '</label>' + tag + '</div>';
+      ? '<textarea class="lc-textarea" data-key="' + key + '">' + esc(value) + '</textarea>'
+      : '<input class="lc-input" type="text" data-key="' + key + '" value="' + esc(value) + '" />';
+    return '<div class="field"><label class="lc-label">' + label + '</label>' + tag + '</div>';
   }
 
   function itemTools(list, i, len) {
     return '<div class="ed-item-tools">' +
-      '<button class="icon-btn" data-move="up" data-list="' + list + '" data-i="' + i + '" title="Move up" aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '>&uarr;</button>' +
-      '<button class="icon-btn" data-move="down" data-list="' + list + '" data-i="' + i + '" title="Move down" aria-label="Move down"' + (i === len - 1 ? ' disabled' : '') + '>&darr;</button>' +
-      '<button class="icon-btn danger" data-remove="' + list + '" data-i="' + i + '" title="Remove" aria-label="Remove">&#10005;</button>' +
+      '<button class="lc-icon-btn" data-move="up" data-list="' + list + '" data-i="' + i + '" title="Move up" aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '><i data-lucide="arrow-up"></i></button>' +
+      '<button class="lc-icon-btn" data-move="down" data-list="' + list + '" data-i="' + i + '" title="Move down" aria-label="Move down"' + (i === len - 1 ? ' disabled' : '') + '><i data-lucide="arrow-down"></i></button>' +
+      '<button class="lc-icon-btn lc-danger" data-remove="' + list + '" data-i="' + i + '" title="Remove" aria-label="Remove"><i data-lucide="x"></i></button>' +
       '</div>';
+  }
+
+  function renderSections() {
+    var html = '';
+    SECTIONS.forEach(function (sec) {
+      html += '<button class="lc-nav-item' + (sec.id === activeSection ? ' active' : '') + '" type="button" data-section="' + sec.id + '">' +
+        '<i data-lucide="' + sec.icon + '"></i>' + sec.label +
+        '<i data-lucide="arrow-right" class="arrow"></i></button>';
+    });
+    document.getElementById('sections').innerHTML = html;
   }
 
   function renderEditor() {
     var s = state;
     var html = '';
+    var section = SECTIONS.filter(function (x) { return x.id === activeSection; })[0];
+    document.getElementById('editor-title').textContent = 'Website · ' + section.label;
 
-    html += '<div class="ed-section">' +
-      '<h2 class="ed-heading">Business info</h2>' +
-      '<p class="ed-hint">The basics. These show in the header, hero, and footer.</p>' +
-      field('Business name', s.name, 'name') +
-      field('Tagline', s.tagline, 'tagline') +
-      field('Phone', s.phone, 'phone') +
-      '</div>';
+    if (activeSection === 'business') {
+      html += field('Business name', s.name, 'name') +
+        field('Tagline', s.tagline, 'tagline') +
+        field('Phone', s.phone, 'phone');
+    }
 
-    html += '<div class="ed-section">' +
-      '<h2 class="ed-heading">Announcement banner</h2>' +
-      '<p class="ed-hint">A one-line notice across the top of the site. Turn it off when there is nothing to announce.</p>' +
-      '<div class="toggle-row"><input type="checkbox" id="banner-on" data-key="banner.on"' + (s.banner.on ? ' checked' : '') + ' /><label for="banner-on">Show the banner</label></div>' +
-      field('Banner text', s.banner.text, 'banner.text') +
-      '</div>';
+    if (activeSection === 'banner') {
+      html += '<div class="toggle-row">' +
+        '<label class="lc-switch"><input type="checkbox" id="banner-on" data-key="banner.on"' + (s.banner.on ? ' checked' : '') + ' /><span class="track"></span></label>' +
+        '<label class="lbl" for="banner-on">Show the banner</label>' +
+        '</div>' +
+        field('Banner text', s.banner.text, 'banner.text');
+    }
 
-    html += '<div class="ed-section"><h2 class="ed-heading">Services &amp; pricing</h2>' +
-      '<p class="ed-hint">Add, remove, and reorder. The site updates as you type.</p>';
-    s.services.forEach(function (sv, i) {
-      html += '<div class="ed-item">' +
-        '<div class="ed-item-head"><span class="ed-item-label">Service ' + (i + 1) + '</span>' + itemTools('services', i, s.services.length) + '</div>' +
-        field('Name', sv.name, 'services.' + i + '.name') +
-        field('Price', sv.price, 'services.' + i + '.price') +
-        field('Description', sv.desc, 'services.' + i + '.desc', 'textarea') +
-        '</div>';
-    });
-    html += '<button class="btn-add" data-add="services" type="button">+ Add a service</button></div>';
+    if (activeSection === 'services') {
+      s.services.forEach(function (sv, i) {
+        html += '<div class="ed-item">' +
+          '<div class="ed-item-head"><span class="ed-item-label">Service ' + (i + 1) + '</span>' + itemTools('services', i, s.services.length) + '</div>' +
+          field('Name', sv.name, 'services.' + i + '.name') +
+          field('Price', sv.price, 'services.' + i + '.price') +
+          field('Description', sv.desc, 'services.' + i + '.desc', 'textarea') +
+          '</div>';
+      });
+      html += '<button class="lc-btn lc-btn-outline btn-add" data-add="services" type="button"><i data-lucide="plus"></i>Add a service</button>';
+    }
 
-    html += '<div class="ed-section"><h2 class="ed-heading">Hours</h2>' +
-      '<p class="ed-hint">Plain text, so &ldquo;by appointment&rdquo; works too.</p>';
-    s.hours.forEach(function (h, i) {
-      html += '<div class="hours-row"><span class="day">' + esc(h.day.slice(0, 3)) + '</span>' +
-        '<input type="text" data-key="hours.' + i + '.time" value="' + esc(h.time) + '" aria-label="' + esc(h.day) + ' hours" /></div>';
-    });
-    html += '</div>';
+    if (activeSection === 'hours') {
+      s.hours.forEach(function (h, i) {
+        html += '<div class="hours-row"><span class="day">' + esc(h.day.slice(0, 3)) + '</span>' +
+          '<input class="lc-input" type="text" data-key="hours.' + i + '.time" value="' + esc(h.time) + '" aria-label="' + esc(h.day) + ' hours" /></div>';
+      });
+    }
 
-    html += '<div class="ed-section"><h2 class="ed-heading">Reviews</h2>' +
-      '<p class="ed-hint">Real sites pull these from Google. Here you get to write your own five-star press.</p>';
-    s.reviews.forEach(function (r, i) {
-      var opts = '';
-      for (var st = 5; st >= 1; st--) {
-        opts += '<option value="' + st + '"' + (r.stars === st ? ' selected' : '') + '>' + st + ' star' + (st > 1 ? 's' : '') + '</option>';
-      }
-      html += '<div class="ed-item">' +
-        '<div class="ed-item-head"><span class="ed-item-label">Review ' + (i + 1) + '</span>' + itemTools('reviews', i, s.reviews.length) + '</div>' +
-        field('Customer', r.name, 'reviews.' + i + '.name') +
-        '<div class="field"><label>Rating</label><select data-key="reviews.' + i + '.stars">' + opts + '</select></div>' +
-        field('Review', r.text, 'reviews.' + i + '.text', 'textarea') +
-        '</div>';
-    });
-    html += '<button class="btn-add" data-add="reviews" type="button">+ Add a review</button></div>';
-
-    html += '<p class="saved-note" id="saved-note">Everything saves automatically</p>';
+    if (activeSection === 'reviews') {
+      s.reviews.forEach(function (r, i) {
+        var opts = '';
+        for (var st = 5; st >= 1; st--) {
+          opts += '<option value="' + st + '"' + (r.stars === st ? ' selected' : '') + '>' + st + ' star' + (st > 1 ? 's' : '') + '</option>';
+        }
+        html += '<div class="ed-item">' +
+          '<div class="ed-item-head"><span class="ed-item-label">Review ' + (i + 1) + '</span>' + itemTools('reviews', i, s.reviews.length) + '</div>' +
+          field('Customer', r.name, 'reviews.' + i + '.name') +
+          '<div class="field"><label class="lc-label">Rating</label><select class="lc-select" data-key="reviews.' + i + '.stars">' + opts + '</select></div>' +
+          field('Review', r.text, 'reviews.' + i + '.text', 'textarea') +
+          '</div>';
+      });
+      html += '<button class="lc-btn lc-btn-outline btn-add" data-add="reviews" type="button"><i data-lucide="plus"></i>Add a review</button>';
+    }
 
     document.getElementById('editor').innerHTML = html;
+    refreshIcons();
   }
 
   /* ------------------------------------------------------------- updates */
@@ -799,29 +764,41 @@
     }
   });
 
+  document.getElementById('sections').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-section]');
+    if (!btn) return;
+    activeSection = btn.getAttribute('data-section');
+    renderSections();
+    renderEditor();
+    refreshIcons();
+  });
+
+  /* Reset — click once to arm, again to confirm */
   var resetBtn = document.getElementById('reset');
   var resetArmed = false;
   var resetTimer;
   resetBtn.addEventListener('click', function () {
     if (!resetArmed) {
       resetArmed = true;
-      resetBtn.textContent = 'Click again to reset';
+      resetBtn.innerHTML = 'Click again to reset';
       resetTimer = setTimeout(function () {
         resetArmed = false;
-        resetBtn.innerHTML = '&#8635; Reset demo';
+        resetBtn.innerHTML = '<i data-lucide="rotate-ccw"></i>Reset demo';
+        refreshIcons();
       }, 3000);
       return;
     }
     clearTimeout(resetTimer);
     resetArmed = false;
-    resetBtn.innerHTML = '&#8635; Reset demo';
+    resetBtn.innerHTML = '<i data-lucide="rotate-ccw"></i>Reset demo';
     try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
     state = clone(DEFAULT_CONTENT);
+    renderSections();
     renderEditor();
     renderSite();
   });
 
-  /* --------------------------------------------------------- mobile tabs */
+  /* Mobile tabs */
   var tabEdit = document.getElementById('tab-edit');
   var tabPreview = document.getElementById('tab-preview');
   tabEdit.addEventListener('click', function () {
@@ -835,8 +812,10 @@
     tabEdit.classList.remove('active');
   });
 
+  renderSections();
   renderEditor();
   renderSite();
+  window.addEventListener('load', refreshIcons);
 })();
 </script>
 </body>

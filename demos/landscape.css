@@ -1,0 +1,389 @@
+/* ==========================================================================
+   Landscaping design system — tokens and core components.
+   Source: the "Landscaping Design System Build" Claude Design project
+   (tokens/colors.css, typography.css, spacing.css, base.css + readme rules).
+   Used by the micro-app demos: cms.html, quote builder (coming).
+   Font: Manrope (load in the page head). Icons: Lucide via CDN.
+   ========================================================================== */
+
+:root {
+  /* Forest — primary dark (sidebar pills, dark buttons, chart lines) */
+  --forest-950: #06231A;
+  --forest-900: #0A2F23;
+  --forest-800: #0E3B2D;
+  --forest-700: #165040;
+  --forest-600: #1F6752;
+
+  /* Lime — primary accent (CTAs, positive deltas, highlights) */
+  --lime-600: #6FC448;
+  --lime-500: #8FD86A;
+  --lime-400: #A6E287;
+  --lime-300: #C4EDAE;
+  --lime-100: #E5F6DA;
+  --lime-50:  #F3FBEE;
+
+  /* Vibrant website accents */
+  --grass-600: #1F9A4A;
+  --grass-500: #2DB85C;
+  --grass-100: #DBF4E3;
+  --sun-500:   #FFC83D;
+  --sun-100:   #FFF3CF;
+  --clay-500:  #EE7A4C;
+  --clay-100:  #FCE5DA;
+  --sky-500:   #4BA6DE;
+  --sky-100:   #E1F0FA;
+
+  /* Neutrals — faintly green-tinted greys */
+  --neutral-0:   #FFFFFF;
+  --neutral-50:  #F4F5F3;
+  --neutral-100: #EDEEEB;
+  --neutral-200: #E2E4DF;
+  --neutral-300: #CCD0C9;
+  --neutral-400: #A9AEA6;
+  --neutral-500: #858A82;
+  --neutral-600: #5F645C;
+  --neutral-800: #252923;
+  --neutral-900: #121411;
+
+  /* Semantic: surfaces */
+  --bg-app: var(--neutral-50);
+  --surface-card: var(--neutral-0);
+  --surface-sunken: var(--neutral-50);
+  --surface-row-alt: #F6F7F5;
+  --surface-inverse: var(--forest-800);
+  --surface-accent: var(--lime-500);
+  --surface-highlight: var(--lime-100);
+
+  /* Semantic: text */
+  --text-strong: var(--neutral-900);
+  --text-body: var(--neutral-800);
+  --text-muted: var(--neutral-600);
+  --text-subtle: var(--neutral-500);
+  --text-on-inverse: #FFFFFF;
+  --text-on-accent: var(--forest-900);
+  --text-positive: var(--lime-600);
+  --text-link: var(--grass-600);
+
+  /* Semantic: borders */
+  --border-subtle: var(--neutral-100);
+  --border-default: var(--neutral-200);
+  --border-strong: var(--neutral-300);
+  --focus-ring: var(--lime-400);
+
+  /* Semantic: status */
+  --status-completed: var(--lime-500);
+  --status-pending: var(--neutral-200);
+  --status-progress: var(--forest-800);
+  --status-alert: var(--clay-500);
+  --status-scheduled: var(--sky-500);
+
+  /* Type */
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-extrabold: 800;
+
+  /* UI scale (CMS) */
+  --fs-2xs: 10px;
+  --fs-xs: 11px;
+  --fs-sm: 12px;
+  --fs-md: 13px;
+  --fs-base: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+  --fs-2xl: 26px;
+
+  /* Display scale (website) */
+  --fs-d3: 32px;
+  --fs-d2: 44px;
+  --fs-d1: 64px;
+  --fs-hero: 84px;
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.25;
+  --lh-normal: 1.5;
+  --tracking-display: -0.03em;
+  --tracking-tight: -0.01em;
+
+  /* Spacing / radii */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  --radius-xs: 6px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;   /* cards */
+  --radius-xl: 28px;   /* website feature panels */
+  --radius-pill: 999px;
+
+  --gap-grid: 8px;     /* CMS card gutter */
+  --pad-card: 24px;
+  --sidebar-width: 196px;
+
+  --shadow-pop: 0 10px 30px rgba(14, 59, 45, 0.10);
+  --shadow-float: 0 18px 48px rgba(14, 59, 45, 0.16);
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+}
+
+/* Base */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-base);
+  color: var(--text-body);
+  background: var(--bg-app);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--text-link); text-decoration: none; }
+a:hover { color: var(--forest-800); }
+
+/* Card — white, radius 20, no border, no shadow */
+.lc-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-lg);
+  padding: var(--pad-card);
+}
+.lc-card-title {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-snug);
+  color: var(--text-strong);
+  margin: 0;
+}
+
+/* Buttons — full pills, press scale(0.98), lime focus ring */
+.lc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  padding: 11px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+.lc-btn:active { transform: scale(0.98); }
+.lc-btn:focus-visible {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px var(--lime-100);
+}
+.lc-btn svg { width: 15px; height: 15px; }
+
+.lc-btn-primary { background: var(--lime-500); color: var(--text-on-accent); }
+.lc-btn-primary:hover { background: var(--lime-400); color: var(--text-on-accent); }
+
+.lc-btn-dark { background: var(--forest-800); color: var(--text-on-inverse); }
+.lc-btn-dark:hover { background: var(--forest-700); color: var(--text-on-inverse); }
+
+.lc-btn-outline {
+  background: var(--surface-card);
+  color: var(--text-body);
+  border-color: var(--border-default);
+}
+.lc-btn-outline:hover { background: var(--neutral-50); color: var(--text-body); }
+
+.lc-btn-ghost { background: transparent; color: var(--text-muted); }
+.lc-btn-ghost:hover { background: var(--neutral-50); color: var(--text-body); }
+
+.lc-btn-sm { font-size: var(--fs-sm); padding: 8px 14px; }
+
+/* Icon button — circle, 1px outline */
+.lc-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.lc-icon-btn:hover { background: var(--neutral-50); color: var(--text-strong); }
+.lc-icon-btn:active { transform: scale(0.98); }
+.lc-icon-btn:focus-visible {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px var(--lime-100);
+}
+.lc-icon-btn:disabled { opacity: 0.35; cursor: default; }
+.lc-icon-btn:disabled:hover { background: var(--surface-card); color: var(--text-muted); }
+.lc-icon-btn svg { width: 14px; height: 14px; }
+.lc-icon-btn.lc-danger:hover { background: var(--clay-100); border-color: var(--clay-500); color: var(--clay-500); }
+
+/* Badge — small pill */
+.lc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-bold);
+  line-height: 1;
+  padding: 6px 12px;
+  border-radius: var(--radius-pill);
+}
+.lc-badge-lime { background: var(--lime-100); color: var(--forest-800); }
+.lc-badge-neutral { background: var(--neutral-100); color: var(--text-muted); }
+.lc-badge-forest { background: var(--forest-800); color: var(--text-on-inverse); }
+
+/* Status dot — 7px */
+.lc-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--status-pending);
+}
+.lc-dot-completed { background: var(--status-completed); }
+.lc-dot-progress { background: var(--status-progress); }
+.lc-dot-alert { background: var(--status-alert); }
+
+/* Field label — 11px semibold muted */
+.lc-label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+/* Inputs — rounded, 1px border, lime focus */
+.lc-input, .lc-textarea, .lc-select {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-medium);
+  color: var(--text-body);
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 10px 13px;
+  outline: none;
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+  -webkit-appearance: none;
+}
+.lc-textarea { resize: vertical; min-height: 64px; line-height: var(--lh-normal); }
+.lc-input:focus, .lc-textarea:focus, .lc-select:focus {
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px var(--lime-100);
+}
+.lc-input::placeholder, .lc-textarea::placeholder { color: var(--text-subtle); }
+.lc-select {
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%235F645C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  padding-right: 32px;
+}
+
+/* Switch — forest track when on */
+.lc-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px; height: 22px;
+  flex-shrink: 0;
+}
+.lc-switch input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.lc-switch .track {
+  position: absolute; inset: 0;
+  background: var(--neutral-200);
+  border-radius: var(--radius-pill);
+  transition: background var(--dur-base) var(--ease-out);
+  pointer-events: none;
+}
+.lc-switch .track::after {
+  content: "";
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--neutral-0);
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.lc-switch input:checked + .track { background: var(--forest-700); }
+.lc-switch input:checked + .track::after { transform: translateX(18px); }
+.lc-switch input:focus-visible + .track { box-shadow: 0 0 0 3px var(--lime-100); }
+
+/* Nav item — pill; active gets white fill, border and trailing arrow */
+.lc-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  padding: 9px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.lc-nav-item:hover { background: var(--neutral-100); color: var(--text-body); }
+.lc-nav-item.active {
+  background: var(--surface-card);
+  border-color: var(--border-default);
+  color: var(--text-strong);
+}
+.lc-nav-item svg { width: 15px; height: 15px; flex-shrink: 0; }
+.lc-nav-item .arrow { margin-left: auto; opacity: 0; transition: opacity var(--dur-fast) var(--ease-out); }
+.lc-nav-item.active .arrow { opacity: 1; }
+.lc-nav-item:focus-visible {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px var(--lime-100);
+}
+
+/* Striped image placeholder (ImageSlot) */
+.lc-imageslot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--text-subtle);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--neutral-100), var(--neutral-100) 6px,
+    var(--neutral-50) 6px, var(--neutral-50) 12px
+  );
+  border-radius: var(--radius-md);
+}
+.lc-imageslot.on-lime {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--lime-400), var(--lime-400) 6px,
+    var(--lime-300) 6px, var(--lime-300) 12px
+  );
+  color: var(--forest-800);
+}
