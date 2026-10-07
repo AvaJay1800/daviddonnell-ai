@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z45C4PE3RB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z45C4PE3RB');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contractor Quote Builder Demo | David Donnell</title>
+  <meta name="description" content="A live demo of a quote builder for contractors: line items with labor and materials, live totals, and a clean printable quote. Built by David Donnell." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <meta name="theme-color" content="#F4F5F3" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Contractor Quote Builder Demo | David Donnell" />
+  <meta property="og:description" content="Build a line-item quote and watch the document update as you type. A working demo, not a screenshot." />
+  <meta property="og:site_name" content="David Donnell" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Landscaping design system: tokens + core components -->
+  <link rel="stylesheet" href="landscape.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* ------------------------------------------------------------ top bar */
+    .demo-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 20px;
+      background: var(--surface-card);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+      color: var(--text-strong);
+    }
+    .back-link:hover { color: var(--forest-700); }
+    .back-link svg { width: 14px; height: 14px; }
+    .demo-note {
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .demo-note strong { color: var(--text-body); font-weight: var(--fw-bold); }
+    .demo-bar .spacer { flex: 1; }
+
+    /* ------------------------------------------------------------ tabs (mobile) */
+    .tabs { display: none; gap: var(--gap-grid); padding: var(--gap-grid) var(--gap-grid) 0; }
+    .tab {
+      flex: 1;
+      font-family: var(--font-sans);
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+      color: var(--text-muted);
+      background: var(--surface-card);
+      border: 1px solid transparent;
+      border-radius: var(--radius-pill);
+      padding: 10px;
+      cursor: pointer;
+    }
+    .tab.active {
+      color: var(--forest-900);
+      background: var(--lime-100);
+      border-color: var(--lime-400);
+    }
+    .tab:focus-visible { outline: none; border-color: var(--focus-ring); box-shadow: 0 0 0 3px var(--lime-100); }
+
+    /* ------------------------------------------------------------ app grid */
+    .app {
+      flex: 1;
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 430px 1fr;
+      gap: var(--gap-grid);
+      padding: var(--gap-grid);
+      align-items: start;
+      min-height: 0;
+    }
+
+    /* ------------------------------------------------------------ sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      padding: var(--space-5) var(--space-3);
+      position: sticky;
+      top: var(--gap-grid);
+    }
+    .wordmark {
+      font-size: 17px;
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--forest-900);
+      line-height: var(--lh-snug);
+      padding: 0 var(--space-2);
+      overflow-wrap: break-word;
+    }
+    .wordmark .accent { color: var(--grass-600); }
+
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+
+    .promo {
+      margin-top: var(--space-8);
+      background: var(--lime-500);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .promo .lc-imageslot { height: 74px; }
+    .promo h3 {
+      font-size: var(--fs-base);
+      font-weight: var(--fw-extrabold);
+      color: var(--forest-900);
+      line-height: var(--lh-snug);
+      margin: 0;
+    }
+    .promo .lc-btn { background: var(--surface-card); color: var(--forest-900); }
+    .promo .lc-btn:hover { background: var(--lime-50); }
+
+    /* ------------------------------------------------------------ editor column */
+    .edit-col { display: flex; flex-direction: column; gap: var(--gap-grid); min-width: 0; }
+
+    .editor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .saved-chip {
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--text-subtle);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+    .saved-chip.flash { color: var(--grass-600); }
+
+    .field { margin-bottom: var(--space-4); }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+    .field-row-3 { display: grid; grid-template-columns: 1fr 1fr 1.2fr; gap: var(--space-2); }
+
+    .ed-item {
+      background: var(--surface-sunken);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin-bottom: var(--space-2);
+    }
+    .ed-item-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-3);
+    }
+    .ed-item-label {
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-bold);
+      color: var(--text-subtle);
+    }
+    .ed-item-label .amt { color: var(--grass-600); }
+    .ed-item-tools { display: flex; gap: 5px; }
+    .ed-item .lc-input, .ed-item .lc-textarea, .ed-item .lc-select { background: var(--surface-card); }
+    .ed-item .field:last-child { margin-bottom: 0; }
+
+    .btn-add { width: 100%; margin-top: var(--space-2); }
+
+    /* ------------------------------------------------------------ preview */
+    .preview-card {
+      padding: var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      min-width: 0;
+    }
+    .preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: 2px var(--space-2) 0;
+    }
+    .preview-head .tools { display: flex; align-items: center; gap: var(--space-2); }
+    .preview-frame {
+      background: var(--lime-50);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+      overflow: hidden;
+    }
+    #quote {
+      background: var(--neutral-0);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      max-height: 76vh;
+      overflow-y: auto;
+    }
+
+    /* ---------------- the quote document ---------------------------------- */
+    #quote .q-inner { padding: 32px 34px 28px; }
+
+    #quote .q-letterhead {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--forest-800);
+      margin-bottom: 22px;
+    }
+    #quote .q-name {
+      font-size: var(--fs-lg);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--forest-900);
+    }
+    #quote .q-name .accent { color: var(--grass-600); }
+    #quote .q-contact {
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-muted);
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    #quote .q-eyebrow {
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--grass-600);
+      margin-bottom: 6px;
+    }
+    #quote .q-job {
+      font-size: var(--fs-xl);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+      color: var(--forest-950);
+      margin: 0 0 10px;
+    }
+    #quote .q-meta {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+    #quote .q-meta b { color: var(--text-strong); font-weight: var(--fw-bold); }
+
+    #quote .q-client {
+      background: var(--neutral-50);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+    #quote .q-client .lbl {
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      margin-bottom: 4px;
+    }
+    #quote .q-client b { color: var(--text-strong); }
+
+    #quote table { width: 100%; border-collapse: collapse; }
+    #quote thead th {
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-bold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-subtle);
+      text-align: left;
+      padding: 0 10px 8px;
+    }
+    #quote thead th.num, #quote tbody td.num { text-align: right; }
+    #quote tbody td {
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-body);
+      padding: 9px 10px;
+      vertical-align: top;
+    }
+    #quote tbody tr:nth-child(odd) td { background: var(--surface-row-alt); }
+    #quote tbody tr td:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+    #quote tbody tr td:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    #quote .q-item-desc { font-weight: var(--fw-bold); color: var(--text-strong); }
+    #quote .q-type {
+      display: inline-block;
+      font-size: var(--fs-2xs);
+      font-weight: var(--fw-bold);
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      margin-top: 4px;
+    }
+    #quote td.num { white-space: nowrap; }
+
+    #quote .q-totals {
+      margin: 20px 0 0 auto;
+      width: 240px;
+      max-width: 100%;
+    }
+    #quote .q-totals .row {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      padding: 5px 10px;
+    }
+    #quote .q-totals .row b { color: var(--text-strong); font-weight: var(--fw-bold); }
+    #quote .q-totals .grand {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      background: var(--forest-800);
+      color: var(--text-on-inverse);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-top: 8px;
+      font-size: var(--fs-md);
+      font-weight: var(--fw-bold);
+    }
+    #quote .q-totals .grand .amt {
+      font-size: var(--fs-2xl);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: var(--tracking-tight);
+    }
+    #quote .q-totals .deposit {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      background: var(--lime-100);
+      color: var(--forest-900);
+      border-radius: var(--radius-md);
+      padding: 9px 14px;
+      margin-top: 6px;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-bold);
+    }
+
+    #quote .q-notes {
+      background: var(--neutral-50);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: var(--fs-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-top: 24px;
+      white-space: pre-line;
+    }
+    #quote .q-accept {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-default);
+    }
+    #quote .q-accept .line {
+      flex: 1;
+      min-width: 150px;
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-semibold);
+      color: var(--text-subtle);
+      padding-top: 26px;
+      border-top: 1px solid var(--border-strong);
+    }
+
+    /* ------------------------------------------------------------ responsive */
+    @media (max-width: 1240px) {
+      .app { grid-template-columns: var(--sidebar-width) minmax(340px, 1fr) 1fr; }
+    }
+    @media (max-width: 1080px) {
+      .app { grid-template-columns: 1fr 1fr; }
+      .sidebar {
+        grid-column: 1 / -1;
+        position: static;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-4);
+        padding: var(--space-3) var(--space-2);
+      }
+      .sidebar .nav { flex-direction: row; flex-wrap: wrap; }
+      .promo { display: none; }
+      .wordmark { padding: 0; }
+    }
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      .tabs { display: flex; }
+      body.show-preview .edit-col { display: none; }
+      body:not(.show-preview) .preview-wrap { display: none; }
+      #quote { max-height: none; }
+      #quote .q-inner { padding: 22px 18px; }
+      .demo-bar { padding: 10px 14px; }
+      .demo-bar .demo-note { display: none; }
+      .field-row-3 { grid-template-columns: 1fr; }
+    }
+
+    /* ------------------------------------------------------------ print */
+    @media print {
+      body { background: #fff; }
+      .demo-bar, .tabs, .sidebar, .edit-col, .preview-head { display: none !important; }
+      .app { display: block; padding: 0; }
+      .preview-wrap { display: block !important; }
+      .lc-card.preview-card { padding: 0; border-radius: 0; }
+      .preview-frame { padding: 0; background: #fff; border-radius: 0; }
+      #quote { max-height: none; overflow: visible; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="demo-bar">
+    <a class="back-link" href="/"><i data-lucide="arrow-left"></i>David Donnell</a>
+    <span class="lc-badge lc-badge-lime">Live demo</span>
+    <span class="demo-note">You're quoting a job for <strong>Green Feather Lawn &amp; Garden</strong>, a made-up company. Changes save in your browser only, so go wild.</span>
+    <span class="spacer"></span>
+    <button class="lc-btn lc-btn-outline lc-btn-sm" id="reset" type="button"><i data-lucide="rotate-ccw"></i>Reset demo</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" id="tab-edit" type="button">Edit</button>
+    <button class="tab" id="tab-preview" type="button">Preview</button>
+  </div>
+
+  <main class="app">
+
+    <aside class="sidebar" aria-label="App navigation">
+      <div class="wordmark" id="wordmark"></div>
+      <nav class="nav" aria-label="Demo sections">
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="layout-dashboard"></i>Dashboard</button>
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="inbox"></i>Leads</button>
+        <button class="lc-nav-item active" type="button"><i data-lucide="file-text"></i>Quotes<i data-lucide="arrow-right" class="arrow"></i></button>
+        <a class="lc-nav-item" href="/demos/cms.html" title="Open the CMS demo"><i data-lucide="globe"></i>Website</a>
+        <button class="lc-nav-item" type="button" disabled title="Not part of this demo"><i data-lucide="settings"></i>Settings</button>
+      </nav>
+      <div class="promo">
+        <div class="lc-imageslot on-lime">your logo here</div>
+        <h3>Want a tool like this for your crew?</h3>
+        <a class="lc-btn lc-btn-sm" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Book a free call</a>
+      </div>
+    </aside>
+
+    <div class="edit-col">
+      <div class="lc-card">
+        <div class="editor-head">
+          <h2 class="lc-card-title">Quote details</h2>
+          <span class="saved-chip" id="saved-note">Autosaved</span>
+        </div>
+        <div id="details"></div>
+      </div>
+
+      <div class="lc-card">
+        <div class="editor-head">
+          <h2 class="lc-card-title">Line items</h2>
+          <span class="saved-chip" id="items-count"></span>
+        </div>
+        <div id="items"></div>
+      </div>
+
+      <div class="lc-card">
+        <div class="editor-head">
+          <h2 class="lc-card-title">Totals &amp; notes</h2>
+        </div>
+        <div id="totals"></div>
+      </div>
+    </div>
+
+    <section class="preview-wrap" aria-label="Quote preview">
+      <div class="lc-card preview-card">
+        <div class="preview-head">
+          <h2 class="lc-card-title">Quote preview</h2>
+          <div class="tools">
+            <span class="lc-badge lc-badge-neutral"><span class="lc-dot lc-dot-completed"></span>Ready to send</span>
+            <button class="lc-btn lc-btn-dark lc-btn-sm" id="print" type="button"><i data-lucide="printer"></i>Print / save PDF</button>
+          </div>
+        </div>
+        <div class="preview-frame">
+          <div id="quote" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+<script>
+(function () {
+  var STORE_KEY = 'dd-quote-demo-v1';
+
+  var DEFAULT_CONTENT = {
+    company: { name: 'Green Feather Lawn & Garden', phone: '(303) 555-0142', email: 'hello@greenfeatherlawn.com' },
+    client: { name: 'Harper Residence', address: '4571 Quail St, Wheat Ridge, CO' },
+    job: 'Backyard refresh',
+    number: 'GF-1042',
+    validDays: 30,
+    taxRate: 4.5,
+    depositPct: 30,
+    notes: 'Price is good for 30 days. Weather days roll the schedule, not the price.\nHaul-away and cleanup are included in labor.',
+    items: [
+      { type: 'Labor',     desc: 'Crew labor',             qty: '16',  unit: 'hrs',   price: '65' },
+      { type: 'Materials', desc: 'Cedar mulch, 3 in',      qty: '6',   unit: 'cu yd', price: '48' },
+      { type: 'Materials', desc: 'Flagstone pavers',       qty: '120', unit: 'sq ft', price: '11' },
+      { type: 'Equipment', desc: 'Sod cutter rental',      qty: '1',   unit: 'day',   price: '95' },
+      { type: 'Labor',     desc: 'Haul-away & disposal',   qty: '1',   unit: 'job',   price: '140' }
+    ]
+  };
+
+  var ITEM_TYPES = ['Labor', 'Materials', 'Equipment', 'Other'];
+  var TYPE_COLORS = {
+    Labor:     { bg: 'var(--lime-100)',  fg: 'var(--forest-800)' },
+    Materials: { bg: 'var(--sky-100)',   fg: 'var(--sky-500)' },
+    Equipment: { bg: 'var(--clay-100)',  fg: 'var(--clay-500)' },
+    Other:     { bg: 'var(--neutral-100)', fg: 'var(--text-muted)' }
+  };
+
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* private mode or blocked storage: run from memory */ }
+    return clone(DEFAULT_CONTENT);
+  }
+
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    var note = document.getElementById('saved-note');
+    note.classList.add('flash');
+    note.textContent = 'Saved just now';
+    clearTimeout(save._t);
+    save._t = setTimeout(function () {
+      note.classList.remove('flash');
+      note.textContent = 'Autosaved';
+    }, 1200);
+  }
+
+  var state = load();
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function refreshIcons() {
+    if (window.lucide) {
+      window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+    }
+  }
+
+  function wordmarkHtml(name) {
+    var words = String(name).trim().split(/\s+/);
+    if (words.length < 2) return '<span class="accent">' + esc(name) + '</span>';
+    var last = words.pop();
+    return esc(words.join(' ')) + ' <span class="accent">' + esc(last) + '</span>';
+  }
+
+  /* -------- money: "$ 2 883" per the design system (thin-space thousands) */
+  function num(v) {
+    var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmtMoney(n) {
+    var r = Math.round(n * 100) / 100;
+    var neg = r < 0;
+    r = Math.abs(r);
+    var whole = Math.floor(r);
+    var cents = Math.round((r - whole) * 100);
+    var w = String(whole).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    var out = '$ ' + w + (cents ? '.' + String(cents).padStart(2, '0') : '');
+    return neg ? '−' + out : out;
+  }
+
+  function lineTotal(it) { return num(it.qty) * num(it.price); }
+  function subtotal() {
+    return state.items.reduce(function (sum, it) { return sum + lineTotal(it); }, 0);
+  }
+
+  function fmtDate(d) {
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  /* --------------------------------------------------------- quote render */
+  function renderQuote() {
+    var s = state;
+    var today = new Date();
+    var valid = new Date(today.getTime() + num(s.validDays) * 86400000);
+
+    var html = '<div class="q-inner">';
+
+    html += '<div class="q-letterhead">' +
+      '<div class="q-name">' + wordmarkHtml(s.company.name) + '</div>' +
+      '<div class="q-contact">' + esc(s.company.phone) + '<br/>' + esc(s.company.email) + '</div>' +
+      '</div>';
+
+    html += '<div class="q-eyebrow">Quote ' + esc(s.number) + '</div>' +
+      '<h1 class="q-job">' + esc(s.job) + '</h1>' +
+      '<div class="q-meta">' +
+        '<span>Date <b>' + fmtDate(today) + '</b></span>' +
+        '<span>Good through <b>' + fmtDate(valid) + '</b></span>' +
+      '</div>';
+
+    html += '<div class="q-client"><div class="lbl">Prepared for</div>' +
+      '<b>' + esc(s.client.name) + '</b><br/>' + esc(s.client.address) + '</div>';
+
+    if (s.items.length) {
+      html += '<table><thead><tr>' +
+        '<th>Item</th><th class="num">Qty</th><th class="num">Unit price</th><th class="num">Total</th>' +
+        '</tr></thead><tbody>';
+      s.items.forEach(function (it) {
+        var c = TYPE_COLORS[it.type] || TYPE_COLORS.Other;
+        html += '<tr>' +
+          '<td><span class="q-item-desc">' + esc(it.desc) + '</span><br/>' +
+            '<span class="q-type" style="background:' + c.bg + '; color:' + c.fg + '">' + esc(it.type) + '</span></td>' +
+          '<td class="num">' + esc(it.qty) + (it.unit ? ' ' + esc(it.unit) : '') + '</td>' +
+          '<td class="num">' + fmtMoney(num(it.price)) + '</td>' +
+          '<td class="num"><b>' + fmtMoney(lineTotal(it)) + '</b></td>' +
+          '</tr>';
+      });
+      html += '</tbody></table>';
+    }
+
+    var sub = subtotal();
+    var tax = sub * num(s.taxRate) / 100;
+    var total = sub + tax;
+    var deposit = total * num(s.depositPct) / 100;
+
+    html += '<div class="q-totals">' +
+      '<div class="row"><span>Subtotal</span><b>' + fmtMoney(sub) + '</b></div>';
+    if (num(s.taxRate) > 0) {
+      html += '<div class="row"><span>Tax (' + esc(s.taxRate) + '%)</span><b>' + fmtMoney(tax) + '</b></div>';
+    }
+    html += '<div class="grand"><span>Total</span><span class="amt">' + fmtMoney(total) + '</span></div>';
+    if (num(s.depositPct) > 0) {
+      html += '<div class="deposit"><span>Deposit to schedule (' + esc(s.depositPct) + '%)</span><span>' + fmtMoney(deposit) + '</span></div>';
+    }
+    html += '</div>';
+
+    if (s.notes.trim()) {
+      html += '<div class="q-notes">' + esc(s.notes) + '</div>';
+    }
+
+    html += '<div class="q-accept">' +
+      '<div class="line">Accepted by</div>' +
+      '<div class="line">Date</div>' +
+      '</div>';
+
+    html += '</div>';
+
+    document.getElementById('quote').innerHTML = html;
+    document.getElementById('wordmark').innerHTML = wordmarkHtml(s.company.name);
+  }
+
+  /* -------------------------------------------------------- editor render */
+  function field(label, value, key, kind) {
+    var tag = kind === 'textarea'
+      ? '<textarea class="lc-textarea" data-key="' + key + '">' + esc(value) + '</textarea>'
+      : '<input class="lc-input" type="text" data-key="' + key + '" value="' + esc(value) + '" />';
+    return '<div class="field"><label class="lc-label">' + label + '</label>' + tag + '</div>';
+  }
+
+  function itemTools(i, len) {
+    return '<div class="ed-item-tools">' +
+      '<button class="lc-icon-btn" data-move="up" data-i="' + i + '" title="Move up" aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '><i data-lucide="arrow-up"></i></button>' +
+      '<button class="lc-icon-btn" data-move="down" data-i="' + i + '" title="Move down" aria-label="Move down"' + (i === len - 1 ? ' disabled' : '') + '><i data-lucide="arrow-down"></i></button>' +
+      '<button class="lc-icon-btn lc-danger" data-remove="' + i + '" title="Remove" aria-label="Remove"><i data-lucide="x"></i></button>' +
+      '</div>';
+  }
+
+  function renderDetails() {
+    var s = state;
+    document.getElementById('details').innerHTML =
+      '<div class="field-row">' +
+        field('Your company', s.company.name, 'company.name') +
+        field('Phone', s.company.phone, 'company.phone') +
+      '</div>' +
+      field('Email', s.company.email, 'company.email') +
+      '<div class="field-row">' +
+        field('Client', s.client.name, 'client.name') +
+        field('Quote number', s.number, 'number') +
+      '</div>' +
+      field('Job address', s.client.address, 'client.address') +
+      '<div class="field-row">' +
+        field('Job name', s.job, 'job') +
+        field('Good for (days)', s.validDays, 'validDays') +
+      '</div>';
+  }
+
+  function renderItems() {
+    var s = state;
+    var html = '';
+    s.items.forEach(function (it, i) {
+      var opts = '';
+      ITEM_TYPES.forEach(function (t) {
+        opts += '<option value="' + t + '"' + (it.type === t ? ' selected' : '') + '>' + t + '</option>';
+      });
+      html += '<div class="ed-item">' +
+        '<div class="ed-item-head"><span class="ed-item-label">Item ' + (i + 1) + ' · <span class="amt" data-line="' + i + '">' + fmtMoney(lineTotal(it)) + '</span></span>' + itemTools(i, s.items.length) + '</div>' +
+        field('Description', it.desc, 'items.' + i + '.desc') +
+        '<div class="field-row-3">' +
+          field('Qty', it.qty, 'items.' + i + '.qty') +
+          field('Unit', it.unit, 'items.' + i + '.unit') +
+          field('Unit price ($)', it.price, 'items.' + i + '.price') +
+        '</div>' +
+        '<div class="field"><label class="lc-label">Type</label><select class="lc-select" data-key="items.' + i + '.type">' + opts + '</select></div>' +
+        '</div>';
+    });
+    html += '<button class="lc-btn lc-btn-outline btn-add" data-add="1" type="button"><i data-lucide="plus"></i>Add a line item</button>';
+    document.getElementById('items').innerHTML = html;
+    document.getElementById('items-count').textContent = s.items.length + (s.items.length === 1 ? ' item' : ' items');
+  }
+
+  function renderTotalsEditor() {
+    var s = state;
+    document.getElementById('totals').innerHTML =
+      '<div class="field-row">' +
+        field('Tax rate (%)', s.taxRate, 'taxRate') +
+        field('Deposit (%)', s.depositPct, 'depositPct') +
+      '</div>' +
+      field('Notes & terms', s.notes, 'notes', 'textarea');
+  }
+
+  function renderEditor() {
+    renderDetails();
+    renderItems();
+    renderTotalsEditor();
+    refreshIcons();
+  }
+
+  /* ------------------------------------------------------------- updates */
+  function setByPath(path, value) {
+    var parts = path.split('.');
+    var obj = state;
+    for (var i = 0; i < parts.length - 1; i++) obj = obj[parts[i]];
+    obj[parts[parts.length - 1]] = value;
+  }
+
+  var editCol = document.querySelector('.edit-col');
+
+  editCol.addEventListener('input', function (e) {
+    var key = e.target.getAttribute('data-key');
+    if (!key) return;
+    setByPath(key, e.target.value);
+    // keep the item-header line total in sync without re-rendering the editor
+    var m = key.match(/^items\.(\d+)\.(qty|price)$/);
+    if (m) {
+      var el = document.querySelector('[data-line="' + m[1] + '"]');
+      if (el) el.textContent = fmtMoney(lineTotal(state.items[m[1]]));
+    }
+    renderQuote();
+    save();
+  });
+
+  editCol.addEventListener('change', function (e) {
+    var key = e.target.getAttribute('data-key');
+    if (!key || e.target.tagName !== 'SELECT') return;
+    setByPath(key, e.target.value);
+    renderQuote();
+    save();
+  });
+
+  editCol.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+
+    var changed = false;
+    if (btn.hasAttribute('data-add')) {
+      state.items.push({ type: 'Labor', desc: 'New item', qty: '1', unit: '', price: '0' });
+      changed = true;
+    }
+    if (btn.hasAttribute('data-remove')) {
+      state.items.splice(parseInt(btn.getAttribute('data-remove'), 10), 1);
+      changed = true;
+    }
+    var move = btn.getAttribute('data-move');
+    if (move) {
+      var i = parseInt(btn.getAttribute('data-i'), 10);
+      var j = move === 'up' ? i - 1 : i + 1;
+      if (j >= 0 && j < state.items.length) {
+        var tmp = state.items[i]; state.items[i] = state.items[j]; state.items[j] = tmp;
+        changed = true;
+      }
+    }
+
+    if (changed) {
+      renderItems();
+      refreshIcons();
+      renderQuote();
+      save();
+    }
+  });
+
+  document.getElementById('print').addEventListener('click', function () {
+    window.print();
+  });
+
+  /* Reset — click once to arm, again to confirm */
+  var resetBtn = document.getElementById('reset');
+  var resetArmed = false;
+  var resetTimer;
+  resetBtn.addEventListener('click', function () {
+    if (!resetArmed) {
+      resetArmed = true;
+      resetBtn.innerHTML = 'Click again to reset';
+      resetTimer = setTimeout(function () {
+        resetArmed = false;
+        resetBtn.innerHTML = '<i data-lucide="rotate-ccw"></i>Reset demo';
+        refreshIcons();
+      }, 3000);
+      return;
+    }
+    clearTimeout(resetTimer);
+    resetArmed = false;
+    resetBtn.innerHTML = '<i data-lucide="rotate-ccw"></i>Reset demo';
+    try { localStorage.removeItem(STORE_KEY); } catch (e) { /* ignore */ }
+    state = clone(DEFAULT_CONTENT);
+    renderEditor();
+    renderQuote();
+  });
+
+  /* Mobile tabs */
+  var tabEdit = document.getElementById('tab-edit');
+  var tabPreview = document.getElementById('tab-preview');
+  tabEdit.addEventListener('click', function () {
+    document.body.classList.remove('show-preview');
+    tabEdit.classList.add('active');
+    tabPreview.classList.remove('active');
+  });
+  tabPreview.addEventListener('click', function () {
+    document.body.classList.add('show-preview');
+    tabPreview.classList.add('active');
+    tabEdit.classList.remove('active');
+  });
+
+  renderEditor();
+  renderQuote();
+  window.addEventListener('load', refreshIcons);
+})();
+</script>
+</body>
+</html>
