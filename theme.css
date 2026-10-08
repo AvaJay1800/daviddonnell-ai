@@ -410,6 +410,33 @@
 .t-melt .mi .p { width: 16%; height: 8px; border-radius: 4px; background: #FFC94D; }
 .t-melt .cta { width: 40%; height: 11px; border-radius: 999px; background: #FFC94D; align-self: center; margin-top: 2px; }
 
+/* Deal Desk mini: slate inputs beside a green margin tile */
+.t-desk { background: #E9EBEE; }
+.t-desk .inputs {
+  width: 54%;
+  background: #fff;
+  border-radius: 8px;
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.t-desk .lab { height: 4px; width: 40%; border-radius: 2px; background: #BFC4CC; }
+.t-desk .fld { height: 10px; border: 1px solid #DADDE2; border-radius: 5px; background: #F8F9FA; }
+.t-desk .outs {
+  flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  padding: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.t-desk .tile { height: 38px; border-radius: 6px; background: #E2F4E8; display: flex; align-items: center; justify-content: center; }
+.t-desk .tile i { display: block; width: 44%; height: 9px; border-radius: 4px; background: #1E7F4F; }
+.t-desk .r { height: 6px; border-radius: 3px; background: #E9EBEE; }
+.t-desk .r.dark { background: #272C35; width: 70%; }
+
 /* Readiness check mini: the dark quiz card */
 .t-quiz { background: var(--navy-900); justify-content: center; align-items: center; }
 .t-quiz .qcard {
