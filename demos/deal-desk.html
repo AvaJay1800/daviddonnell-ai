@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z45C4PE3RB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-Z45C4PE3RB');
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deal Desk | David Donnell</title>
+  <meta name="description" content="A dealership deal sheet and margin calculator as a web app: price the deal, finance it flat or by APR, and see the margin band at a glance. Built by David Donnell." />
+  <meta name="robots" content="index, follow" />
+
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <meta name="theme-color" content="#F3F4F6" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Deal Desk | David Donnell" />
+  <meta property="og:description" content="Price a dealership deal and watch the margin band change color as you type. A working tool, not a screenshot." />
+  <meta property="og:site_name" content="David Donnell" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js" defer></script>
+
+  <style>
+    /* ------------------------------------------------------------------
+       Deal Desk — neutral internal-tool styling. Cool slate neutrals,
+       hairline borders, tight radii. The margin band colors are the only
+       loud thing on the page, on purpose.
+       ------------------------------------------------------------------ */
+    :root {
+      --slate-25:  #F8F9FA;
+      --slate-50:  #F3F4F6;
+      --slate-100: #E9EBEE;
+      --slate-200: #DADDE2;
+      --slate-300: #BFC4CC;
+      --slate-400: #9AA1AC;
+      --slate-500: #737B88;
+      --slate-600: #525A67;
+      --slate-800: #272C35;
+      --slate-900: #15181E;
+
+      --low-fg: #C4432B;     --low-bg: #FBE9E4;
+      --thin-fg: #A5750E;    --thin-bg: #FCF3DC;
+      --healthy-fg: #1E7F4F; --healthy-bg: #E2F4E8;
+
+      --font: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --dur: 140ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; }
+    [hidden] { display: none !important; }
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--slate-800);
+      background: var(--slate-50);
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .money, input { font-variant-numeric: tabular-nums; }
+
+    /* ------------------------------------------------------------ top bar */
+    .demo-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 12px 20px;
+      background: #fff;
+      border-bottom: 1px solid var(--slate-100);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--slate-900);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--slate-600); }
+    .back-link svg { width: 14px; height: 14px; }
+    .tool-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--slate-800);
+      padding-left: 12px;
+      border-left: 1px solid var(--slate-200);
+    }
+    .tool-name svg { width: 15px; height: 15px; color: var(--slate-500); }
+    .demo-note {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--slate-500);
+    }
+    .demo-bar .spacer { flex: 1; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-family: var(--font);
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--slate-200);
+      background: #fff;
+      color: var(--slate-800);
+      padding: 8px 14px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+    }
+    .btn:hover { background: var(--slate-25); border-color: var(--slate-300); }
+    .btn:active { transform: scale(0.98); }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-dark { background: var(--slate-800); border-color: var(--slate-800); color: #fff; }
+    .btn-dark:hover { background: var(--slate-600); border-color: var(--slate-600); }
+    .btn:focus-visible { outline: 2px solid var(--slate-400); outline-offset: 2px; }
+
+    /* ------------------------------------------------------------ layout */
+    .wrap {
+      flex: 1;
+      width: 100%;
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--slate-100);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .card h2 {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--slate-500);
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .card h2 svg { width: 14px; height: 14px; }
+
+    /* ------------------------------------------------------------ rows */
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 150px;
+      gap: 12px;
+      align-items: center;
+      padding: 5px 0;
+    }
+    .row label, .row .lbl {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--slate-600);
+    }
+    .row .sub {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--slate-400);
+      margin-top: 1px;
+    }
+
+    .in {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .in .prefix, .in .suffix {
+      position: absolute;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-400);
+      pointer-events: none;
+    }
+    .in .prefix { left: 11px; }
+    .in .suffix { right: 11px; }
+    .in input {
+      width: 100%;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-900);
+      text-align: right;
+      background: var(--slate-25);
+      border: 1px solid var(--slate-200);
+      border-radius: var(--radius-sm);
+      padding: 8px 11px;
+      outline: none;
+      transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    }
+    .in.has-prefix input { padding-left: 24px; }
+    .in.has-suffix input { padding-right: 26px; }
+    .in input:focus { border-color: var(--slate-400); box-shadow: 0 0 0 3px var(--slate-100); background: #fff; }
+    .in input::placeholder { color: var(--slate-300); font-weight: 500; }
+
+    /* computed value rows */
+    .row.calc { border-top: 1px dashed var(--slate-100); margin-top: 4px; padding-top: 9px; }
+    .row.calc .lbl { color: var(--slate-800); font-weight: 700; }
+    .row .val {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-800);
+      text-align: right;
+      padding-right: 11px;
+    }
+    .row.calc.grand .lbl, .row.calc.grand .val { font-size: 15px; font-weight: 800; color: var(--slate-900); }
+
+    /* segmented control */
+    .seg {
+      display: inline-flex;
+      background: var(--slate-100);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      gap: 2px;
+      margin-bottom: 10px;
+    }
+    .seg button {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--slate-500);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+    }
+    .seg button.on { background: #fff; color: var(--slate-900); box-shadow: 0 1px 2px rgba(21,24,30,0.08); }
+    .seg button:focus-visible { outline: 2px solid var(--slate-400); outline-offset: 1px; }
+
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 0 2px;
+    }
+    .check-row input { width: 15px; height: 15px; accent-color: var(--slate-800); cursor: pointer; }
+    .check-row label { font-size: 12.5px; font-weight: 600; color: var(--slate-600); cursor: pointer; }
+
+    /* ------------------------------------------------------------ margin panel */
+    .margin-col { position: sticky; top: 20px; }
+
+    .tile {
+      border-radius: var(--radius);
+      padding: 22px 20px 18px;
+      text-align: center;
+      transition: background var(--dur) var(--ease);
+      margin-bottom: 14px;
+    }
+    .tile .pct {
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .tile .word {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+    .tile.low { background: var(--low-bg); }
+    .tile.low .pct, .tile.low .word { color: var(--low-fg); }
+    .tile.thin { background: var(--thin-bg); }
+    .tile.thin .pct, .tile.thin .word { color: var(--thin-fg); }
+    .tile.healthy { background: var(--healthy-bg); }
+    .tile.healthy .pct, .tile.healthy .word { color: var(--healthy-fg); }
+    .tile.empty { background: var(--slate-100); }
+    .tile.empty .pct, .tile.empty .word { color: var(--slate-400); }
+
+    /* meter */
+    .meter { margin: 2px 2px 16px; }
+    .meter .track {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+    }
+    .meter .z-low { background: var(--low-bg); }
+    .meter .z-thin { background: var(--thin-bg); }
+    .meter .z-healthy { background: var(--healthy-bg); flex: 1; }
+    .meter .needle {
+      position: absolute;
+      top: -2px;
+      width: 3px;
+      height: 12px;
+      border-radius: 2px;
+      background: var(--slate-900);
+      transition: left var(--dur) var(--ease);
+    }
+    .meter .ticks {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: var(--slate-400);
+      margin-top: 5px;
+    }
+
+    .mrow {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      padding: 7px 2px;
+      font-size: 13.5px;
+      border-top: 1px solid var(--slate-50);
+    }
+    .mrow:first-of-type { border-top: none; }
+    .mrow .k { font-weight: 600; color: var(--slate-600); }
+    .mrow .v { font-weight: 700; color: var(--slate-800); }
+    .mrow.strong .k, .mrow.strong .v { font-weight: 800; color: var(--slate-900); }
+    .mrow .v.neg { color: var(--low-fg); }
+
+    .bands {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--slate-100);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--slate-500);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .bands input {
+      width: 52px;
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--slate-800);
+      background: var(--slate-25);
+      border: 1px solid var(--slate-200);
+      border-radius: 6px;
+      padding: 4px 6px;
+      outline: none;
+    }
+    .bands input:focus { border-color: var(--slate-400); }
+
+    /* pitch card */
+    .pitch {
+      background: var(--slate-800);
+      border: none;
+      color: #fff;
+    }
+    .pitch h3 { font-size: 14px; font-weight: 800; margin: 0 0 6px; }
+    .pitch p { font-size: 12.5px; font-weight: 500; color: var(--slate-300); line-height: 1.55; margin: 0 0 14px; }
+    .pitch .btn { border-color: transparent; }
+
+    /* ------------------------------------------------------------ mobile */
+    @media (max-width: 900px) {
+      .wrap { grid-template-columns: 1fr; padding: 12px; }
+      .margin-col { position: static; order: -1; }
+      .demo-bar .demo-note { display: none; }
+      .row { grid-template-columns: 1fr 130px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="demo-bar">
+    <a class="back-link" href="/"><i data-lucide="arrow-left"></i>David Donnell</a>
+    <span class="tool-name"><i data-lucide="calculator"></i>Deal Desk</span>
+    <span class="demo-note">A dealership deal sheet, generalized. Numbers stay in your browser.</span>
+    <span class="spacer"></span>
+    <button class="btn" id="reset" type="button"><i data-lucide="file-plus-2"></i>New deal</button>
+  </header>
+
+  <main class="wrap">
+
+    <!-- ============================================ deal column -->
+    <div class="col">
+
+      <section class="card" aria-labelledby="h-machine">
+        <h2 id="h-machine"><i data-lucide="tag"></i>Machine</h2>
+        <div class="row">
+          <label for="sale">Sale price</label>
+          <div class="in has-prefix"><span class="prefix">$</span><input id="sale" data-key="sale" inputmode="decimal" placeholder="0.00" /></div>
+        </div>
+        <div class="row">
+          <label for="discount">Special discount</label>
+          <div class="in has-prefix"><span class="prefix">&minus;$</span><input id="discount" data-key="discount" inputmode="decimal" placeholder="0.00" /></div>
+        </div>
+        <div class="row calc">
+          <span class="lbl">Machine total</span>
+          <span class="val money" id="o-machine">$0.00</span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-addons">
+        <h2 id="h-addons"><i data-lucide="plus-circle"></i>Add-ons</h2>
+        <div class="row">
+          <label for="accessories">Accessories</label>
+          <div class="in has-prefix"><span class="prefix">$</span><input id="accessories" data-key="accessories" inputmode="decimal" placeholder="0.00" /></div>
+        </div>
+        <div class="row">
+          <label for="service">Service plan</label>
+          <div class="in has-prefix"><span class="prefix">$</span><input id="service" data-key="service" inputmode="decimal" placeholder="0.00" /></div>
+        </div>
+        <div class="row calc">
+          <span class="lbl">Add-ons total</span>
+          <span class="val money" id="o-addons">$0.00</span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-totals">
+        <h2 id="h-totals"><i data-lucide="receipt"></i>Total deal</h2>
+        <div class="row">
+          <span class="lbl">Subtotal</span>
+          <span class="val money" id="o-subtotal">$0.00</span>
+        </div>
+        <div class="row">
+          <label for="taxRate">Sales tax rate</label>
+          <div class="in has-suffix"><input id="taxRate" data-key="taxRate" inputmode="decimal" placeholder="0" /><span class="suffix">%</span></div>
+        </div>
+        <div class="row">
+          <span class="lbl">Sales tax</span>
+          <span class="val money" id="o-tax">$0.00</span>
+        </div>
+        <div class="row calc grand">
+          <span class="lbl">Grand total</span>
+          <span class="val money" id="o-grand">$0.00</span>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-fin">
+        <h2 id="h-fin"><i data-lucide="landmark"></i>Financing</h2>
+        <div class="seg" role="tablist" aria-label="Financing mode">
+          <button type="button" id="mode-flat" class="on">Flat fee</button>
+          <button type="button" id="mode-apr">APR</button>
+        </div>
+        <div class="row">
+          <label for="down">Down payment</label>
+          <div class="in has-prefix"><span class="prefix">$</span><input id="down" data-key="down" inputmode="decimal" placeholder="0.00" /></div>
+        </div>
+        <div class="row">
+          <span class="lbl">Amount financed</span>
+          <span class="val money" id="o-financed">$0.00</span>
+        </div>
+        <div class="row" id="row-flat">
+          <label for="finCost">Financing cost <span class="sub">flat fee for the term</span></label>
+          <div class="in has-prefix"><span class="prefix">$</span><input id="finCost" data-key="finCost" inputmode="decimal" placeholder="0.00" /></div>
+        </div>
+        <div class="row" id="row-apr" hidden>
+          <label for="apr">Interest rate <span class="sub">annual, APR</span></label>
+          <div class="in has-suffix"><input id="apr" data-key="apr" inputmode="decimal" placeholder="0" /><span class="suffix">%</span></div>
+        </div>
+        <div class="row">
+          <label for="months">Months financed</label>
+          <div class="in"><input id="months" data-key="months" inputmode="numeric" placeholder="0" /></div>
+        </div>
+        <div class="row calc">
+          <span class="lbl">Total cost to finance</span>
+          <span class="val money" id="o-totalfin">$0.00</span>
+        </div>
+        <div class="row calc grand">
+          <span class="lbl">Monthly payment</span>
+          <span class="val money" id="o-payment">&mdash;</span>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" id="absorb" data-key="absorb" />
+          <label for="absorb">Dealership absorbs the financing cost (promo financing)</label>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ============================================ margin column -->
+    <div class="col margin-col">
+
+      <section class="card" aria-labelledby="h-margin">
+        <h2 id="h-margin"><i data-lucide="trending-up"></i>Margin</h2>
+
+        <div class="tile empty" id="tile">
+          <div class="pct" id="o-pct">&mdash;</div>
+          <div class="word" id="o-word">Enter the deal</div>
+        </div>
+
+        <div class="meter" aria-hidden="true">
+          <div class="track" id="meter-track">
+            <span class="z-low" id="z-low"></span><span class="z-thin" id="z-thin"></span><span class="z-healthy"></span>
+            <span class="needle" id="needle" style="left:0%"></span>
+          </div>
+          <div class="ticks"><span>0%</span><span id="tick-mid"></span><span>40%+</span></div>
+        </div>
+
+        <div class="row">
+          <label for="cost">Wholesale cost <span class="sub">last cost from POS, incl. inclusions</span></label>
+          <div class="in has-prefix"><span class="prefix">$</span><input id="cost" data-key="cost" inputmode="decimal" placeholder="0.00" /></div>
+        </div>
+        <div class="row">
+          <label for="commRate">Commission rate <span class="sub">% of pre-tax deal</span></label>
+          <div class="in has-suffix"><input id="commRate" data-key="commRate" inputmode="decimal" placeholder="0" /><span class="suffix">%</span></div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div class="mrow"><span class="k">Gross profit</span><span class="v money" id="o-gross">$0.00</span></div>
+          <div class="mrow" id="mrow-fin" hidden><span class="k">Financing cost (dealer)</span><span class="v money neg" id="o-fincost-m">$0.00</span></div>
+          <div class="mrow"><span class="k">Profit after financing</span><span class="v money" id="o-profit">$0.00</span></div>
+          <div class="mrow"><span class="k">Commission <span id="o-commrate"></span></span><span class="v money" id="o-comm">$0.00</span></div>
+          <div class="mrow strong"><span class="k">Net to house</span><span class="v money" id="o-net">$0.00</span></div>
+        </div>
+
+        <div class="bands">
+          <span>Thin below</span>
+          <input id="bandLow" data-key="bandLow" inputmode="decimal" />
+          <span>% &middot; healthy at</span>
+          <input id="bandHigh" data-key="bandHigh" inputmode="decimal" />
+          <span>%</span>
+        </div>
+      </section>
+
+      <section class="card pitch">
+        <h3>This runs on typed-in numbers.</h3>
+        <p>The real version pulls the wholesale cost straight from your POS, so the margin is live before the customer sits down. Want one wired up for your dealership?</p>
+        <a class="btn" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Book a free call<i data-lucide="arrow-right"></i></a>
+      </section>
+
+    </div>
+
+  </main>
+
+<script>
+(function () {
+  var STORE_KEY = 'dd-dealdesk-v1';
+
+  var DEAL_DEFAULTS = {
+    sale: '', discount: '', accessories: '', service: '',
+    down: '', finCost: '', apr: '', months: '', cost: ''
+  };
+  var SETTINGS_DEFAULTS = {
+    taxRate: '7.96', commRate: '5', bandLow: '15', bandHigh: '25',
+    finMode: 'flat', absorb: false
+  };
+
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        var s = JSON.parse(raw);
+        // backfill any new keys
+        var base = Object.assign({}, clone(DEAL_DEFAULTS), clone(SETTINGS_DEFAULTS));
+        return Object.assign(base, s);
+      }
+    } catch (e) { /* blocked storage: run from memory */ }
+    return Object.assign({}, clone(DEAL_DEFAULTS), clone(SETTINGS_DEFAULTS));
+  }
+
+  function persist() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+  }
+
+  var state = load();
+
+  function num(v) {
+    var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmt(n) {
+    var neg = n < 0;
+    var r = Math.abs(Math.round(n * 100) / 100);
+    var s = '$' + r.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return neg ? '−' + s : s;
+  }
+
+  /* ------------------------------------------------------------- compute */
+  function compute() {
+    var machine = num(state.sale) - num(state.discount);
+    var addons = num(state.accessories) + num(state.service);
+    var subtotal = machine + addons;
+    var tax = subtotal * num(state.taxRate) / 100;
+    var grand = subtotal + tax;
+    var financed = Math.max(grand - num(state.down), 0);
+    var months = Math.max(Math.round(num(state.months)), 0);
+
+    var finCost = 0, payment = null, totalFin = financed;
+    if (state.finMode === 'flat') {
+      finCost = num(state.finCost);
+      totalFin = financed + finCost;
+      payment = months > 0 ? totalFin / months : null;
+    } else {
+      var r = num(state.apr) / 100 / 12;
+      if (months > 0) {
+        payment = r > 0 ? financed * r / (1 - Math.pow(1 + r, -months)) : financed / months;
+        totalFin = payment * months;
+        finCost = totalFin - financed;
+      } else {
+        totalFin = financed;
+      }
+    }
+
+    var gross = subtotal - num(state.cost);
+    var profit = state.absorb ? gross - finCost : gross;
+    var comm = subtotal * num(state.commRate) / 100;
+    var net = profit - comm;
+    var marginPct = subtotal > 0 ? (profit / subtotal) * 100 : null;
+
+    return {
+      machine: machine, addons: addons, subtotal: subtotal, tax: tax, grand: grand,
+      financed: financed, finCost: finCost, totalFin: totalFin, payment: payment,
+      gross: gross, profit: profit, comm: comm, net: net, marginPct: marginPct,
+      hasCost: num(state.cost) > 0 || String(state.cost).trim() !== ''
+    };
+  }
+
+  /* -------------------------------------------------------------- render */
+  function set(id, text) { document.getElementById(id).textContent = text; }
+
+  function render() {
+    var c = compute();
+
+    set('o-machine', fmt(c.machine));
+    set('o-addons', fmt(c.addons));
+    set('o-subtotal', fmt(c.subtotal));
+    set('o-tax', fmt(c.tax));
+    set('o-grand', fmt(c.grand));
+    set('o-financed', fmt(c.financed));
+    set('o-totalfin', fmt(c.totalFin));
+    set('o-payment', c.payment === null ? '—' : fmt(c.payment) + ' /mo');
+
+    set('o-gross', fmt(c.gross));
+    set('o-profit', fmt(c.profit));
+    set('o-comm', fmt(c.comm));
+    set('o-commrate', '(' + num(state.commRate) + '%)');
+    set('o-net', fmt(c.net));
+
+    var finRow = document.getElementById('mrow-fin');
+    finRow.hidden = !(state.absorb && c.finCost > 0);
+    set('o-fincost-m', '−' + fmt(c.finCost).replace('−', ''));
+
+    // margin tile + meter
+    var low = num(state.bandLow), high = num(state.bandHigh);
+    var tile = document.getElementById('tile');
+    tile.className = 'tile';
+    if (c.marginPct === null || c.subtotal <= 0 || String(state.cost).trim() === '') {
+      tile.classList.add('empty');
+      set('o-pct', '—');
+      set('o-word', 'Enter the deal');
+    } else {
+      var pct = c.marginPct;
+      set('o-pct', pct.toFixed(1) + '%');
+      if (pct < low) { tile.classList.add('low'); set('o-word', 'Low margin'); }
+      else if (pct < high) { tile.classList.add('thin'); set('o-word', 'Thin margin'); }
+      else { tile.classList.add('healthy'); set('o-word', 'Healthy margin'); }
+    }
+
+    // meter zones scale 0..40%
+    var SCALE = 40;
+    document.getElementById('z-low').style.width = Math.min(low / SCALE * 100, 100) + '%';
+    document.getElementById('z-thin').style.width = Math.min(Math.max(high - low, 0) / SCALE * 100, 100) + '%';
+    set('tick-mid', high + '%');
+    var needle = document.getElementById('needle');
+    if (c.marginPct === null || String(state.cost).trim() === '') {
+      needle.style.display = 'none';
+    } else {
+      needle.style.display = 'block';
+      var p = Math.max(Math.min(c.marginPct, SCALE), 0) / SCALE * 100;
+      needle.style.left = 'calc(' + p + '% - 1px)';
+    }
+  }
+
+  /* --------------------------------------------------------------- wire */
+  document.querySelectorAll('input[data-key]').forEach(function (el) {
+    var key = el.getAttribute('data-key');
+    if (el.type === 'checkbox') el.checked = !!state[key];
+    else el.value = state[key];
+
+    el.addEventListener('input', function () {
+      state[key] = el.type === 'checkbox' ? el.checked : el.value;
+      persist();
+      render();
+    });
+  });
+
+  var modeFlat = document.getElementById('mode-flat');
+  var modeApr = document.getElementById('mode-apr');
+  function setMode(mode) {
+    state.finMode = mode;
+    modeFlat.classList.toggle('on', mode === 'flat');
+    modeApr.classList.toggle('on', mode === 'apr');
+    document.getElementById('row-flat').hidden = mode !== 'flat';
+    document.getElementById('row-apr').hidden = mode !== 'apr';
+    persist();
+    render();
+  }
+  modeFlat.addEventListener('click', function () { setMode('flat'); });
+  modeApr.addEventListener('click', function () { setMode('apr'); });
+
+  /* New deal — clears the deal, keeps settings (tax, commission, bands, mode) */
+  var resetBtn = document.getElementById('reset');
+  var resetArmed = false, resetTimer;
+  resetBtn.addEventListener('click', function () {
+    if (!resetArmed) {
+      resetArmed = true;
+      resetBtn.textContent = 'Click again to clear';
+      resetTimer = setTimeout(function () {
+        resetArmed = false;
+        resetBtn.innerHTML = '<i data-lucide="file-plus-2"></i>New deal';
+        if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+      }, 3000);
+      return;
+    }
+    clearTimeout(resetTimer);
+    resetArmed = false;
+    resetBtn.innerHTML = '<i data-lucide="file-plus-2"></i>New deal';
+    Object.keys(DEAL_DEFAULTS).forEach(function (k) {
+      state[k] = DEAL_DEFAULTS[k];
+      var el = document.querySelector('[data-key="' + k + '"]');
+      if (el) el.value = '';
+    });
+    persist();
+    render();
+    if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+  });
+
+  setMode(state.finMode);
+  render();
+  window.addEventListener('load', function () {
+    if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+  });
+})();
+</script>
+</body>
+</html>
