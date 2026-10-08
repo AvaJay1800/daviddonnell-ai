@@ -324,46 +324,6 @@
 .thumb span { display: block; }
 .thumb-light { background: #EDEEEB; }
 
-/* CMS demo mini: sidebar + editor + live site preview */
-.t-cms .t-sidebar {
-  width: 21%;
-  background: #fff;
-  border-radius: 8px;
-  padding: 8px 7px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.t-cms .nav-b { height: 5px; border-radius: 3px; background: #E2E4DF; }
-.t-cms .nav-b.on { background: #A6E287; }
-.t-cms .promo { margin-top: auto; height: 32px; border-radius: 6px; background: #8FD86A; }
-.t-cms .t-editor {
-  width: 30%;
-  background: #fff;
-  border-radius: 8px;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.t-cms .l { height: 4px; width: 42%; border-radius: 2px; background: #CCD0C9; }
-.t-cms .f { height: 10px; border: 1px solid #E2E4DF; border-radius: 5px; }
-.t-cms .t-site { flex: 1; background: #F3FBEE; border-radius: 8px; padding: 7px; display: flex; }
-.t-cms .inner {
-  flex: 1;
-  background: #fff;
-  border-radius: 6px;
-  padding: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  align-items: center;
-}
-.t-cms .ban { width: 100%; height: 6px; border-radius: 3px; background: #E5F6DA; }
-.t-cms .h { width: 72%; height: 8px; border-radius: 4px; background: #0E3B2D; margin-top: 5px; }
-.t-cms .h2 { width: 46%; height: 8px; border-radius: 4px; background: #2DB85C; }
-.t-cms .cta { width: 36%; height: 11px; border-radius: 999px; background: #8FD86A; margin-top: 5px; }
-
 /* Quote builder mini: the printable quote document */
 .t-quote { justify-content: center; }
 .t-quote .doc {
@@ -389,26 +349,6 @@
 .t-quote .r.alt { background: #EDEEEB; }
 .t-quote .total { height: 15px; border-radius: 5px; background: #0E3B2D; margin-top: 3px; width: 58%; align-self: flex-end; }
 .t-quote .dep { height: 10px; border-radius: 4px; background: #E5F6DA; width: 58%; align-self: flex-end; }
-
-/* Food truck mini: warm menu page with butter accents */
-.t-melt { background: #F1EADC; justify-content: center; }
-.t-melt .page {
-  width: 68%;
-  background: #fff;
-  border-radius: 8px;
-  padding: 9px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.t-melt .ban { height: 6px; border-radius: 3px; background: #FFF2CF; }
-.t-melt .brand { display: flex; align-items: center; gap: 5px; }
-.t-melt .dot { width: 10px; height: 10px; border-radius: 50%; background: #FFC94D; }
-.t-melt .ttl { width: 46%; height: 7px; border-radius: 3px; background: #3A2310; }
-.t-melt .mi { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-.t-melt .mi .n { height: 6px; border-radius: 3px; background: #E6DCC8; flex: 1; max-width: 62%; }
-.t-melt .mi .p { width: 16%; height: 8px; border-radius: 4px; background: #FFC94D; }
-.t-melt .cta { width: 40%; height: 11px; border-radius: 999px; background: #FFC94D; align-self: center; margin-top: 2px; }
 
 /* Deal Desk mini: slate inputs beside a green margin tile */
 .t-desk { background: #E9EBEE; }
