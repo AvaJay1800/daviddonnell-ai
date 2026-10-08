@@ -384,7 +384,9 @@
 
     /* ------------------------------------------------------------ customer view */
     body.customer .margin-col,
-    body.customer .demo-note { display: none; }
+    body.customer .demo-note,
+    body.customer .seg,
+    body.customer .check-row { display: none; }
     body.customer .wrap {
       grid-template-columns: 1fr;
       max-width: 620px;
@@ -632,7 +634,7 @@
   };
   var SETTINGS_DEFAULTS = {
     taxRate: '7.96', commRate: '5', bandLow: '15', bandHigh: '25',
-    finMode: 'flat', absorb: false, customerMode: false
+    finMode: 'flat', absorb: false, customerMode: false, prevFinMode: ''
   };
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -803,6 +805,15 @@
   var custBtn = document.getElementById('custmode');
   function applyCustomerMode() {
     document.body.classList.toggle('customer', !!state.customerMode);
+    // Customers only ever see APR financing; flat fees are desk language.
+    if (state.customerMode && state.finMode === 'flat') {
+      state.prevFinMode = 'flat';
+      setMode('apr');
+    } else if (!state.customerMode && state.prevFinMode) {
+      var prev = state.prevFinMode;
+      state.prevFinMode = '';
+      setMode(prev);
+    }
     custBtn.innerHTML = state.customerMode
       ? '<i data-lucide="eye"></i>Desk view'
       : '<i data-lucide="eye-off"></i>Customer view';
