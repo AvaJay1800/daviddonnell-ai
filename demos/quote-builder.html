@@ -465,7 +465,7 @@
       <div class="promo">
         <div class="lc-imageslot on-lime">your logo here</div>
         <h3>Want a tool like this for your crew?</h3>
-        <a class="lc-btn lc-btn-sm" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Book a free call</a>
+        <a class="lc-btn lc-btn-sm" href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=quote-builder" target="_blank" rel="noopener noreferrer" data-ga="book_call" data-ga-params='{"placement":"quote-builder"}'>Book a free call</a>
       </div>
     </aside>
 
@@ -820,7 +820,17 @@
   });
 
   document.getElementById('print').addEventListener('click', function () {
+    if (typeof gtag === 'function') gtag('event', 'quote_print', {});
     window.print();
+  });
+
+  /* Analytics: elements tagged data-ga fire a GA4 event on click */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-ga]');
+    if (!el || typeof gtag !== 'function') return;
+    var params = {};
+    try { params = JSON.parse(el.getAttribute('data-ga-params') || '{}'); } catch (err) {}
+    gtag('event', el.getAttribute('data-ga'), params);
   });
 
   /* Reset — click once to arm, again to confirm */

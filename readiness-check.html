@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-Z45C4PE3RB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-Z45C4PE3RB');
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AI Readiness Check | David Donnell</title>
@@ -204,7 +212,11 @@ const indWrap = document.getElementById('industries');
 INDUSTRIES.forEach(label => {
   const b = document.createElement('button');
   b.className = 'pill'; b.textContent = label;
-  b.onclick = () => { industry = label; intro.classList.add('hidden'); quiz.classList.remove('hidden'); render(); };
+  b.onclick = () => {
+    industry = label;
+    if (typeof gtag === 'function') gtag('event', 'quiz_start', { industry: label });
+    intro.classList.add('hidden'); quiz.classList.remove('hidden'); render();
+  };
   indWrap.appendChild(b);
 });
 
@@ -244,6 +256,10 @@ function showResult() {
     blurb = "There's real money being left on the table in how inquiries and admin are handled. The good news: the easiest, highest-impact improvements are still ahead of you.";
   }
 
+  const bandSlug = band.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  if (typeof gtag === 'function') gtag('event', 'quiz_complete', { score: pct, band: bandSlug, industry: industry });
+  const ctaUrl = CALENDAR_URL + '?utm_source=site&utm_campaign=quiz&utm_content=' + encodeURIComponent(bandSlug + '-' + pct);
+
   const r = document.getElementById('result');
   r.classList.remove('hidden');
   r.innerHTML =
@@ -256,9 +272,13 @@ function showResult() {
     '<div class="cta-box">' +
       '<div class="lbl">Want the full picture?</div>' +
       '<div style="font-size:15px; margin-bottom:14px;">Book a free 30-minute discovery call and we\'ll walk through where the fastest wins are for your business.</div>' +
-      '<a class="cta-btn" href="' + CALENDAR_URL + '" target="_blank" rel="noopener">Book my free discovery call &rarr;</a>' +
+      '<a class="cta-btn" href="' + ctaUrl + '" target="_blank" rel="noopener">Book my free discovery call &rarr;</a>' +
     '</div>' +
     '<div class="center"><button class="retake" onclick="location.reload()">&#8635; Retake</button></div>';
+
+  r.querySelector('.cta-btn').addEventListener('click', function () {
+    if (typeof gtag === 'function') gtag('event', 'quiz_cta', { score: pct, band: bandSlug, industry: industry });
+  });
 }
 </script>
 </body>

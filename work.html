@@ -107,6 +107,32 @@
     .nav-links a:hover { color: var(--text-primary); }
     .nav-links a.active { color: var(--text-primary); }
 
+    /* Hamburger — hidden on desktop, becomes an X when open */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 42px;
+      height: 38px;
+      padding: 0 10px;
+      background: var(--surface-raised);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .nav-toggle span {
+      display: block;
+      height: 2px;
+      width: 100%;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+    }
+    nav.menu-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    nav.menu-open .nav-toggle span:nth-child(2) { opacity: 0; }
+    nav.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
     /* Layout */
     .container {
       max-width: 1080px;
@@ -281,8 +307,26 @@
       .cards { grid-template-columns: 1fr; }
     }
     @media (max-width: 768px) {
-      nav { padding: 16px 24px; }
-      .nav-links { display: none; }
+      nav { padding: 12px 20px; align-items: center; }
+      nav > .btn { padding: 10px 14px; font-size: 0.85rem; margin-left: auto; margin-right: 10px; }
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        padding: 4px 20px 10px;
+        background: rgba(13, 14, 26, 0.97);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+      }
+      nav.menu-open .nav-links { display: flex; }
+      .nav-links li + li { border-top: 1px solid var(--border); }
+      .nav-links a { display: block; padding: 13px 0; font-size: 1rem; }
       .container { padding: 0 24px; }
       .page-head { padding: 60px 0 40px; }
       .cta-card { padding: 48px 28px; }
@@ -298,7 +342,7 @@
       David Donnell
       <span class="nav-subtitle">Digital Advisor</span>
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="nav-menu">
       <li><a href="/#how">How it works</a></li>
       <li><a href="/#services">Services</a></li>
       <li><a href="/work.html" class="active">Work</a></li>
@@ -306,7 +350,8 @@
       <li><a href="/#about">About</a></li>
       <li><a href="/#contact">Contact</a></li>
     </ul>
-    <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient">Book a Free Call</a>
+    <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=work-nav" target="_blank" rel="noopener noreferrer" class="btn btn-gradient" data-ga="book_call" data-ga-params='{"placement":"work-nav"}'>Book a Free Call</a>
+    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
   </nav>
 
   <!-- Page head -->
@@ -327,7 +372,7 @@
     <div class="container">
       <div class="cards">
 
-        <a class="card" href="/demos/quote-builder.html">
+        <a class="card" href="/demos/quote-builder.html" data-ga="gallery_card" data-ga-params='{"item":"quote-builder","page":"work"}'>
           <div class="thumb thumb-light t-quote" aria-hidden="true">
             <div class="doc">
               <div class="lh"><span class="nm"></span><span class="nm sm"></span></div>
@@ -346,7 +391,7 @@
           <span class="card-link">Open the demo &rarr;</span>
         </a>
 
-        <a class="card" href="/demos/deal-desk.html">
+        <a class="card" href="/demos/deal-desk.html" data-ga="gallery_card" data-ga-params='{"item":"deal-desk","page":"work"}'>
           <div class="thumb thumb-light t-desk" aria-hidden="true">
             <div class="inputs"><span class="lab"></span><span class="fld"></span><span class="lab"></span><span class="fld"></span><span class="fld"></span></div>
             <div class="outs"><span class="tile"><i></i></span><span class="r"></span><span class="r"></span><span class="r dark"></span></div>
@@ -363,7 +408,7 @@
           <span class="card-link">Open the tool &rarr;</span>
         </a>
 
-        <a class="card" href="/readiness-check.html">
+        <a class="card" href="/readiness-check.html" data-ga="gallery_card" data-ga-params='{"item":"readiness-check","page":"work"}'>
           <div class="thumb t-quiz" aria-hidden="true">
             <div class="qcard"><span class="prog"></span><span class="q"></span><span class="opt"></span><span class="opt sel"></span><span class="opt"></span></div>
           </div>
@@ -377,7 +422,7 @@
           <span class="card-link">Take the 2-minute check &rarr;</span>
         </a>
 
-        <a class="card card-next" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">
+        <a class="card card-next" href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=work-next-card" target="_blank" rel="noopener noreferrer" data-ga="book_call" data-ga-params='{"placement":"work-next-card"}'>
           <div class="thumb" aria-hidden="true">Your tool here</div>
           <span class="badge badge-neutral">Next</span>
           <h3>The tool your business needs</h3>
@@ -402,7 +447,7 @@
           Book a free 30-minute call. Tell me what's eating your time, and we'll
           figure out whether a small tool can fix it, and exactly what it would cost.
         </p>
-        <a href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg">
+        <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=work-ctaband" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg" data-ga="book_call" data-ga-params='{"placement":"work-ctaband"}'>
           Book Your Free Call
         </a>
       </div>
@@ -415,6 +460,38 @@
     <p>Denver, CO &middot; daviddonnell.com</p>
     <a href="mailto:davidadonnell@gmail.com">davidadonnell@gmail.com</a>
   </footer>
+
+  <script>
+    /* Mobile menu */
+    (function () {
+      var nav = document.querySelector('nav');
+      var btn = document.querySelector('.nav-toggle');
+      if (!nav || !btn) return;
+      function close() {
+        nav.classList.remove('menu-open');
+        btn.setAttribute('aria-expanded', 'false');
+      }
+      btn.addEventListener('click', function () {
+        var open = nav.classList.toggle('menu-open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      nav.addEventListener('click', function (e) {
+        if (e.target.closest('.nav-links a')) close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+      });
+    })();
+
+    /* Analytics: elements tagged data-ga fire a GA4 event on click */
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('[data-ga]');
+      if (!el || typeof gtag !== 'function') return;
+      var params = {};
+      try { params = JSON.parse(el.getAttribute('data-ga-params') || '{}'); } catch (err) {}
+      gtag('event', el.getAttribute('data-ga'), params);
+    });
+  </script>
 
 </body>
 </html>

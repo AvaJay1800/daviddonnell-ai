@@ -617,7 +617,7 @@
       <section class="card pitch">
         <h3>This runs on typed-in numbers.</h3>
         <p>The real version pulls the wholesale cost straight from your POS, so the margin is live before the customer sits down. Want one wired up for your dealership?</p>
-        <a class="btn" href="https://calendly.com/davidadonnell/30min" target="_blank" rel="noopener noreferrer">Book a free call<i data-lucide="arrow-right"></i></a>
+        <a class="btn" href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=deal-desk" target="_blank" rel="noopener noreferrer" data-ga="book_call" data-ga-params='{"placement":"deal-desk"}'>Book a free call<i data-lucide="arrow-right"></i></a>
       </section>
 
     </div>
@@ -823,6 +823,16 @@
     state.customerMode = !state.customerMode;
     persist();
     applyCustomerMode();
+    if (typeof gtag === 'function') gtag('event', 'customer_view', { on: state.customerMode });
+  });
+
+  /* Analytics: elements tagged data-ga fire a GA4 event on click */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-ga]');
+    if (!el || typeof gtag !== 'function') return;
+    var params = {};
+    try { params = JSON.parse(el.getAttribute('data-ga-params') || '{}'); } catch (err) {}
+    gtag('event', el.getAttribute('data-ga'), params);
   });
   applyCustomerMode();
 
