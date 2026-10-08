@@ -516,6 +516,28 @@
     }
     .gallery-link:hover { color: var(--text-primary); }
 
+    /* Client work */
+    .clientwork {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .clientwork-header {
+      margin-bottom: 48px;
+    }
+
+    .cards.cols-2 { grid-template-columns: repeat(2, 1fr); }
+
+    .client-shot {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
     /* Who I work with */
     .clients {
       padding: 100px 0;
@@ -962,7 +984,7 @@
       .hero-badge, .hero h1, .hero p, .hero-ctas,
       .how-header, .step,
       .services-header, .card,
-      .work-header,
+      .work-header, .clientwork-header,
       .clients-head, .client-list, .stat-box,
       .about-head, .about-photo-wrap, .about-body, .about-skills,
       .cta-card
@@ -984,7 +1006,7 @@
         .hero-badge, .hero h1, .hero p, .hero-ctas,
         .how-header, .step,
         .services-header, .card,
-        .work-header,
+        .work-header, .clientwork-header,
         .clients-head, .client-list, .stat-box,
         .about-head, .about-photo-wrap, .about-body, .about-skills,
         .cta-card
@@ -1170,6 +1192,44 @@
     </div>
   </section>
 
+  <!-- Client work -->
+  <section class="clientwork" id="client-work">
+    <div class="container">
+      <div class="clientwork-header">
+        <span class="section-label">Client work</span>
+        <h2 class="section-title">Real sites, real businesses</h2>
+        <p class="section-sub">
+          Not demos. These are live sites I designed and built for clients,
+          running today.
+        </p>
+      </div>
+      <div class="cards cols-2">
+        <a class="card" href="https://soggypawz-pet.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"soggy-pawz","page":"home"}'>
+          <img class="client-shot" src="/assets/clients/soggy-pawz.jpg" alt="The Soggy Pawz Pet Spawz homepage" loading="lazy" width="720" height="450" />
+          <span class="badge badge-green">Live site</span>
+          <h3>Soggy Pawz Pet Spawz</h3>
+          <p>
+            Mobile dog and cat grooming in Broomfield, Colorado. A full site plus
+            a content manager the owners use to update their own photos, pricing,
+            and reviews. No monthly platform fees.
+          </p>
+          <span class="card-link">Visit the live site &rarr;</span>
+        </a>
+        <a class="card" href="https://wiley-acupuncture-preview.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"wiley","page":"home"}'>
+          <img class="client-shot" src="/assets/clients/wiley.jpg" alt="The Wiley Acupuncture homepage" loading="lazy" width="720" height="450" />
+          <span class="badge badge-green">Live site</span>
+          <h3>Wiley Acupuncture</h3>
+          <p>
+            A practice site for an acupuncturist in Hot Springs, South Dakota.
+            Calm where it should be, fast everywhere, and built around one job:
+            reserving a session.
+          </p>
+          <span class="card-link">Visit the live site &rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- Who I work with -->
   <section class="clients" id="clients">
     <div class="container">
@@ -1304,7 +1364,7 @@
       var SEL = '.hero-badge, .hero h1, .hero p, .hero-ctas,' +
                 '.how-header, .step,' +
                 '.services-header, .card,' +
-                '.work-header,' +
+                '.work-header, .clientwork-header,' +
                 '.clients-head, .client-list, .stat-box,' +
                 '.about-head, .about-photo-wrap, .about-body,' +
                 '.cta-card';

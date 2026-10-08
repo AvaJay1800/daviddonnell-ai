@@ -221,6 +221,24 @@
     }
     .card:hover .card-link { color: var(--text-primary); }
 
+    .sub-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.6rem, 2.5vw, 2rem);
+      font-weight: 600;
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 14px;
+    }
+
+    .client-shot {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
     /* The "next tool" card */
     .card-next {
       border: 1px dashed var(--border-strong);
@@ -434,6 +452,41 @@
           <span class="card-link">Book a free call &rarr;</span>
         </a>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- Client work -->
+  <section class="gallery">
+    <div class="container">
+      <span class="section-label">Client work</span>
+      <h2 class="sub-title">Real sites, real businesses</h2>
+      <p class="section-sub" style="margin-bottom: 36px;">
+        Not demos. These are live sites I designed and built for clients, running today.
+      </p>
+      <div class="cards">
+        <a class="card" href="https://soggypawz-pet.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"soggy-pawz","page":"work"}'>
+          <img class="client-shot" src="/assets/clients/soggy-pawz.jpg" alt="The Soggy Pawz Pet Spawz homepage" loading="lazy" width="720" height="450" />
+          <span class="badge badge-green">Live site</span>
+          <h3>Soggy Pawz Pet Spawz</h3>
+          <p>
+            Mobile dog and cat grooming in Broomfield, Colorado. A full site plus
+            a content manager the owners use to update their own photos, pricing,
+            and reviews themselves. No monthly platform fees.
+          </p>
+          <span class="card-link">Visit the live site &rarr;</span>
+        </a>
+        <a class="card" href="https://wiley-acupuncture-preview.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"wiley","page":"work"}'>
+          <img class="client-shot" src="/assets/clients/wiley.jpg" alt="The Wiley Acupuncture homepage" loading="lazy" width="720" height="450" />
+          <span class="badge badge-green">Live site</span>
+          <h3>Wiley Acupuncture</h3>
+          <p>
+            A practice site for an acupuncturist in Hot Springs, South Dakota.
+            Calm where it should be, fast everywhere, and built around one job:
+            reserving a session.
+          </p>
+          <span class="card-link">Visit the live site &rarr;</span>
+        </a>
       </div>
     </div>
   </section>
