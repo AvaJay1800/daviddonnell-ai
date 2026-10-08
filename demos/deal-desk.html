@@ -382,6 +382,61 @@
     .pitch p { font-size: 12.5px; font-weight: 500; color: var(--slate-300); line-height: 1.55; margin: 0 0 14px; }
     .pitch .btn { border-color: transparent; }
 
+    /* ------------------------------------------------------------ customer view */
+    body.customer .margin-col,
+    body.customer .demo-note { display: none; }
+    body.customer .wrap {
+      grid-template-columns: 1fr;
+      max-width: 620px;
+    }
+    #cust-sum { display: none; }
+    body.customer #cust-sum { display: block; }
+
+    .cust-sum {
+      background: var(--slate-800);
+      border: none;
+      color: #fff;
+      text-align: center;
+      padding: 26px 20px 20px;
+    }
+    .cust-sum .lbl-top {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate-400);
+      margin-bottom: 10px;
+    }
+    .cust-sum .pay {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      color: #fff;
+    }
+    .cust-sum .pay .mo { font-size: 16px; font-weight: 700; color: var(--slate-400); }
+    .cust-sum .term {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--slate-400);
+      margin-top: 8px;
+    }
+    .cust-sum .srows {
+      margin-top: 18px;
+      padding-top: 6px;
+      border-top: 1px solid var(--slate-600);
+      text-align: left;
+    }
+    .cust-sum .srow {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+      padding: 7px 2px;
+    }
+    .cust-sum .srow .k { font-weight: 600; color: var(--slate-300); }
+    .cust-sum .srow .v { font-weight: 700; color: #fff; }
+
     /* ------------------------------------------------------------ mobile */
     @media (max-width: 900px) {
       .wrap { grid-template-columns: 1fr; padding: 12px; }
@@ -398,6 +453,7 @@
     <span class="tool-name"><i data-lucide="calculator"></i>Deal Desk</span>
     <span class="demo-note">A dealership deal sheet, generalized. Numbers stay in your browser.</span>
     <span class="spacer"></span>
+    <button class="btn btn-dark" id="custmode" type="button"><i data-lucide="eye-off"></i>Customer view</button>
     <button class="btn" id="reset" type="button"><i data-lucide="file-plus-2"></i>New deal</button>
   </header>
 
@@ -405,6 +461,17 @@
 
     <!-- ============================================ deal column -->
     <div class="col">
+
+      <section class="card cust-sum" id="cust-sum" aria-label="Payment summary">
+        <div class="lbl-top">Your payment</div>
+        <div class="pay"><span id="c-pay">&mdash;</span><span class="mo" id="c-mo"></span></div>
+        <div class="term" id="c-term"></div>
+        <div class="srows">
+          <div class="srow"><span class="k">Grand total</span><span class="v money" id="c-grand">$0.00</span></div>
+          <div class="srow"><span class="k">Down payment</span><span class="v money" id="c-down">$0.00</span></div>
+          <div class="srow"><span class="k">Amount financed</span><span class="v money" id="c-financed">$0.00</span></div>
+        </div>
+      </section>
 
       <section class="card" aria-labelledby="h-machine">
         <h2 id="h-machine"><i data-lucide="tag"></i>Machine</h2>
@@ -565,7 +632,7 @@
   };
   var SETTINGS_DEFAULTS = {
     taxRate: '7.96', commRate: '5', bandLow: '15', bandHigh: '25',
-    finMode: 'flat', absorb: false
+    finMode: 'flat', absorb: false, customerMode: false
   };
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -655,6 +722,15 @@
     set('o-totalfin', fmt(c.totalFin));
     set('o-payment', c.payment === null ? '—' : fmt(c.payment) + ' /mo');
 
+    // customer summary
+    var months = Math.max(Math.round(num(state.months)), 0);
+    set('c-pay', c.payment === null ? '—' : fmt(c.payment));
+    set('c-mo', c.payment === null ? '' : ' /mo');
+    set('c-term', c.payment === null ? 'Pick a term to see the payment' : 'for ' + months + ' months');
+    set('c-grand', fmt(c.grand));
+    set('c-down', fmt(num(state.down)));
+    set('c-financed', fmt(c.financed));
+
     set('o-gross', fmt(c.gross));
     set('o-profit', fmt(c.profit));
     set('o-comm', fmt(c.comm));
@@ -722,6 +798,22 @@
   }
   modeFlat.addEventListener('click', function () { setMode('flat'); });
   modeApr.addEventListener('click', function () { setMode('apr'); });
+
+  /* Customer view — hides every margin and profit number */
+  var custBtn = document.getElementById('custmode');
+  function applyCustomerMode() {
+    document.body.classList.toggle('customer', !!state.customerMode);
+    custBtn.innerHTML = state.customerMode
+      ? '<i data-lucide="eye"></i>Desk view'
+      : '<i data-lucide="eye-off"></i>Customer view';
+    if (window.lucide) window.lucide.createIcons({ attrs: { 'stroke-width': 1.75 } });
+  }
+  custBtn.addEventListener('click', function () {
+    state.customerMode = !state.customerMode;
+    persist();
+    applyCustomerMode();
+  });
+  applyCustomerMode();
 
   /* New deal — clears the deal, keeps settings (tax, commission, bands, mode) */
   var resetBtn = document.getElementById('reset');
