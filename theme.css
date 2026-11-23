@@ -1,395 +1,856 @@
-/* ==========================================================================
-   David Donnell — design system
-   Shared tokens, texture overlays, and signature components.
-   Ported from the design system to vanilla CSS (no build step, no React).
-   Used by: index.html, readiness-check.html
-   ========================================================================== */
+/* ============================================================
+   David Donnell — site styles
+   "Drafting paper and physical hardware"
+
+   Ported from the daviddonnell.co portfolio so the two sites read as
+   one hand. Warm paper ground, hairline rules, mono labels. Every
+   interactive thing is a physical key: it has an edge, and it travels
+   when you press it.
+
+   Light source is ALWAYS directly above: bevel on top, hard edge
+   below, soft shadow grounding it to the paper. Never a symmetrical
+   glow, never light from the side.
+
+   Used by: index.html, work.html, readiness-check.html
+   ============================================================ */
+
+/* ---------- Self-hosted fonts (latin subset, woff2) ---------- */
+
+@font-face {
+  font-family: 'Archivo';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/assets/fonts/Archivo-var.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/assets/fonts/IBMPlexMono-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'IBM Plex Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/assets/fonts/IBMPlexMono-500.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Newsreader';
+  font-style: italic;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/assets/fonts/Newsreader-Italic-var.woff2') format('woff2');
+}
+
+/* ---------- Design tokens ---------- */
 
 :root {
-  /* --- Base navy ramp (cool, near-neutral) --- */
-  --navy-950: #0d0e1a;   /* brand base / theme-color */
-  --navy-925: #101120;
-  --navy-900: #141524;
-  --navy-850: #191a2c;
-  --navy-800: #1f2136;
-  --navy-750: #262842;
-  --navy-700: #30324f;
+  /* Core palette */
+  --paper: #f2efe8; /* page ground */
+  --ink: #16161a; /* text, inverted panels, footer */
+  --graphite: #3a3a40; /* body copy, 9.8:1 on paper */
+  --pencil: #5e5a55; /* labels, 6.0:1 on paper and 4.8:1 in a well */
+  --rule: #ddd7cb; /* hairlines, borders, dividers */
+  --blueprint: #2946e8; /* the interactive accent, 5.8:1 on paper */
+  --ochre: #c6551f; /* markup ink */
+  --green: #1e8a5a; /* markup ink only */
 
-  /* --- Text --- */
-  --text-primary:   #f5f6fb;
-  --text-secondary: #aeb3cb;
-  --text-muted:     #757b98;
-  --text-inverse:   #0d0e1a;
+  /* Derived surfaces: keycaps and deck plates */
+  --key-face-top: #fcfaf4;
+  --key-face-bottom: #ede8dc;
+  --key-edge: #d2ccbd;
+  --deck-top: #e9e4d8;
+  --deck-bottom: #ded8c9;
+  --blueprint-top: #3355f2;
+  --blueprint-bottom: #2440cf;
+  --blueprint-edge: #16279b;
 
-  /* --- Lines & surfaces --- */
-  --border:        rgba(255, 255, 255, 0.09);
-  --border-strong: rgba(255, 255, 255, 0.16);
-  --surface-card:  #161727;
-  --surface-raised:#1c1e33;
+  /* Type */
+  --sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Mono', monospace;
+  --accent: 'Newsreader', Georgia, 'Times New Roman', serif;
 
-  /* --- Accents (oklch, shared L/C, hue varies) --- */
-  --accent-purple: oklch(0.68 0.15 295);
-  --accent-blue:   oklch(0.68 0.15 250);
-  --accent-green:  oklch(0.74 0.15 158);
-  --accent-purple-hex: #a78bfa;
-  --accent-blue-hex:   #60a5fa;
-  --accent-green-hex:  #4ade9f;
-  --accent: var(--accent-blue);
+  /* Layout */
+  --max: 1400px;
+  --header-h: 68px;
+  --pad: clamp(1.25rem, 3.2vw, 2.5rem);
 
-  /* --- Signature gradient --- */
-  --gradient-brand: linear-gradient(115deg,
-    var(--accent-purple) 0%, var(--accent-blue) 48%, var(--accent-green) 100%);
-  --gradient-brand-soft: linear-gradient(115deg,
-    oklch(0.68 0.15 295 / 0.22), oklch(0.68 0.15 250 / 0.22), oklch(0.74 0.15 158 / 0.22));
+  /* Spacing scale */
+  --sp-1: 0.5rem;
+  --sp-2: 1rem;
+  --sp-3: 1.5rem;
+  --sp-4: 2rem;
+  --sp-5: 3rem;
+  --sp-6: 4rem;
+  --sp-7: 6rem;
 
-  /* --- Type --- */
-  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
-  --font-body:    "Instrument Sans", system-ui, -apple-system, sans-serif;
-  --font-mono:    "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  /* Motion */
+  --ease-curtain: cubic-bezier(0.76, 0, 0.24, 1); /* structural */
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1); /* content */
 
-  --leading-tight: 1.08;
-  --leading-snug:  1.28;
-  --leading-normal: 1.6;
-  --tracking-tight: -0.02em;
-  --tracking-wide:  0.14em;
-
-  /* --- Spacing / layout --- */
-  --container: 1120px;
-  --container-narrow: 760px;
-
-  /* --- Radii --- */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
-  --radius-xl: 28px;
-  --radius-pill: 999px;
-
-  /* --- Shadows --- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
-  --shadow-glow: 0 0 40px oklch(0.68 0.15 260 / 0.28);
-
-  /* --- Motion --- */
-  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --dur: 180ms;
-
-  /* --- Texture --- */
-  --texture-opacity: 0.055;
+  --z-header: 100;
 }
 
-/* ==========================================================================
-   Texture overlays — add .tx to a positioned container, then a .tx-* variant.
-   ========================================================================== */
+@media (max-width: 620px) {
+  :root {
+    --header-h: 60px;
+  }
+}
 
-.tx {
+/* ---------- Reset ---------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  /* Anchors land below the sticky header, not under it. */
+  scroll-padding-top: calc(var(--header-h) + 12px);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--paper);
+  color: var(--graphite);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+img,
+picture,
+svg,
+canvas {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+/* ---------- Layout ---------- */
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--pad);
+}
+
+main {
   position: relative;
-  isolation: isolate;
-}
-.tx > * { position: relative; z-index: 1; }
-
-.tx::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: var(--texture-opacity);
-  background-repeat: repeat;
+  z-index: 1;
 }
 
-/* Film grain (fine noise) */
-.tx-grain::after {
-  background-image: url("assets/textures/grain.png");
-  background-size: 160px 160px;
-  mix-blend-mode: overlay;
+/* Sections are separated by hairlines, never by shadow or fill. */
+.rule-top {
+  border-top: 1px solid var(--rule);
 }
 
-/* Halftone dots */
-.tx-halftone::after {
-  background-image: radial-gradient(circle at center, rgba(255,255,255,0.85) 0.9px, transparent 1.2px);
-  background-size: 6px 6px;
-  mix-blend-mode: soft-light;
-  opacity: calc(var(--texture-opacity) * 1.7);
+.section {
+  padding: clamp(3.5rem, 8vw, 6rem) 0;
 }
 
-/* Paper / fibrous grain (coarse noise) */
-.tx-paper::after {
-  background-image: url("assets/textures/paper.png");
-  background-size: 300px 300px;
-  mix-blend-mode: overlay;
-  opacity: calc(var(--texture-opacity) * 1.4);
+/* Label on the left, a supporting fact on the right. */
+.sect-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding-bottom: var(--sp-3);
 }
 
-/* Dithered grit */
-.tx-dither::after {
-  background-image: url("assets/textures/dither.png");
-  background-size: 120px 120px;
-  mix-blend-mode: hard-light;
-  opacity: calc(var(--texture-opacity) * 1.3);
+.sect-title {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(30px, 3.6vw, 52px);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  max-width: 20ch;
+}
+.sect-title + .lead {
+  margin-top: var(--sp-2);
+}
+.sect-intro {
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
-/* Colored bloom that pairs with the brand gradient (hero / CTA backgrounds) */
-.tx-bloom::before {
-  content: "";
-  position: absolute;
-  inset: -25% -10% auto -10%;
-  height: 65%;
-  z-index: 0;
-  pointer-events: none;
-  background: var(--gradient-brand-soft);
-  filter: blur(90px);
-  opacity: 0.55;
-}
+/* ---------- Type utilities ---------- */
 
-/* ==========================================================================
-   Type utilities
-   ========================================================================== */
-
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  letter-spacing: var(--tracking-wide);
+/* Mono label, the drafting register. Engraved: one light line under the
+   glyph, never a dark one above. */
+.label {
+  font-family: var(--mono);
+  font-weight: 400;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent-blue-hex);
+  color: var(--pencil);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+.label-lg {
+  font-size: 0.8125rem;
 }
 
-/* Gradient-filled text — the headline accent */
-.gradient-text {
-  background: var(--gradient-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
+p,
+li,
+dd,
+.lead {
+  text-wrap: pretty;
+}
+h1,
+h2,
+h3,
+figcaption,
+.display,
+.h2,
+.label {
+  text-wrap: balance;
 }
 
-/* ==========================================================================
-   Buttons — "gradient" is the signature CTA (transparent fill, gradient border)
-   ========================================================================== */
+.display {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(48px, 8.2vw, 132px);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+}
 
-.btn {
+.h2 {
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: clamp(36px, 5vw, 76px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+/* Accent italic: the LAST WORD of a headline only. Once per screen. */
+.accent {
+  font-family: var(--accent);
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  font-size: 1.1875rem;
+  line-height: 1.5;
+  color: var(--graphite);
+  max-width: 44ch;
+}
+
+/* ---------- The keycap ---------- */
+/* One top bevel, one hard edge, one soft shadow. Do not add a fourth:
+   it reads as two buttons stacked. */
+
+.key {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 12px 22px;
-  border-radius: var(--radius-md);
-  border: 1px solid transparent;
-  cursor: pointer;
-  line-height: 1.1;
+  gap: 0.5rem;
+  height: 36px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 6px;
+  background: linear-gradient(var(--key-face-top), var(--key-face-bottom));
+  color: var(--ink);
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   white-space: nowrap;
-  text-decoration: none;
-  transition: transform var(--dur) var(--ease),
-              background var(--dur) var(--ease),
-              box-shadow var(--dur) var(--ease),
-              border-color var(--dur) var(--ease);
+  cursor: pointer;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 3px 0 var(--key-edge),
+    0 6px 12px rgba(22, 22, 26, 0.16);
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
 }
 
-.btn-sm { padding: 8px 16px; font-size: 0.875rem; border-radius: 10px; }
-.btn-lg { padding: 16px 30px; font-size: 1.0625rem; border-radius: 14px; }
-
-/* Signature gradient outline: gradient border via padding-box/border-box */
-.btn-gradient {
-  color: var(--text-primary);
-  border: 1.5px solid transparent;
-  background: linear-gradient(var(--navy-950), var(--navy-950)) padding-box,
-              var(--gradient-brand) border-box;
-}
-.btn-gradient:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-glow);
+.key:active,
+.key.is-pressed {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 2px 5px rgba(22, 22, 26, 0.3),
+    0 1px 0 var(--key-edge);
 }
 
-.btn-primary {
-  background: var(--text-primary);
-  color: var(--text-inverse);
+/* Toggles and the current page hold depressed. They do not recolor. */
+.key[aria-pressed='true'],
+.key[aria-current='page'] {
+  transform: translateY(2px);
+  box-shadow:
+    inset 0 2px 5px rgba(22, 22, 26, 0.3),
+    0 1px 0 var(--key-edge);
 }
-.btn-primary:hover { background: #ffffff; transform: translateY(-1px); }
 
-.btn-secondary {
-  background: var(--surface-raised);
-  color: var(--text-primary);
-  border: 1px solid var(--border-strong);
+.key-sm {
+  height: 27px;
+  padding: 0 14px;
+  border-radius: 5px;
 }
-.btn-secondary:hover { transform: translateY(-1px); border-color: var(--text-muted); }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--text-secondary);
+.key-icon {
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border-radius: 5px;
 }
-.btn-ghost:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-primary); }
+.key-icon svg {
+  width: 13px;
+  height: 13px;
+}
 
-/* ==========================================================================
-   Badge — small mono eyebrow pill
-   ========================================================================== */
+.key-primary {
+  background: linear-gradient(var(--blueprint-top), var(--blueprint-bottom));
+  color: var(--paper);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 3px 0 var(--blueprint-edge),
+    0 6px 14px rgba(22, 22, 26, 0.28);
+}
+.key-primary:active,
+.key-primary.is-pressed,
+.key-primary[aria-pressed='true'] {
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.35),
+    0 1px 0 var(--blueprint-edge);
+}
 
-.badge {
+.key-ink {
+  background: linear-gradient(#16161a, #0d0d10);
+  color: var(--paper);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 3px 0 #000,
+    0 6px 12px rgba(22, 22, 26, 0.16);
+}
+.key-ink:active,
+.key-ink.is-pressed {
+  box-shadow:
+    inset 0 2px 5px rgba(0, 0, 0, 0.5),
+    0 1px 0 #000;
+}
+
+.key-lg {
+  height: auto;
+  padding: 19px 34px;
+  border-radius: 8px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 4px 0 var(--key-edge),
+    0 10px 20px rgba(22, 22, 26, 0.18);
+}
+.key-lg:active,
+.key-lg.is-pressed {
+  transform: translateY(4px);
+  box-shadow:
+    inset 0 2px 6px rgba(22, 22, 26, 0.3),
+    0 1px 0 var(--key-edge);
+}
+.key-lg.key-primary {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    0 4px 0 var(--blueprint-edge),
+    0 10px 20px rgba(0, 0, 0, 0.45);
+}
+.key-lg.key-primary:active,
+.key-lg.key-primary.is-pressed {
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.35),
+    0 1px 0 var(--blueprint-edge);
+}
+
+/* ---------- Deck plate ---------- */
+/* Groups of keys sit on a panel, like an instrument face. */
+
+.deck {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  padding: 5px 11px;
-  border-radius: var(--radius-pill);
-  line-height: 1;
-}
-.badge-neutral {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
-}
-.badge-blue {
-  background: oklch(0.68 0.15 250 / 0.16);
-  color: var(--accent-blue-hex);
-  border: 1px solid oklch(0.68 0.15 250 / 0.4);
-}
-.badge-green {
-  background: oklch(0.74 0.15 158 / 0.16);
-  color: var(--accent-green-hex);
-  border: 1px solid oklch(0.74 0.15 158 / 0.4);
-}
-.badge-gradient {
-  color: var(--text-primary);
-  border: 1px solid transparent;
-  background: linear-gradient(var(--navy-900), var(--navy-900)) padding-box,
-              var(--gradient-brand) border-box;
-}
-
-/* ==========================================================================
-   Card — "gradient" variant marks the featured / priced offer
-   ========================================================================== */
-
-.ds-card {
-  position: relative;
-  isolation: isolate;
-  border-radius: var(--radius-lg);
-  padding: 26px 26px 24px;
-  font-family: var(--font-body);
-  color: var(--text-secondary);
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
-}
-.ds-card:hover { border-color: var(--border-strong); }
-
-.ds-card-gradient {
-  border: 1.5px solid transparent;
-  background: linear-gradient(var(--surface-card), var(--surface-card)) padding-box,
-              var(--gradient-brand) border-box;
-}
-
-.card-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--accent-blue-hex);
-  margin-bottom: 14px;
-}
-
-.card-footer {
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--border);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
-  color: var(--text-muted);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .btn { transition: none; }
-  .btn:hover { transform: none; }
-}
-
-/* ==========================================================================
-   Work gallery thumbnails — CSS-drawn demo previews.
-   Used by: index.html, work.html
-   ========================================================================== */
-
-.thumb {
-  height: 150px;
-  border-radius: 12px;
-  overflow: hidden;
-  display: flex;
-  gap: 7px;
-  padding: 12px;
-  margin-bottom: 18px;
-  flex-shrink: 0;
-}
-.thumb span { display: block; }
-.thumb-light { background: #EDEEEB; }
-
-/* Quote builder mini: the printable quote document */
-.t-quote { justify-content: center; }
-.t-quote .doc {
-  width: 64%;
-  background: #fff;
+  gap: 8px;
+  padding: 8px;
+  background: linear-gradient(var(--deck-top), var(--deck-bottom));
   border-radius: 8px;
-  padding: 10px 11px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(22, 22, 26, 0.1),
+    0 14px 30px rgba(22, 22, 26, 0.22),
+    0 2px 0 rgba(22, 22, 26, 0.1);
 }
-.t-quote .lh {
+
+/* ---------- Extruded surfaces ---------- */
+
+/* Raised panel: a wide, low key face. */
+.raised {
+  background: linear-gradient(var(--key-face-top), var(--key-face-bottom));
+  border-radius: 8px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 2px 0 var(--key-edge),
+    0 9px 20px rgba(22, 22, 26, 0.1);
+}
+
+/* Pressed well: content sunk into the paper. Deck gradient inverted. */
+.well {
+  background: linear-gradient(var(--deck-bottom), var(--deck-top));
+  border-radius: 10px;
+  box-shadow:
+    inset 0 2px 5px rgba(22, 22, 26, 0.13),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.75),
+    0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+/* Shallow well, for image frames. */
+.well-shallow {
+  box-shadow:
+    inset 0 2px 4px rgba(22, 22, 26, 0.1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.6),
+    0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* ---------- Line reveal masks ---------- */
+/* One mask per line. translateY(110%) to 0, 950ms, 130ms stagger. */
+
+.reveal-mask {
+  display: block;
+  overflow: hidden;
+}
+.reveal-line {
+  display: block;
+  transform: translateY(110%);
+  animation: line-rise 950ms var(--ease-reveal) forwards;
+}
+@keyframes line-rise {
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Scroll reveal ---------- */
+/* Hidden only once the script has confirmed it can reveal (html.js), so
+   a page with no JavaScript shows everything. */
+
+.js .rise {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 700ms var(--ease-reveal),
+    transform 700ms var(--ease-reveal);
+}
+.js .rise.in {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Focus, skip link, selection ---------- */
+
+:focus-visible {
+  outline: 2px solid var(--blueprint);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10000;
+}
+.skip-link:focus {
+  left: var(--pad);
+  top: var(--sp-1);
+  padding: 0.6rem 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border-radius: 5px;
+}
+
+::selection {
+  background: var(--blueprint);
+  color: var(--paper);
+}
+
+/* ============================================================
+   Site chrome: header
+   One mono register at 11px. Keys sit directly on the header, no deck.
+   ============================================================ */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  background: rgba(242, 239, 232, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.site-header .nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0 var(--pad);
+  height: calc(var(--header-h) - 1px);
+}
+
+.hdr-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hdr-right,
+.hdr-keys {
+  gap: 14px;
+}
+
+.hdr-mark {
+  font-weight: 500;
+  color: var(--ink);
+}
+.hdr-muted {
+  color: var(--pencil);
+}
+
+/* The menu key only exists where the nav keys no longer fit. */
+.nav-toggle {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .hdr-role {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+  /* The nav keys leave the bar and wait on a deck under it. */
+  .hdr-keys {
+    display: none;
+    position: absolute;
+    top: calc(100% + 10px);
+    right: var(--pad);
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 8px;
+    min-width: 168px;
+    background: linear-gradient(var(--deck-top), var(--deck-bottom));
+    border-radius: 8px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      inset 0 -1px 0 rgba(22, 22, 26, 0.1),
+      0 14px 30px rgba(22, 22, 26, 0.22),
+      0 2px 0 rgba(22, 22, 26, 0.1);
+  }
+  .site-header.menu-open .hdr-keys {
+    display: flex;
+  }
+  .hdr-keys .key {
+    height: 36px;
+  }
+  .hdr-right {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 620px) {
+  .site-header .key-sm {
+    padding: 0 11px;
+    letter-spacing: 0.08em;
+  }
+  .site-header .key-icon {
+    padding: 0;
+  }
+}
+
+/* ============================================================
+   Site chrome: footer. Inverted ink panel, mono throughout.
+   ============================================================ */
+
+.site-footer {
+  background: var(--ink);
+  color: var(--paper);
+  margin-top: var(--sp-7);
+}
+.site-footer .foot {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #0E3B2D;
-  margin-bottom: 2px;
+  align-items: flex-end;
+  gap: var(--sp-4);
+  padding-top: var(--sp-5);
+  padding-bottom: var(--sp-5);
 }
-.t-quote .nm { width: 42%; height: 7px; border-radius: 3px; background: #0E3B2D; }
-.t-quote .nm.sm { width: 20%; height: 5px; background: #CCD0C9; }
-.t-quote .r { height: 9px; border-radius: 4px; background: #F6F7F5; }
-.t-quote .r.alt { background: #EDEEEB; }
-.t-quote .total { height: 15px; border-radius: 5px; background: #0E3B2D; margin-top: 3px; width: 58%; align-self: flex-end; }
-.t-quote .dep { height: 10px; border-radius: 4px; background: #E5F6DA; width: 58%; align-self: flex-end; }
-
-/* Deal Desk mini: slate inputs beside a green margin tile */
-.t-desk { background: #E9EBEE; }
-.t-desk .inputs {
-  width: 54%;
-  background: #fff;
-  border-radius: 8px;
-  padding: 9px;
+.foot-col {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-.t-desk .lab { height: 4px; width: 40%; border-radius: 2px; background: #BFC4CC; }
-.t-desk .fld { height: 10px; border: 1px solid #DADDE2; border-radius: 5px; background: #F8F9FA; }
-.t-desk .outs {
+.foot-mark {
+  font-weight: 500;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+}
+.foot-meta,
+.foot-colophon {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9d988d;
+}
+.foot-links {
+  display: flex;
+  gap: var(--sp-3);
+}
+.foot-links a {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+  padding-bottom: 3px;
+  border-bottom: 1px solid rgba(242, 239, 232, 0.28);
+  transition:
+    color 0.3s var(--ease-reveal),
+    border-color 0.3s var(--ease-reveal);
+}
+.foot-links a:hover {
+  color: #8ea0ff;
+  border-color: #8ea0ff;
+}
+.site-footer :focus-visible {
+  outline-color: #8ea0ff;
+}
+
+@media (max-width: 900px) {
+  .site-footer .foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--sp-3);
+    padding-top: var(--sp-4);
+    padding-bottom: var(--sp-4);
+  }
+  .foot-links {
+    flex-wrap: wrap;
+    gap: var(--sp-2) var(--sp-3);
+  }
+}
+
+/* ============================================================
+   The card: a raised plate, the picture in a shallow well, a title,
+   one line of description, and a full-width key along the bottom.
+   The whole card is one link, so the key is a span and presses with it.
+   ============================================================ */
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  max-width: 1140px;
+}
+
+.bcard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 10px;
+  color: var(--ink);
+  transition:
+    transform 320ms var(--ease-reveal),
+    box-shadow 320ms var(--ease-reveal);
+}
+
+.bcard:focus-visible {
+  outline: none;
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 3px 0 var(--key-edge),
+    0 14px 28px rgba(22, 22, 26, 0.16),
+    0 0 0 2px var(--paper),
+    0 0 0 4px var(--blueprint);
+}
+@media (hover: hover) and (pointer: fine) {
+  .bcard:hover {
+    transform: translateY(-3px);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 3px 0 var(--key-edge),
+      0 14px 28px rgba(22, 22, 26, 0.16);
+  }
+}
+.bcard:active {
+  transform: translateY(1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 1px 0 var(--key-edge),
+    0 4px 10px rgba(22, 22, 26, 0.1);
+}
+.bcard:active .bcard-key {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 2px 5px rgba(22, 22, 26, 0.3),
+    0 1px 0 var(--key-edge);
+}
+
+.bcard-thumb {
+  margin: 0;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.bcard-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+}
+
+/* Muted print at rest, full colour on hover or focus. Touch screens see
+   full colour. */
+@media (hover: hover) and (pointer: fine) {
+  .bcard-thumb img {
+    filter: grayscale(1) contrast(0.92) brightness(1.06);
+    opacity: 0.78;
+    transition:
+      filter 600ms var(--ease-reveal),
+      opacity 600ms var(--ease-reveal);
+  }
+  .bcard:hover .bcard-thumb img {
+    filter: none;
+    opacity: 1;
+  }
+}
+.bcard:focus-visible .bcard-thumb img {
+  filter: none;
+  opacity: 1;
+}
+
+.bcard-title {
+  padding: 6px 4px 0;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.bcard-desc {
   flex: 1;
-  background: #fff;
-  border-radius: 8px;
-  padding: 9px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  padding: 0 4px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--graphite);
 }
-.t-desk .tile { height: 38px; border-radius: 6px; background: #E2F4E8; display: flex; align-items: center; justify-content: center; }
-.t-desk .tile i { display: block; width: 44%; height: 9px; border-radius: 4px; background: #1E7F4F; }
-.t-desk .r { height: 6px; border-radius: 3px; background: #E9EBEE; }
-.t-desk .r.dark { background: #272C35; width: 70%; }
+.bcard-meta {
+  padding: 0 4px;
+  line-height: 1.6;
+}
+.bcard-key {
+  width: 100%;
+  margin-top: 6px;
+}
 
-/* Readiness check mini: the dark quiz card */
-.t-quiz { background: var(--navy-900); justify-content: center; align-items: center; }
-.t-quiz .qcard {
-  width: 66%;
-  background: var(--surface-card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px;
+/* An empty slot in the tray: a pressed well waiting for its plate. */
+.bcard-slot {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 10px;
+  padding: 14px;
+  color: var(--ink);
 }
-.t-quiz .prog { height: 5px; width: 55%; border-radius: 3px; background: var(--gradient-brand); }
-.t-quiz .q { height: 7px; width: 82%; border-radius: 3px; background: rgba(255, 255, 255, 0.28); }
-.t-quiz .opt { height: 13px; border: 1px solid var(--border-strong); border-radius: 6px; }
-.t-quiz .opt.sel { border-color: var(--accent-blue-hex); background: oklch(0.68 0.15 250 / 0.14); }
+.bcard-slot .bcard-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(22, 22, 26, 0.22);
+}
+
+/* ---------- Reduced motion ---------- */
+/* Skip the load sequence, cut reveals, freeze loops. KEEP the key
+   press: it is feedback, not decoration. */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *:not(.key):not(.key *),
+  *:not(.key):not(.key *)::before,
+  *:not(.key):not(.key *)::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal-line {
+    transform: none;
+    animation: none;
+  }
+  .js .rise {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .key {
+    transition:
+      transform 0.1s ease,
+      box-shadow 0.1s ease;
+  }
+}

@@ -16,8 +16,8 @@
 <meta name="robots" content="index, follow" />
 
 <!-- Favicon + browser chrome -->
-<link rel="icon" type="image/svg+xml" href="favicon.svg" />
-<meta name="theme-color" content="#0d0e1a" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="theme-color" content="#F2EFE8" />
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
@@ -25,44 +25,20 @@
 <meta property="og:description" content="A free 2-minute AI readiness assessment for small businesses. See where the fastest wins are for your business." />
 <meta property="og:site_name" content="David Donnell" />
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="preload" href="/assets/fonts/Archivo-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/assets/fonts/IBMPlexMono-400.woff2" as="font" type="font/woff2" crossorigin />
 
-<!-- Design system: tokens, texture overlays, signature components -->
-<link rel="stylesheet" href="theme.css" />
+<!-- Design system: drafting paper and physical hardware -->
+<link rel="stylesheet" href="/theme.css" />
 
 <style>
-  /* Legacy aliases mapped onto the design-system tokens in theme.css */
-  :root {
-    --navy:    var(--navy-950);
-    --navy-2:  var(--navy-900);
-    --card:    var(--surface-card);
-    --teal:    var(--accent-blue-hex);
-    --teal-dk: var(--text-inverse);
-    --text:    var(--text-primary);
-    --muted:   var(--text-secondary);
-    --line:    var(--border);
-    --amber:   #f5c451;
-    --coral:   #f4776b;
-    --radius:  var(--radius-lg);
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
   body {
-    background: var(--navy);
-    color: var(--text);
-    font-family: var(--font-body);
-    line-height: var(--leading-normal);
-    -webkit-font-smoothing: antialiased;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 32px 16px;
-    min-height: 100vh;
   }
 
-  /* Screen-reader-only heading / labels */
   .sr-only {
     position: absolute;
     width: 1px; height: 1px;
@@ -73,73 +49,146 @@
     border: 0;
   }
 
-  .wrap { width: 100%; max-width: 580px; }
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 28px;
+  .wrap { width: 100%; max-width: 580px; padding: 0; }
+
+  /* The strip above the plate: whose tool this is, and how long it takes. */
+  .quiz-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 0 4px 14px;
   }
-  .eyebrow {
-    display: flex; align-items: center; gap: 9px;
-    font-family: var(--font-mono);
-    font-size: 11px; letter-spacing: 0.12em; color: var(--accent-blue-hex);
-    text-transform: uppercase; margin-bottom: 16px;
+  .quiz-home {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    white-space: nowrap;
   }
-  .eyebrow svg { width: 18px; height: 18px; stroke: var(--muted); }
-  .eyebrow .ai-spark { fill: var(--accent-blue-hex); stroke: none; }
-  .barwrap { height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; margin-bottom: 24px; }
-  .bar { height: 100%; width: 0%; background: var(--gradient-brand); border-radius: 999px; transition: width .35s ease; }
-  .qhead { display: flex; align-items: flex-start; gap: 11px; margin-bottom: 18px; }
-  .qhead svg { width: 24px; height: 24px; stroke: var(--accent-blue-hex); flex-shrink: 0; margin-top: 2px; }
-  .qhead .qtext { font-family: var(--font-display); font-size: 19px; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; }
-  .step-label { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-  .opts { display: flex; flex-direction: column; gap: 10px; }
+  .quiz-top .label { text-align: right; }
+
+  .card { padding: 28px; border-radius: 10px; }
+
+  /* Progress runs in a pressed groove. */
+  .barwrap {
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 26px;
+    background: linear-gradient(var(--deck-bottom), var(--deck-top));
+    box-shadow:
+      inset 0 1px 3px rgba(22, 22, 26, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.7);
+  }
+  .bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    background: linear-gradient(var(--blueprint-top), var(--blueprint-bottom));
+    transition: width 0.45s var(--ease-reveal);
+  }
+
+  .qhead { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+  .qhead svg { width: 24px; height: 24px; stroke: var(--pencil); flex-shrink: 0; margin-top: 3px; }
+  .qhead .qtext {
+    font-weight: 500;
+    font-size: 1.375rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .step-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin-bottom: 10px;
+  }
+
+  /* Answers and industries are keys: an edge, and travel when pressed. */
+  .opts { display: flex; flex-direction: column; gap: 12px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 12px 10px; }
   .opt, .pill {
-    text-align: left; font: inherit; color: var(--text);
-    background: var(--navy-2); border: 1px solid var(--line);
-    border-radius: 10px; padding: 13px 15px; cursor: pointer;
-    transition: border-color .15s, background .15s; line-height: 1.4;
+    border: 0;
+    cursor: pointer;
+    color: var(--ink);
+    background: linear-gradient(var(--key-face-top), var(--key-face-bottom));
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      0 3px 0 var(--key-edge),
+      0 6px 12px rgba(22, 22, 26, 0.14);
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
-  .opt:hover, .pill:hover { border-color: var(--teal); }
-  .opt.sel, .pill.sel { border-color: var(--accent-blue-hex); background: oklch(0.68 0.15 250 / 0.14); }
-  /* Visible keyboard focus ring (accessible on the dark background) */
-  .opt:focus-visible, .pill:focus-visible, .cta-btn:focus-visible, .retake:focus-visible {
-    outline: 2px solid var(--teal);
-    outline-offset: 2px;
+  .opt:active, .pill:active {
+    transform: translateY(3px);
+    box-shadow:
+      inset 0 2px 5px rgba(22, 22, 26, 0.3),
+      0 1px 0 var(--key-edge);
   }
-  .pills { display: flex; flex-wrap: wrap; gap: 9px; }
-  .pill { border-radius: 999px; padding: 9px 15px; font-size: 14.5px; }
-  .hint { font-size: 13px; color: var(--muted); margin-top: 14px; }
-  /* result */
-  .score-num { font-family: var(--font-display); font-size: 56px; font-weight: 700; line-height: 1; letter-spacing: -0.02em; }
-  .band {
-    display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 600;
-    padding: 6px 16px; border-radius: 999px; border: 1px solid;
+  .opt {
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    padding: 14px 16px;
+    border-radius: 7px;
   }
+  .pill {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 6px;
+  }
+  .hint { font-size: 0.8125rem; color: var(--pencil); margin-top: 18px; }
+
+  /* Result */
   .center { text-align: center; }
-  .blurb { font-size: 15.5px; line-height: 1.6; margin: 20px 0; }
-  .cta-box {
-    background: var(--navy-2); border: 1px solid var(--line);
-    border-radius: 12px; padding: 18px; margin-bottom: 16px;
+  .score-num {
+    font-weight: 500;
+    font-size: 76px;
+    line-height: 1;
+    letter-spacing: -0.04em;
   }
-  .cta-box .lbl { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-  /* Signature CTA — transparent fill, purple→blue→green gradient border */
-  .cta-btn {
-    display: block; width: 100%; text-align: center; text-decoration: none;
-    font-family: var(--font-body);
-    font-size: 15.5px; font-weight: 600; color: var(--text-primary);
-    border: 1.5px solid transparent; border-radius: var(--radius-md);
-    background:
-      linear-gradient(var(--navy-950), var(--navy-950)) padding-box,
-      var(--gradient-brand) border-box;
-    padding: 14px; cursor: pointer;
-    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  /* The band reads as a rubber stamp on the sheet. */
+  .band {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 7px 14px;
+    border: 1px solid;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
-  .cta-btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-glow); }
-  .retake { background: none; border: none; color: var(--muted); font: inherit; font-size: 13px; cursor: pointer; margin-top: 16px; }
-  .retake:hover { color: var(--text); }
+  .blurb { font-size: 1rem; line-height: 1.6; margin: 22px 0; color: var(--graphite); }
+  .cta-box { padding: 20px; margin-bottom: 18px; }
+  .cta-box .lbl {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--pencil);
+    margin-bottom: 8px;
+  }
+  .cta-btn { display: flex; width: 100%; }
   .hidden { display: none; }
+
+  @media (max-width: 480px) {
+    .card { padding: 22px 18px; }
+    .cta-btn.key-lg { padding: 17px 14px; font-size: 11px; letter-spacing: 0.08em; }
+  }
 </style>
 </head>
 <body>
@@ -147,12 +196,12 @@
   <!-- Screen-reader summary of the page -->
   <h1 class="sr-only">AI Readiness Check &mdash; a free 2-minute assessment for small businesses</h1>
 
-  <div class="card">
+  <div class="quiz-top">
+    <a class="quiz-home" href="/">David Donnell</a>
+    <span class="label">AI readiness check &middot; About 2 min</span>
+  </div>
 
-    <div class="eyebrow">
-      <svg class="ai-spark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 6.9 6.9 2.6-6.9 2.6L12 22.5l-2.6-6.9-6.9-2.6 6.9-2.6z"/></svg>
-      <span>AI readiness check &middot; ~2 min</span>
-    </div>
+  <div class="card raised">
 
     <div class="barwrap"><div class="bar" id="bar"></div></div>
 
@@ -246,13 +295,13 @@ function showResult() {
   const pct = Math.round(score / max * 100);
   let band, color, blurb;
   if (pct >= 70) {
-    band = 'Ready to scale'; color = '#4ade9f';
+    band = 'Ready to scale'; color = '#1e8a5a';
     blurb = "You've got solid habits in place. The biggest wins now come from automating follow-up and freeing your time, exactly what a focused plan can unlock.";
   } else if (pct >= 40) {
-    band = 'Some quick wins waiting'; color = '#f5c451';
+    band = 'Some quick wins waiting'; color = '#c6551f';
     blurb = "You're doing a lot right, but a few leaks like slow follow-up or scattered tracking are likely costing you business. These are usually fast and inexpensive to fix.";
   } else {
-    band = 'Big opportunity'; color = '#f4776b';
+    band = 'Big opportunity'; color = '#2946e8';
     blurb = "There's real money being left on the table in how inquiries and admin are handled. The good news: the easiest, highest-impact improvements are still ahead of you.";
   }
 
@@ -269,12 +318,12 @@ function showResult() {
       '<div class="band" style="color:' + color + '; border-color:' + color + '">' + band + '</div>' +
     '</div>' +
     '<p class="blurb">' + blurb + '</p>' +
-    '<div class="cta-box">' +
+    '<div class="cta-box well">' +
       '<div class="lbl">Want the full picture?</div>' +
-      '<div style="font-size:15px; margin-bottom:14px;">Book a free 30-minute discovery call and we\'ll walk through where the fastest wins are for your business.</div>' +
-      '<a class="cta-btn" href="' + ctaUrl + '" target="_blank" rel="noopener">Book my free discovery call &rarr;</a>' +
+      '<div style="font-size:15px; margin-bottom:16px;">Book a free 30-minute discovery call and we\'ll walk through where the fastest wins are for your business.</div>' +
+      '<a class="cta-btn key key-lg key-primary" href="' + ctaUrl + '" target="_blank" rel="noopener">Book my free discovery call</a>' +
     '</div>' +
-    '<div class="center"><button class="retake" onclick="location.reload()">&#8635; Retake</button></div>';
+    '<div class="center"><button class="retake key key-sm" onclick="location.reload()">Retake</button></div>';
 
   r.querySelector('.cta-btn').addEventListener('click', function () {
     if (typeof gtag === 'function') gtag('event', 'quiz_cta', { score: pct, band: bandSlug, industry: industry });

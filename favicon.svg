@@ -1,10 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="14"
-        fill="#0d0e1a" stroke="#60a5fa" stroke-opacity="0.3" stroke-width="1.5"/>
-  <text text-anchor="middle" dominant-baseline="central"
-        font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-weight="800"
-        font-size="30" fill="#ffffff">
-    <tspan x="21" y="32">D</tspan>
-    <tspan x="43" y="32">D</tspan>
-  </text>
+  <!-- A keycap: hard edge below, face above, light from the top. -->
+  <rect x="4" y="10" width="56" height="50" rx="10" fill="#bdb6a4"/>
+  <rect x="4" y="4" width="56" height="50" rx="10" fill="#f6f3ea"/>
+  <text x="32" y="30" text-anchor="middle" dominant-baseline="central"
+        font-family="'IBM Plex Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace"
+        font-weight="700" font-size="26" letter-spacing="-1" fill="#16161a">DD</text>
 </svg>

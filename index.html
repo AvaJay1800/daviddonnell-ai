@@ -17,8 +17,8 @@
   <link rel="canonical" href="https://daviddonnell.com/" />
 
   <!-- Favicon + browser chrome -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <meta name="theme-color" content="#0d0e1a" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="theme-color" content="#F2EFE8" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
@@ -75,1365 +75,1063 @@
   }
   </script>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <!-- Self-hosted fonts. Only the two faces used above the fold are preloaded. -->
+  <link rel="preload" href="/assets/fonts/Archivo-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/assets/fonts/IBMPlexMono-400.woff2" as="font" type="font/woff2" crossorigin />
 
-  <!-- Design system: tokens, texture overlays, signature components -->
-  <link rel="stylesheet" href="theme.css" />
+  <!-- Design system: drafting paper and physical hardware -->
+  <link rel="stylesheet" href="/theme.css" />
+
+  <!-- Pre-paint gate. Marks that scripts run (so scroll reveals may hide
+       their targets) and decides whether the load sequence plays: once
+       per session, never under reduced motion. Resolved before first
+       paint so a repeat visitor never sees a flash of ink. -->
+  <script>
+    (function () {
+      var d = document.documentElement;
+      d.classList.add('js');
+      try {
+        if (sessionStorage.getItem('ddcom-curtain-shown') ||
+            matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          d.classList.add('no-curtain');
+        }
+      } catch (e) {
+        d.classList.add('no-curtain');
+      }
+    })();
+  </script>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ============================================================
+       Load sequence: the sheet gets plotted.
+       Ink covers the page. Registration marks draw into the corners,
+       a dimension line runs out from the centre to both margins, and a
+       mechanical counter rolls 000 to 100 on it. At 100 the counter
+       seats with a clunk and the ink parts along the dimension line.
 
-    /* Legacy aliases mapped onto the design-system tokens in theme.css,
-       so existing rules pick up the new palette without being rewritten. */
-    :root {
-      --green: var(--accent-blue-hex);
-      --green-dark: var(--accent-purple-hex);
-      --green-glow: oklch(0.68 0.15 250 / 0.16);
-      --bg: var(--navy-950);
-      --surface: var(--surface-card);
-      --text: var(--text-primary);
-      --muted: var(--text-secondary);
-      --radius: var(--radius-lg);
+       Every beat is a CSS animation that starts on its own, so the
+       curtain opens even if the script below never runs. The script
+       only turns the counter wheels.
+       ============================================================ */
+    #curtain {
+      position: fixed;
+      inset: 0;
+      z-index: 9900;
+      pointer-events: none;
+      animation: curtain-gone 0s linear 2500ms forwards;
     }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: var(--font-body);
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: var(--leading-normal);
-      min-height: 100vh;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    h1, h2, h3 {
-      font-family: var(--font-display);
-      letter-spacing: var(--tracking-tight);
-      text-wrap: balance;
-    }
-
-    p { text-wrap: pretty; }
-
-    /* Nav */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      padding: 20px 48px;
-      background: rgba(13, 14, 26, 0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-logo {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.1rem;
-      letter-spacing: -0.01em;
-      text-decoration: none;
-      color: var(--text);
-      line-height: 1.2;
-    }
-
-    .nav-subtitle {
-      font-family: var(--font-mono);
-      font-size: 0.625rem;
-      font-weight: 400;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-.nav-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--text); }
-
-    /* Hamburger — hidden on desktop, becomes an X when open */
-    .nav-toggle {
+    html.no-curtain #curtain {
       display: none;
-      flex-direction: column;
-      justify-content: center;
-      gap: 5px;
-      width: 42px;
-      height: 38px;
-      padding: 0 10px;
-      background: var(--surface-raised);
-      border: 1px solid var(--border-strong);
-      border-radius: 10px;
-      cursor: pointer;
     }
-    .nav-toggle span {
-      display: block;
-      height: 2px;
+    @keyframes curtain-gone {
+      to { visibility: hidden; }
+    }
+
+    .curtain-half {
+      position: absolute;
+      left: 0;
       width: 100%;
-      background: var(--text-primary);
-      border-radius: 2px;
-      transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+      height: 50.5%; /* slight overlap so no hairline shows at the seam */
+      background: var(--ink);
     }
-    nav.menu-open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    nav.menu-open .nav-toggle span:nth-child(2) { opacity: 0; }
-    nav.menu-open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    /* AI sparkle marking the readiness-check links */
-    .ai-spark {
-      width: 13px;
-      height: 13px;
-      fill: var(--green);
-      vertical-align: -1px;
-      margin-right: 5px;
-      flex-shrink: 0;
+    .curtain-half.top {
+      top: 0;
+      animation: curtain-up 900ms var(--ease-curtain) 1550ms forwards;
     }
-    /* Hero button is flex with its own gap — avoid double spacing,
-       and nudge the star up ~1px to optically center it with the text */
-    .btn .ai-spark { margin-right: 0; transform: translateY(-1px); }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 22px;
-      border-radius: var(--radius-md);
-      font-size: 0.95rem;
-      font-weight: 600;
-      line-height: 1.1;
-      text-decoration: none;
-      cursor: pointer;
-      font-family: var(--font-body);
-      transition: transform var(--dur) var(--ease),
-                  background var(--dur) var(--ease),
-                  box-shadow var(--dur) var(--ease),
-                  border-color var(--dur) var(--ease);
+    .curtain-half.bottom {
+      bottom: 0;
+      animation: curtain-down 900ms var(--ease-curtain) 1550ms forwards;
+    }
+    @keyframes curtain-up {
+      to { transform: translateY(-100%); }
+    }
+    @keyframes curtain-down {
+      to { transform: translateY(100%); }
     }
 
-    /* The signature gradient CTA is .btn-gradient, defined in theme.css.
-       Don't redefine .btn-primary here — theme.css uses it for the solid
-       light variant, and a partial override leaks its white hover fill. */
-
-    /* Secondary actions — raised surface, so the gradient CTA stays the hero */
-    .btn-outline,
-    .btn-ai {
-      background: var(--surface-raised);
-      color: var(--text-primary);
-      border: 1px solid var(--border-strong);
+    /* Everything drawn on the ink. Lifts off just before the ink parts. */
+    .plot {
+      position: absolute;
+      inset: 0;
+      color: var(--paper);
+      animation: plot-out 220ms ease 1480ms forwards;
     }
-    .btn-outline:hover,
-    .btn-ai:hover {
-      transform: translateY(-1px);
-      border-color: var(--text-muted);
+    @keyframes plot-out {
+      to { opacity: 0; }
     }
 
-    .btn-lg {
-      padding: 16px 30px;
-      font-size: 1.0625rem;
-      border-radius: 14px;
+    /* Registration marks, one per corner. */
+    .reg {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      max-width: none;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1;
+      opacity: 0.55;
+    }
+    .reg.tl { top: 22px; left: 22px; }
+    .reg.tr { top: 22px; right: 22px; }
+    .reg.bl { bottom: 22px; left: 22px; }
+    .reg.br { bottom: 22px; right: 22px; }
+    .reg circle,
+    .reg path {
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      animation: plot-draw 600ms var(--ease-reveal) 100ms forwards;
+    }
+    @keyframes plot-draw {
+      to { stroke-dashoffset: 0; }
     }
 
-    @media (prefers-reduced-motion: reduce) {
-      .btn { transition: none; }
-      .btn:hover { transform: none; }
-    }
-
-    /* Layout */
-    section {
-      position: relative;
-      z-index: 1;
-    }
-
-    .container {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 48px;
-    }
-
-    /* Hero */
-    .hero {
-      padding: 120px 0 100px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      /* explicit bg so the grain's overlay blend has a surface to sit on */
-      background: var(--navy-950);
-      --texture-opacity: 0.06;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent-blue-hex);
-      background: oklch(0.68 0.15 250 / 0.16);
-      border: 1px solid oklch(0.68 0.15 250 / 0.4);
-      padding: 5px 11px;
-      border-radius: var(--radius-pill);
-      line-height: 1;
-      margin-bottom: 26px;
-    }
-
-    .hero h1 {
-      font-size: clamp(2.6rem, 5vw, 4.25rem);
-      font-weight: 700;
-      line-height: var(--leading-tight);
-      letter-spacing: var(--tracking-tight);
-      max-width: 780px;
-      margin: 0 auto 26px;
-    }
-
-    /* Gradient-filled headline accent — the brand fingerprint */
-    .hero h1 .accent {
-      background: var(--gradient-brand);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-    }
-
-    .hero p {
-      font-size: 1.15rem;
-      color: var(--muted);
-      max-width: 560px;
-      margin: 0 auto 44px;
-      line-height: 1.7;
-    }
-
-    .hero-ctas {
+    /* The dimension line: two arms growing out of the counter, each
+       ending in a tick at the margin. */
+    .dim {
+      position: absolute;
+      left: clamp(28px, 7vw, 110px);
+      right: clamp(28px, 7vw, 110px);
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
+      align-items: center;
       gap: 16px;
-      justify-content: center;
-      flex-wrap: wrap;
+    }
+    .dim-arm {
+      position: relative;
+      flex: 1;
+      height: 1px;
+      background: rgba(242, 239, 232, 0.6);
+      transform: scaleX(0);
+      animation: arm-grow 1150ms var(--ease-curtain) 150ms forwards;
+    }
+    .dim-arm.left { transform-origin: right center; }
+    .dim-arm.right { transform-origin: left center; }
+    .dim-arm::after {
+      content: '';
+      position: absolute;
+      top: -7px;
+      width: 1px;
+      height: 15px;
+      background: inherit;
+    }
+    .dim-arm.left::after { left: 0; }
+    .dim-arm.right::after { right: 0; }
+    @keyframes arm-grow {
+      to { transform: scaleX(1); }
     }
 
-    /* Section headers */
-    .section-label {
-      display: inline-block;
-      font-family: var(--font-mono);
-      color: var(--accent-blue-hex);
-      font-size: 0.75rem;
-      font-weight: 400;
-      text-transform: uppercase;
-      letter-spacing: var(--tracking-wide);
-      margin-bottom: 12px;
+    /* The counter: three wheels behind a recessed window. Light from
+       above, so the window's top lip is in shadow and its bottom edge
+       catches a line of light. */
+    .odo {
+      display: inline-flex;
+      gap: 3px;
+      padding: 6px 7px;
+      border-radius: 6px;
+      background: #08080a;
+      box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.9),
+        inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+        0 1px 0 rgba(255, 255, 255, 0.14);
+      font-family: var(--mono);
+      font-weight: 500;
+      font-size: 22px;
+      line-height: 1;
+      color: var(--paper);
+      animation: odo-seat 180ms ease 1380ms;
+    }
+    @keyframes odo-seat {
+      50% { transform: translateY(2px); }
+    }
+    .wheel {
+      display: block;
+      width: 1.25em;
+      height: 1.6em;
+      overflow: hidden;
+      border-radius: 3px;
+      /* A drum: dark where it curves away, lit across the middle. */
+      background: linear-gradient(#0a0a0c, #2b2b31 50%, #0a0a0c);
+    }
+    .strip {
+      display: block;
+      will-change: transform;
+    }
+    .strip i {
+      display: block;
+      height: 1.6em;
+      line-height: 1.6em;
+      text-align: center;
+      font-style: normal;
     }
 
-    .section-title {
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 3vw, 2.5rem);
-      font-weight: 600;
-      letter-spacing: var(--tracking-tight);
-      margin-bottom: 16px;
-    }
-
-    .section-sub {
-      color: var(--muted);
-      font-size: 1.05rem;
-      max-width: 520px;
+    /* The title block, bottom right, where a drawing keeps it. */
+    .titleblock {
+      position: absolute;
+      right: 64px;
+      bottom: 26px;
+      padding: 9px 12px;
+      border: 1px solid rgba(242, 239, 232, 0.28);
+      font-family: var(--mono);
+      font-size: 10px;
       line-height: 1.7;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #9d988d;
+      opacity: 0;
+      animation: plot-in 400ms ease 250ms forwards;
+    }
+    .titleblock b {
+      font-weight: 500;
+      color: var(--paper);
+    }
+    @keyframes plot-in {
+      to { opacity: 1; }
+    }
+    @media (max-width: 620px) {
+      .odo { font-size: 18px; }
+      .titleblock { right: 22px; bottom: 62px; }
     }
 
-    /* How It Works */
-    .how {
-      padding: 100px 0;
-      border-top: 1px solid var(--border);
+    /* Hero lines begin as the ink clears, 130ms apart. When the load
+       sequence is skipped the same reveal runs straight away. */
+    .hero-h1 {
+      --d1: 2450ms;
+      --d2: 2580ms;
+      --d3: 2710ms;
+    }
+    html.no-curtain .hero-h1 {
+      --d1: 60ms;
+      --d2: 190ms;
+      --d3: 320ms;
     }
 
-    .how-header {
-      margin-bottom: 56px;
+    /* ---- Hero ---- */
+    .hero {
+      padding: clamp(2.5rem, 7vw, 5.5rem) 0 clamp(2.5rem, 6vw, 4.5rem);
+    }
+    .hero-h1 .reveal-mask {
+      /* Masks need a hair of vertical room or descenders clip. */
+      padding-bottom: 0.06em;
+      margin-bottom: -0.06em;
+    }
+    .hero-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--sp-4);
+      margin-top: clamp(2rem, 5vw, 3.5rem);
+      padding-top: var(--sp-3);
+      border-top: 1px solid var(--rule);
+    }
+    .hero-intro {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+    .hero-cta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .hero-key {
+      position: relative;
+      display: inline-flex;
     }
 
+    /* A pen arrow in markup ink, so it reads as a note someone left on
+       the sheet. The line draws in once the headline has landed, the
+       head flicks on at the end, then the whole thing nudges toward
+       the key every few seconds. The tip (y 92 of 130) lands on the
+       key's right edge at its vertical middle. */
+    .hero-arrow {
+      --arrow-d: 3300ms;
+      position: absolute;
+      left: calc(100% + 4px);
+      bottom: -13px;
+      width: 240px;
+      height: 130px;
+      max-width: none;
+      overflow: visible;
+      pointer-events: none;
+      color: var(--ochre);
+      animation: hero-arrow-nudge 2.6s ease-in-out calc(var(--arrow-d) + 1000ms) infinite;
+    }
+    html.no-curtain .hero-arrow {
+      --arrow-d: 900ms;
+    }
+    .hero-arrow-line,
+    .hero-arrow-head {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      animation: plot-draw 700ms var(--ease-reveal) var(--arrow-d) forwards;
+    }
+    .hero-arrow-head {
+      animation-duration: 220ms;
+      animation-delay: calc(var(--arrow-d) + 640ms);
+    }
+    @keyframes hero-arrow-nudge {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(-4px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-arrow,
+      .hero-arrow-line,
+      .hero-arrow-head {
+        animation: none;
+        stroke-dashoffset: 0;
+      }
+    }
+    /* The arrow needs 250px of clear paper to the right of the key. */
+    @media (max-width: 900px) {
+      .hero-arrow { display: none; }
+    }
+
+    /* ---- How it works: three ruled columns ---- */
     .steps {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--sp-4);
     }
-
-    /* Steps read as ruled columns with gradient mono numerals */
     .step {
-      border-top: 1px solid var(--border-strong);
-      padding-top: 22px;
-      transition: border-color var(--dur) var(--ease);
+      border-top: 1px solid var(--rule);
+      padding-top: var(--sp-3);
     }
-    .step:hover { border-top-color: var(--accent-blue-hex); }
-
-    .step-num {
-      font-family: var(--font-mono);
-      font-size: 1.625rem;
-      font-weight: 500;
-      line-height: 1;
-      margin-bottom: 16px;
-      background: var(--gradient-brand);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      color: transparent;
-    }
-
     .step h3 {
-      font-family: var(--font-display);
-      font-size: 1.3125rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      letter-spacing: -0.01em;
-    }
-
-    .step p {
-      color: var(--muted);
-      font-size: 0.97rem;
-      line-height: var(--leading-normal);
-    }
-
-    /* Services — half-step-darker band, per the system's sectioning rhythm */
-    .services {
-      padding: 100px 0;
-      background: var(--navy-925);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      --texture-opacity: 0.05;
-    }
-
-    .services-header {
-      margin-bottom: 56px;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .card {
-      background: var(--surface-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 30px 28px 26px;
-      transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
-      display: flex;
-      flex-direction: column;
-    }
-    .card:hover {
-      border-color: var(--border-strong);
-      transform: translateY(-3px);
-    }
-
-    /* Featured / priced offer wears the gradient outline */
-    .card-featured {
-      border: 1.5px solid transparent;
-      background:
-        linear-gradient(var(--surface-card), var(--surface-card)) padding-box,
-        var(--gradient-brand) border-box;
-    }
-    .card-featured:hover { box-shadow: var(--shadow-glow); }
-
-    .card-tag {
-      display: inline-block;
-      font-family: var(--font-mono);
-      color: var(--accent-blue-hex);
-      font-size: 0.6875rem;
-      font-weight: 400;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 14px;
-      width: fit-content;
-    }
-
-    .card h3 {
-      font-family: var(--font-display);
+      margin: 12px 0 8px;
+      font-weight: 500;
       font-size: 1.375rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-      letter-spacing: -0.01em;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .step p {
+      max-width: 38ch;
     }
 
-    .card p {
-      color: var(--muted);
-      font-size: 1rem;
-      line-height: var(--leading-normal);
-      flex: 1;
-    }
-
-    .card-price {
-      margin-top: 18px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      color: var(--text-muted);
-      font-weight: 400;
-    }
-
-    /* Work / gallery */
-    .work {
-      padding: 100px 0;
-    }
-
-    .work-header {
-      margin-bottom: 56px;
-    }
-
-    .card .badge {
-      align-self: flex-start;
-      margin-bottom: 14px;
-    }
-
-    .card-link {
-      margin-top: 18px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      color: var(--accent-blue-hex);
-      text-decoration: none;
-      transition: color var(--dur) var(--ease);
-    }
-    .card-link:hover { color: var(--text-primary); }
-
-    /* Whole gallery card is the link */
-    a.card { color: inherit; text-decoration: none; }
-    a.card:hover .card-link { color: var(--text-primary); }
-
-    .gallery-link {
-      display: inline-block;
-      margin-top: 14px;
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      color: var(--accent-blue-hex);
-      text-decoration: none;
-      transition: color var(--dur) var(--ease);
-    }
-    .gallery-link:hover { color: var(--text-primary); }
-
-    /* Client work */
-    .clientwork {
-      padding: 100px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .clientwork-header {
-      margin-bottom: 48px;
-    }
-
-    .cards.cols-2 { grid-template-columns: repeat(2, 1fr); }
-
-    .client-shot {
-      display: block;
-      width: 100%;
-      aspect-ratio: 16 / 10;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      margin-bottom: 18px;
-    }
-
-    /* Who I work with */
-    .clients {
-      padding: 100px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .clients-inner {
+    /* ---- Services: a tray of spec sheets in a pressed well ---- */
+    .spec {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-areas:
-        "head ."
-        "list stat";
-      gap: 32px 64px;
-      align-items: start;
-    }
-
-    .clients-head { grid-area: head; }
-
-    .client-list {
-      grid-area: list;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      /* Stretch to the stat-box height and spread the cards to match it */
-      align-self: stretch;
-      justify-content: space-between;
-    }
-
-    .client-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 20px 24px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      transition: border-color 0.2s;
-    }
-    .client-item:hover { border-color: var(--border-strong); }
-
-    .client-item .check {
-      width: 22px; height: 22px;
-      min-width: 22px;
-      background: var(--green-glow);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1px;
-    }
-    .client-item .check::after {
-      content: '';
-      width: 8px; height: 5px;
-      border-left: 2px solid var(--green);
-      border-bottom: 2px solid var(--green);
-      transform: rotate(-45deg) translate(1px, -1px);
-      display: block;
-    }
-
-    .client-item-text strong {
-      display: block;
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-    .client-item-text span {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    .stat-box {
-      grid-area: stat;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 44px;
-      text-align: center;
-      /* Match the card stack height; keep content centered if it stretches */
-      align-self: stretch;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .stat-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-      margin-bottom: 28px;
-    }
-
-    .stat {
-      padding: 24px;
-      background: rgba(255,255,255,0.02);
-    }
-    .stat:first-child { border-radius: 12px 0 0 12px; }
-    .stat:last-child  { border-radius: 0 12px 12px 0; }
-
-    .stat-num {
-      font-family: var(--font-display);
-      font-size: 2.5rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: var(--tracking-tight);
-      line-height: 1.05;
-    }
-    .stat-label {
-      font-family: var(--font-mono);
-      font-size: 0.6875rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-top: 8px;
-    }
-
-    .stat-box p {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.65;
-    }
-
-    /* About */
-    .about {
-      padding: 100px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .about-head {
-      margin-bottom: 48px;
-    }
-
-    .about-cols {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 80px;
-      align-items: start;
-    }
-
-    .about-body p {
-      color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.75;
-      margin-bottom: 20px;
-    }
-    .about-body p:last-child { margin-bottom: 0; }
-
-    .about-subtitle {
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      font-weight: 400;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .about-skills {
-      margin-top: 48px;
-      padding-top: 32px;
-      border-top: 1px solid var(--border);
-    }
-
-    .skills-grid {
-      display: flex;
-      flex-wrap: wrap;
       gap: 10px;
-      margin-top: 20px;
+      padding: 10px;
     }
-
-    .skill-tag {
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      letter-spacing: 0.03em;
-      color: var(--text-secondary);
-      background: var(--surface-raised);
-      border: 1px solid var(--border-strong);
-      border-radius: var(--radius-pill);
-      padding: 8px 18px;
+    .spec-row {
+      display: grid;
+      /* A fixed price column, so the three rows share their column edges. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) 230px;
+      gap: var(--sp-4);
+      align-items: start;
+      padding: 22px 24px;
+    }
+    .spec-flag {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--blueprint);
+    }
+    .spec-name h3 {
+      font-weight: 500;
+      font-size: 1.5rem;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      color: var(--ink);
+    }
+    .spec-desc {
+      max-width: 52ch;
+    }
+    .spec-price {
+      text-align: right;
+      line-height: 1.8;
       white-space: nowrap;
     }
 
-    .about-body strong {
-      color: var(--text);
-      font-weight: 600;
+    /* ---- Work + client work ---- */
+    .work-more {
+      margin-top: var(--sp-3);
     }
 
-    .about-photo-wrap {
-      width: 100%;
-      max-width: 320px;
+    /* ---- Who I work with ---- */
+    .aud-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: start;
     }
-
-    .about-photo {
+    .aud-list li {
+      padding: var(--sp-3) 0;
+      border-top: 1px solid var(--rule);
+    }
+    .aud-list li:last-child {
+      border-bottom: 1px solid var(--rule);
+    }
+    .aud-list h3 {
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 1.375rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .figures {
+      padding: 26px 28px 28px;
+    }
+    .figure-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-3);
+      padding-bottom: var(--sp-3);
+      margin-bottom: var(--sp-3);
+      border-bottom: 1px solid rgba(22, 22, 26, 0.12);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    }
+    .figure-n {
       display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: clamp(44px, 5vw, 68px);
+      line-height: 0.95;
+      letter-spacing: -0.035em;
+      color: var(--ink);
+    }
+
+    /* ---- About ---- */
+    .about-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 4.5rem);
+      align-items: start;
+    }
+    .about-photo {
+      margin: 0;
+      padding: 8px;
+    }
+    .about-photo img {
       width: 100%;
       height: auto;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
+      border-radius: 5px;
     }
-
-    @media (max-width: 768px) {
-      .about-head { margin-bottom: 28px; }
-      .about-cols { grid-template-columns: 1fr; gap: 32px; }
-      .about-photo-wrap { max-width: 240px; }
+    .about-p {
+      font-size: clamp(20px, 2.3vw, 30px);
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 30ch;
     }
-
-    /* CTA */
-    .cta-section {
-      padding: 100px 0 120px;
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-
-    .cta-card {
-      position: relative;
-      overflow: hidden;
-      background: var(--navy-925);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 80px 60px;
-      max-width: 760px;
-      margin: 0 auto;
-      --texture-opacity: 0.06;
-    }
-
-    .cta-card h2 {
-      font-family: var(--font-display);
-      font-size: clamp(2rem, 3.5vw, 2.875rem);
-      font-weight: 700;
-      letter-spacing: var(--tracking-tight);
-      margin-bottom: 16px;
-    }
-
-    .cta-card p {
-      color: var(--muted);
-      font-size: 1.05rem;
-      max-width: 480px;
-      margin: 0 auto 40px;
-      line-height: 1.7;
-    }
-
-    .cta-card .cta-detail {
-      margin-top: 40px;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-      z-index: 1;
-    }
-
-    footer .logo {
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
-    footer .logo span { color: var(--accent-blue-hex); }
-
-    footer p {
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-    }
-
-    footer a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-family: var(--font-mono);
-      font-size: 0.8125rem;
-      transition: color var(--dur) var(--ease);
-    }
-    footer a:hover { color: var(--accent-blue-hex); }
-
-    /* Free Resource */
-    .free-resource {
-      padding: 100px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .resource-card {
-      background: var(--navy-925);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 64px;
-    }
-
-    .resource-card .section-sub {
-      max-width: 600px;
-      margin-bottom: 0;
-    }
-
-    .resource-teasers {
+    .about-copy {
+      margin-top: var(--sp-4);
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin: 32px 0 40px;
+      gap: var(--sp-2);
+      max-width: 62ch;
+      font-size: 1.0625rem;
+      line-height: 1.6;
+    }
+    .about-tools {
+      margin-top: var(--sp-4);
+      padding-top: var(--sp-3);
+      border-top: 1px solid var(--rule);
+      max-width: 62ch;
+    }
+    .about-tools .label {
+      display: block;
+      margin-bottom: var(--sp-1);
+    }
+    .about-tools p {
+      line-height: 1.6;
     }
 
-    .teaser-item {
+    /* ---- Contact ---- */
+    .contact {
+      padding: clamp(3.5rem, 8vw, 6rem) 0 clamp(4rem, 9vw, 7rem);
+    }
+    .contact-inner {
       display: flex;
+      flex-direction: column;
       align-items: flex-start;
-      gap: 12px;
-      font-size: 0.92rem;
-      color: var(--muted);
-      line-height: 1.5;
+      gap: clamp(1.5rem, 4vw, 2.5rem);
     }
-
-    .teaser-dot {
-      width: 20px; height: 20px;
-      min-width: 20px;
-      background: var(--green-glow);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1px;
+    .contact-h {
+      max-width: 14ch;
     }
-    .teaser-dot::after {
-      content: '';
-      width: 7px; height: 4px;
-      border-left: 2px solid var(--green);
-      border-bottom: 2px solid var(--green);
-      transform: rotate(-45deg) translate(1px, -1px);
-      display: block;
-    }
-
-    /* Email gate */
-    .email-gate {
-      display: none;
-      margin-top: 32px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 40px;
-      max-width: 460px;
-    }
-    .email-gate.open { display: block; }
-
-    .email-gate h3 {
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      margin-bottom: 6px;
-    }
-
-    .email-gate .gate-sub {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text);
-      letter-spacing: 0.01em;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 11px 14px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--border);
+    .contact-actions {
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 10px;
       border-radius: 10px;
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
-      -webkit-appearance: none;
-    }
-    .form-group input:focus { border-color: var(--accent-blue-hex); }
-    .form-group input::placeholder { color: var(--muted); }
-
-    .gate-submit { margin-top: 8px; width: 100%; justify-content: center; }
-
-    .gate-confirm {
-      display: none;
-      color: var(--green);
-      font-size: 0.95rem;
-      font-weight: 500;
-      line-height: 1.6;
-      padding-top: 8px;
     }
 
-    /* Mobile */
+    /* Short viewports: cap the display against height as well as width. */
+    @media (max-height: 800px) {
+      .hero {
+        padding-top: clamp(1.25rem, 3vh, 2.5rem);
+      }
+      .hero-h1 {
+        font-size: clamp(40px, min(8.2vw, 12.5vh), 132px);
+      }
+      .hero-foot {
+        margin-top: clamp(1rem, 3vh, 2rem);
+        padding-top: var(--sp-2);
+      }
+    }
+
     @media (max-width: 900px) {
-      .cards { grid-template-columns: 1fr; }
-      .steps { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 768px) {
-      nav { padding: 12px 20px; align-items: center; }
-      nav > .btn { padding: 10px 14px; font-size: 0.85rem; margin-left: auto; margin-right: 10px; }
-      .nav-toggle { display: flex; }
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
+      .hero-foot {
         flex-direction: column;
-        gap: 0;
-        padding: 4px 20px 10px;
-        background: rgba(13, 14, 26, 0.97);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-bottom: 1px solid var(--border);
+        align-items: flex-start;
+        gap: var(--sp-3);
       }
-      nav.menu-open .nav-links { display: flex; }
-      .nav-links li + li { border-top: 1px solid var(--border); }
-      .nav-links a { display: block; padding: 13px 0; font-size: 1rem; }
-      .container { padding: 0 24px; }
-      .hero { padding: 80px 0 60px; }
-      .clients-inner {
+      .steps {
         grid-template-columns: 1fr;
-        grid-template-areas: "head" "list" "stat";
-        gap: 40px;
+        gap: var(--sp-3);
       }
-      .cta-card { padding: 48px 28px; }
-      footer { flex-direction: column; gap: 12px; text-align: center; }
-      .resource-card { padding: 36px 28px; }
-      .resource-teasers { grid-template-columns: 1fr; }
-      .email-gate { padding: 28px 24px; }
+      .spec-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 20px;
+      }
+      .spec-price {
+        text-align: left;
+        white-space: normal;
+      }
+      .aud-grid,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+      .about-photo {
+        max-width: 260px;
+      }
     }
 
-    /* Scroll-reveal micro-animations (active only when JS adds .js).
-       :where() keeps the hidden state at zero specificity so .reveal-in wins. */
-    .js :where(
-      .hero-badge, .hero h1, .hero p, .hero-ctas,
-      .how-header, .step,
-      .services-header, .card,
-      .work-header, .clientwork-header,
-      .clients-head, .client-list, .stat-box,
-      .about-head, .about-photo-wrap, .about-body, .about-skills,
-      .cta-card
-    ) {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-      transition-delay: calc(var(--reveal-i, 0) * 80ms);
-      will-change: opacity, transform;
-    }
-    .js .reveal-in {
-      opacity: 1;
-      transform: none;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .js :where(
-        .hero-badge, .hero h1, .hero p, .hero-ctas,
-        .how-header, .step,
-        .services-header, .card,
-        .work-header, .clientwork-header,
-        .clients-head, .client-list, .stat-box,
-        .about-head, .about-photo-wrap, .about-body, .about-skills,
-        .cta-card
-      ) {
-        opacity: 1;
-        transform: none;
-        transition: none;
+    @media (max-width: 620px) {
+      .sect-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .contact-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .contact-actions .key-lg,
+      .hero-cta .key-lg {
+        padding: 17px 20px;
+      }
+      .contact-actions .key-lg {
+        width: 100%;
+        font-size: 11px;
+        letter-spacing: 0.06em;
       }
     }
   </style>
 </head>
 <body>
-  <script>document.documentElement.classList.add('js');</script>
+  <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- Nav -->
-  <nav>
-    <a href="#" class="nav-logo">
-      David Donnell
-      <span class="nav-subtitle">Digital Advisor</span>
-    </a>
-    <ul class="nav-links" id="nav-menu">
-      <li><a href="#how">How it works</a></li>
-      <li><a href="#services">Services</a></li>
-      <li><a href="/work.html">Work</a></li>
-      <li><a href="#clients">Who I work with</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=home-nav" target="_blank" rel="noopener noreferrer" class="btn btn-gradient" data-ga="book_call" data-ga-params='{"placement":"home-nav"}'>Book a Free Call</a>
-    <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu"><span></span><span></span><span></span></button>
-  </nav>
+  <!-- Load sequence. Shown once per session, never under reduced motion. -->
+  <div id="curtain" aria-hidden="true">
+    <div class="curtain-half top"></div>
+    <div class="curtain-half bottom"></div>
+    <div class="plot">
+      <svg class="reg tl" viewBox="0 0 28 28"><circle cx="14" cy="14" r="7" pathLength="100" /><path d="M14 0v28M0 14h28" pathLength="100" /></svg>
+      <svg class="reg tr" viewBox="0 0 28 28"><circle cx="14" cy="14" r="7" pathLength="100" /><path d="M14 0v28M0 14h28" pathLength="100" /></svg>
+      <svg class="reg bl" viewBox="0 0 28 28"><circle cx="14" cy="14" r="7" pathLength="100" /><path d="M14 0v28M0 14h28" pathLength="100" /></svg>
+      <svg class="reg br" viewBox="0 0 28 28"><circle cx="14" cy="14" r="7" pathLength="100" /><path d="M14 0v28M0 14h28" pathLength="100" /></svg>
 
-  <!-- Hero -->
-  <section class="hero tx tx-grain tx-bloom">
-    <div class="container">
-      <h1>
-        Work on your <span class="accent">business,</span><br/>
-        not in it.
-      </h1>
-      <p>
-        You've got a business to run. I build micro apps, websites, and automations
-        that fit how you actually work and give you your hours back.
-      </p>
-      <div class="hero-ctas">
-        <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=home-hero" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg" data-ga="book_call" data-ga-params='{"placement":"home-hero"}'>Book a Free 30-Min Call</a>
-        <a href="#work" class="btn btn-ai btn-lg" data-ga="gallery_view" data-ga-params='{"placement":"home-hero"}'>See the Work</a>
+      <div class="dim">
+        <span class="dim-arm left"></span>
+        <span class="odo">
+          <span class="wheel"><span class="strip" id="odo-100"><i>0</i><i>1</i></span></span>
+          <span class="wheel"><span class="strip" id="odo-10"><i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>0</i></span></span>
+          <span class="wheel"><span class="strip" id="odo-1"><i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i><i>0</i></span></span>
+        </span>
+        <span class="dim-arm right"></span>
+      </div>
+
+      <div class="titleblock">
+        <b>David Donnell</b><br />
+        Digital Advisor &middot; Denver, CO<br />
+        Sheet 01 of 01 &middot; NTS
       </div>
     </div>
-  </section>
+  </div>
 
-  <!-- How It Works -->
-  <section class="how" id="how">
-    <div class="container">
-      <div class="how-header">
-        <span class="section-label">How it works</span>
-        <h2 class="section-title">Simple, fast, no surprises</h2>
-        <p class="section-sub">
-          Most projects start with a free call and a fixed quote within a week.
-        </p>
+  <header class="site-header">
+    <div class="nav">
+      <div class="hdr-group">
+        <a href="/" class="hdr-mark">David Donnell</a>
+        <span class="hdr-muted hdr-role">Digital Advisor</span>
       </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <h3>Free 30-min call</h3>
-          <p>We talk through your business and where the time is going. No pitch. If a $30-a-month tool off the shelf already solves it, I'll tell you.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <h3>Fixed scope, fixed price</h3>
-          <p>I spec the smallest tool that fixes the problem and quote it flat. You know the price and the delivery date before any work starts.</p>
-        </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <h3>Built, delivered, yours</h3>
-          <p>You get a working tool your team actually uses, with training included. No subscriptions to me, no hourly meter.</p>
-        </div>
+      <div class="hdr-group hdr-right">
+        <nav class="hdr-group hdr-keys" id="nav-menu" aria-label="Main">
+          <a href="#services" class="key key-sm">Services</a>
+          <a href="/work.html" class="key key-sm">Work</a>
+          <a href="#about" class="key key-sm">About</a>
+        </nav>
+        <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=home-nav" target="_blank" rel="noopener noreferrer" class="key key-sm key-primary" data-ga="book_call" data-ga-params='{"placement":"home-nav"}'>Book a call</a>
+        <button class="key key-icon nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="nav-menu">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M1.5 3.5h11M1.5 7h11M1.5 10.5h11" /></svg>
+        </button>
       </div>
     </div>
-  </section>
+  </header>
 
-  <!-- Services -->
-  <section class="services tx tx-grain" id="services">
-    <div class="container">
-      <div class="services-header">
-        <span class="section-label">Services</span>
-        <h2 class="section-title">The right-sized tool for the job</h2>
-        <p class="section-sub">
-          Most businesses don't need big software. They need a few small tools
-          that fit how they already work.
-        </p>
-      </div>
-      <div class="cards">
-        <div class="card card-featured">
-          <span class="card-tag">Start here</span>
-          <h3>Micro Apps &amp; Custom Tools</h3>
-          <p>
-            A small app that does exactly what your business needs: quote
-            builders, intake forms, calculators, dashboards, booking tools. Scoped
-            to the problem, built fast, and yours to keep.
-          </p>
-          <div class="card-price">Fixed price per tool · Scoped on the free call</div>
-        </div>
-        <div class="card">
-          <h3>Websites &amp; Custom CMS</h3>
-          <p>
-            A fast, professional website with a content manager built around how
-            you update things. Change your own photos, pricing, and hours. No
-            platform fees, no fighting a page builder.
-          </p>
-          <div class="card-price">Flat project pricing · CMS included</div>
-        </div>
-        <div class="card">
-          <h3>Advisory &amp; Automation</h3>
-          <p>
-            Not sure what to build first? I'll review your operations, find where
-            the time is leaking, and map out the tools worth building. AI included
-            where it actually helps.
-          </p>
-          <div class="card-price">AI Readiness Review · $750 flat</div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <main id="main">
 
-  <!-- Work / gallery -->
-  <section class="work" id="work">
-    <div class="container">
-      <div class="work-header">
-        <span class="section-label">Work</span>
-        <h2 class="section-title">Tools you can actually click</h2>
-        <p class="section-sub">
-          Live demos, not screenshots. Everything here is a real tool built for a
-          real business, with the client's info swapped out so you can poke around.
-        </p>
-        <a class="gallery-link" href="/work.html" data-ga="gallery_view" data-ga-params='{"placement":"home-section"}'>View the full gallery &rarr;</a>
-      </div>
-      <div class="cards">
-        <a class="card" href="/demos/quote-builder.html" data-ga="gallery_card" data-ga-params='{"item":"quote-builder","page":"home"}'>
-          <div class="thumb thumb-light t-quote" aria-hidden="true">
-            <div class="doc">
-              <div class="lh"><span class="nm"></span><span class="nm sm"></span></div>
-              <span class="r"></span><span class="r alt"></span><span class="r"></span>
-              <span class="total"></span><span class="dep"></span>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap">
+        <h1 class="display hero-h1">
+          <span class="reveal-mask"><span class="reveal-line" style="animation-delay:var(--d1)">Work on your</span></span>
+          <span class="reveal-mask"><span class="reveal-line" style="animation-delay:var(--d2)">business,</span></span>
+          <span class="reveal-mask"><span class="reveal-line" style="animation-delay:var(--d3)">not in <em class="accent">it.</em></span></span>
+        </h1>
+
+        <div class="hero-foot">
+          <div class="hero-intro">
+            <p class="lead">
+              You've got a business to run. I build micro apps, websites, and
+              automations that fit how you actually work and give you your
+              hours back.
+            </p>
+            <div class="hero-cta">
+              <span class="hero-key">
+                <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=home-hero" target="_blank" rel="noopener noreferrer" class="key key-lg key-primary" data-ga="book_call" data-ga-params='{"placement":"home-hero"}'>Book a free 30-min call</a>
+                <svg class="hero-arrow" viewBox="0 0 240 130" width="240" height="130" aria-hidden="true">
+                  <defs>
+                    <!-- Pen on paper: one slow wobble for the hand. One
+                         filter for the group so line and head move as one. -->
+                    <filter id="hero-marker" x="-8%" y="-12%" width="116%" height="124%">
+                      <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="1" seed="4" result="hand" />
+                      <feDisplacementMap in="SourceGraphic" in2="hand" scale="3" xChannelSelector="R" yChannelSelector="G" />
+                    </filter>
+                  </defs>
+                  <g filter="url(#hero-marker)">
+                    <path class="hero-arrow-line" pathLength="100" d="M224 14c-6 30-24 56-56 68-34 13-86 12-154 10" />
+                    <path class="hero-arrow-head" pathLength="100" d="M46 70L14 92l30 24" />
+                  </g>
+                </svg>
+              </span>
+              <span class="label">Free &middot; 30 minutes &middot; No pitch</span>
             </div>
           </div>
-          <span class="badge badge-green">Live</span>
-          <h3>Contractor Quote Builder</h3>
-          <p>
-            Line-item quotes with labor and materials, totals that do their own
-            math, and a clean printable quote. Ready to send from a phone before
-            you leave the driveway.
-          </p>
-          <span class="card-link">Open the demo &rarr;</span>
-        </a>
-        <a class="card" href="/demos/deal-desk.html" data-ga="gallery_card" data-ga-params='{"item":"deal-desk","page":"home"}'>
-          <div class="thumb thumb-light t-desk" aria-hidden="true">
-            <div class="inputs"><span class="lab"></span><span class="fld"></span><span class="lab"></span><span class="fld"></span><span class="fld"></span></div>
-            <div class="outs"><span class="tile"><i></i></span><span class="r"></span><span class="r"></span><span class="r dark"></span></div>
-          </div>
-          <span class="badge badge-green">Live</span>
-          <h3>Deal Desk</h3>
-          <p>
-            A dealership deal sheet, rebuilt from a spreadsheet as a web app.
-            Price the deal, pick the financing, and the margin band flips red,
-            amber, or green as you type. Customer view hides the margins.
-          </p>
-          <span class="card-link">Open the tool &rarr;</span>
-        </a>
-        <a class="card" href="/readiness-check.html" data-ga="gallery_card" data-ga-params='{"item":"readiness-check","page":"home"}'>
-          <div class="thumb t-quiz" aria-hidden="true">
-            <div class="qcard"><span class="prog"></span><span class="q"></span><span class="opt"></span><span class="opt sel"></span><span class="opt"></span></div>
-          </div>
-          <span class="badge badge-green">Live</span>
-          <h3>AI Readiness Check</h3>
-          <p>
-            A two-minute scored assessment that tailors its results to your
-            industry. The kind of interactive tool I build for service
-            businesses. Try it yourself.
-          </p>
-          <span class="card-link">Take the 2-minute check &rarr;</span>
-        </a>
+          <a href="#work" class="key key-lg" data-ga="gallery_view" data-ga-params='{"placement":"home-hero"}'>See the work</a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Client work -->
-  <section class="clientwork" id="client-work">
-    <div class="container">
-      <div class="clientwork-header">
-        <span class="section-label">Client work</span>
-        <h2 class="section-title">Real sites, real businesses</h2>
-        <p class="section-sub">
-          Not demos. These are live sites I designed and built for clients,
-          running today.
-        </p>
+    <!-- How it works -->
+    <section class="section rule-top" id="how">
+      <div class="wrap">
+        <div class="sect-head">
+          <span class="label">How it works</span>
+          <span class="label">Three steps &middot; A fixed quote within a week</span>
+        </div>
+        <div class="sect-intro">
+          <h2 class="sect-title">Simple, fast, no surprises</h2>
+        </div>
+        <ol class="steps">
+          <li class="step">
+            <span class="label">Step 01</span>
+            <h3>Free 30-min call</h3>
+            <p>We talk through your business and where the time is going. No pitch. If a $30-a-month tool off the shelf already solves it, I'll tell you.</p>
+          </li>
+          <li class="step">
+            <span class="label">Step 02</span>
+            <h3>Fixed scope, fixed price</h3>
+            <p>I spec the smallest tool that fixes the problem and quote it flat. You know the price and the delivery date before any work starts.</p>
+          </li>
+          <li class="step">
+            <span class="label">Step 03</span>
+            <h3>Built, delivered, yours</h3>
+            <p>You get a working tool your team actually uses, with training included. No subscriptions to me, no hourly meter.</p>
+          </li>
+        </ol>
       </div>
-      <div class="cards cols-2">
-        <a class="card" href="https://soggypawz-pet.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"soggy-pawz","page":"home"}'>
-          <img class="client-shot" src="/assets/clients/soggy-pawz.jpg" alt="The Soggy Pawz Pet Spawz homepage" loading="lazy" width="720" height="450" />
-          <span class="badge badge-green">Live site</span>
-          <h3>Soggy Pawz Pet Spawz</h3>
-          <p>
-            Mobile dog and cat grooming in Broomfield, Colorado. A full site plus
-            a content manager the owners use to update their own photos, pricing,
-            and reviews. No monthly platform fees.
-          </p>
-          <span class="card-link">Visit the live site &rarr;</span>
-        </a>
-        <a class="card" href="https://wiley-acupuncture-preview.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"wiley","page":"home"}'>
-          <img class="client-shot" src="/assets/clients/wiley.jpg" alt="The Wiley Acupuncture homepage" loading="lazy" width="720" height="450" />
-          <span class="badge badge-green">Live site</span>
-          <h3>Wiley Acupuncture</h3>
-          <p>
-            A practice site for an acupuncturist in Hot Springs, South Dakota.
-            Calm where it should be, fast everywhere, and built around one job:
-            reserving a session.
-          </p>
-          <span class="card-link">Visit the live site &rarr;</span>
-        </a>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Who I work with -->
-  <section class="clients" id="clients">
-    <div class="container">
-      <div class="clients-inner">
-        <div class="clients-head">
-          <span class="section-label">Who I work with</span>
-          <h2 class="section-title">Built for small business owners</h2>
-          <p class="section-sub">
-            I work with entrepreneurs and operators in the Denver Front Range who want
-            practical results, not presentations.
+    <!-- Services -->
+    <section class="section rule-top" id="services">
+      <div class="wrap">
+        <div class="sect-head">
+          <span class="label">Services</span>
+          <span class="label">Fixed prices &middot; Yours to keep</span>
+        </div>
+        <div class="sect-intro">
+          <h2 class="sect-title">The right-sized tool for the job</h2>
+          <p class="lead">
+            Most businesses don't need big software. They need a few small
+            tools that fit how they already work.
           </p>
         </div>
-        <div class="client-list">
-            <div class="client-item">
-              <div class="check"></div>
-              <div class="client-item-text">
-                <strong>Trades &amp; Construction</strong>
-                <span>HVAC, plumbing, electrical, general contractors</span>
-              </div>
+        <div class="spec well rise">
+          <article class="spec-row raised">
+            <div class="spec-name">
+              <span class="label spec-flag">Start here</span>
+              <h3>Micro Apps &amp; Custom Tools</h3>
             </div>
-            <div class="client-item">
-              <div class="check"></div>
-              <div class="client-item-text">
-                <strong>Small Business Owners</strong>
-                <span>Retailers, service businesses, solo operators and growing teams</span>
-              </div>
+            <p class="spec-desc">
+              A small app that does exactly what your business needs: quote
+              builders, intake forms, calculators, dashboards, booking tools.
+              Scoped to the problem, built fast, and yours to keep.
+            </p>
+            <span class="label spec-price">Fixed price per tool<br />Scoped on the free call</span>
+          </article>
+          <article class="spec-row raised">
+            <div class="spec-name">
+              <h3>Websites &amp; Custom CMS</h3>
             </div>
-            <div class="client-item">
-              <div class="check"></div>
-              <div class="client-item-text">
-                <strong>Healthcare &amp; Professional Services</strong>
-                <span>Clinics, consultants, and field service businesses</span>
-              </div>
+            <p class="spec-desc">
+              A fast, professional website with a content manager built around
+              how you update things. Change your own photos, pricing, and
+              hours. No platform fees, no fighting a page builder.
+            </p>
+            <span class="label spec-price">Flat project pricing<br />CMS included</span>
+          </article>
+          <article class="spec-row raised">
+            <div class="spec-name">
+              <h3>Advisory &amp; Automation</h3>
             </div>
-          </div>
-        <div class="stat-box">
-          <div class="stat-row">
-              <div class="stat">
-                <div class="stat-num">10+</div>
-                <div class="stat-label">Hours saved per week</div>
+            <p class="spec-desc">
+              Not sure what to build first? I'll review your operations, find
+              where the time is leaking, and map out the tools worth building.
+              AI included where it actually helps.
+            </p>
+            <span class="label spec-price">AI Readiness Review<br />$750 flat</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Work: live demos -->
+    <section class="section rule-top" id="work">
+      <div class="wrap">
+        <div class="sect-head">
+          <span class="label">Live demos</span>
+          <span class="label">3 projects &middot; All live</span>
+        </div>
+        <div class="sect-intro">
+          <h2 class="sect-title">Tools you can actually click</h2>
+          <p class="lead">
+            Live demos, not screenshots. Open any of these and poke around.
+          </p>
+        </div>
+        <div class="card-grid rise">
+          <a class="bcard raised" href="/demos/quote-builder.html" data-ga="gallery_card" data-ga-params='{"item":"quote-builder","page":"home"}'>
+            <figure class="bcard-thumb well well-shallow">
+              <img src="/assets/work/quote-builder.jpg" alt="The quote builder: line items on the left, a finished quote on the right" loading="lazy" width="720" height="450" />
+            </figure>
+            <h3 class="bcard-title">Contractor Quote Builder</h3>
+            <p class="bcard-desc">
+              Line-item quotes with labor and materials, totals that do their
+              own math, and a clean printable quote. Ready to send from a
+              phone before you leave the driveway.
+            </p>
+            <span class="label bcard-meta">Micro app &middot; Live demo</span>
+            <span class="key bcard-key" aria-hidden="true">Open the demo</span>
+          </a>
+          <a class="bcard raised" href="https://bobbins.world" target="_blank" rel="noopener noreferrer" data-ga="gallery_card" data-ga-params='{"item":"bobbins-world","page":"home"}'>
+            <figure class="bcard-thumb well well-shallow">
+              <img src="/assets/work/bobbins-world.jpg" alt="Bobbin the pink axolotl and Pocket the sea otter on their kelp raft at dusk" loading="lazy" width="720" height="450" />
+            </figure>
+            <h3 class="bcard-title">Bobbin's World</h3>
+            <p class="bcard-desc">
+              A tiny cozy world where Bobbin, a pink AI axolotl, maps his lake
+              and sews quilts from what visitors send. Toss him a bottle with
+              a note or a picture and he may sew a patch from it.
+            </p>
+            <span class="label bcard-meta">AI character &middot; Live world</span>
+            <span class="key bcard-key" aria-hidden="true">Visit Bobbin's World</span>
+          </a>
+          <a class="bcard raised" href="/readiness-check.html" data-ga="gallery_card" data-ga-params='{"item":"readiness-check","page":"home"}'>
+            <figure class="bcard-thumb well well-shallow">
+              <img src="/assets/work/readiness-check.jpg" alt="The AI Readiness Check asking what kind of business you run" loading="lazy" width="720" height="450" />
+            </figure>
+            <h3 class="bcard-title">AI Readiness Check</h3>
+            <p class="bcard-desc">
+              A two-minute scored assessment that tailors its results to your
+              industry. The kind of interactive tool I build for service
+              businesses. Try it yourself.
+            </p>
+            <span class="label bcard-meta">Assessment &middot; 2 minutes</span>
+            <span class="key bcard-key" aria-hidden="true">Take the check</span>
+          </a>
+        </div>
+        <a class="key key-sm work-more" href="/work.html" data-ga="gallery_view" data-ga-params='{"placement":"home-section"}'>View the full gallery</a>
+      </div>
+    </section>
+
+    <!-- Client work -->
+    <section class="section rule-top" id="client-work">
+      <div class="wrap">
+        <div class="sect-head">
+          <span class="label">Client work</span>
+          <span class="label">2 sites &middot; Running today</span>
+        </div>
+        <div class="sect-intro">
+          <h2 class="sect-title">Real sites, real businesses</h2>
+          <p class="lead">
+            Not demos. These are live sites I designed and built for clients,
+            running today.
+          </p>
+        </div>
+        <div class="card-grid rise">
+          <a class="bcard raised" href="https://soggypawz-pet.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"soggy-pawz","page":"home"}'>
+            <figure class="bcard-thumb well well-shallow">
+              <img src="/assets/clients/soggy-pawz.jpg" alt="The Soggy Pawz Pet Spawz homepage" loading="lazy" width="720" height="450" />
+            </figure>
+            <h3 class="bcard-title">Soggy Pawz Pet Spawz</h3>
+            <p class="bcard-desc">
+              Mobile dog and cat grooming in Broomfield, Colorado. A full site
+              plus a content manager the owners use to update their own
+              photos, pricing, and reviews. No monthly platform fees.
+            </p>
+            <span class="label bcard-meta">Website + CMS &middot; Broomfield, CO</span>
+            <span class="key bcard-key" aria-hidden="true">Visit the live site</span>
+          </a>
+          <a class="bcard raised" href="https://wiley-acupuncture-preview.netlify.app" target="_blank" rel="noopener noreferrer" data-ga="client_card" data-ga-params='{"client":"wiley","page":"home"}'>
+            <figure class="bcard-thumb well well-shallow">
+              <img src="/assets/clients/wiley.jpg" alt="The Wiley Acupuncture homepage" loading="lazy" width="720" height="450" />
+            </figure>
+            <h3 class="bcard-title">Wiley Acupuncture</h3>
+            <p class="bcard-desc">
+              A practice site for an acupuncturist in Hot Springs, South
+              Dakota. Calm where it should be, fast everywhere, and built
+              around one job: reserving a session.
+            </p>
+            <span class="label bcard-meta">Website &middot; Hot Springs, SD</span>
+            <span class="key bcard-key" aria-hidden="true">Visit the live site</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Who I work with -->
+    <section class="section rule-top" id="clients">
+      <div class="wrap">
+        <div class="sect-head">
+          <span class="label">Who I work with</span>
+          <span class="label">Denver Front Range</span>
+        </div>
+        <div class="sect-intro">
+          <h2 class="sect-title">Built for small business owners</h2>
+          <p class="lead">
+            I work with entrepreneurs and operators in the Denver Front Range
+            who want practical results, not presentations.
+          </p>
+        </div>
+        <div class="aud-grid">
+          <ul class="aud-list">
+            <li>
+              <h3>Trades &amp; Construction</h3>
+              <span class="label">HVAC, plumbing, electrical, general contractors</span>
+            </li>
+            <li>
+              <h3>Small Business Owners</h3>
+              <span class="label">Retailers, service businesses, solo operators and growing teams</span>
+            </li>
+            <li>
+              <h3>Healthcare &amp; Professional Services</h3>
+              <span class="label">Clinics, consultants, and field service businesses</span>
+            </li>
+          </ul>
+          <div class="figures well">
+            <div class="figure-row">
+              <div>
+                <span class="figure-n">10+</span>
+                <span class="label">Hours saved per week</span>
               </div>
-              <div class="stat">
-                <div class="stat-num">$0</div>
-                <div class="stat-label">Monthly fees · you own it</div>
+              <div>
+                <span class="figure-n">$0</span>
+                <span class="label">Monthly fees &middot; You own it</span>
               </div>
             </div>
             <p>
-              I build the smallest tool that fixes the problem, and it integrates
-              with what you already use. No rip-and-replace, no subscriptions.
+              I build the smallest tool that fixes the problem, and it
+              integrates with what you already use. No rip-and-replace, no
+              subscriptions.
             </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- About -->
-  <section class="about" id="about">
-    <div class="container">
-      <div class="about-inner">
-        <div class="about-head">
-          <span class="section-label">About</span>
-          <h2 class="section-title">David Donnell</h2>
-          <p class="about-subtitle">Digital Advisor</p>
-        </div>
-        <div class="about-cols">
-          <div class="about-photo-wrap">
-            <img class="about-photo" src="/assets/david-donnell-portrait.jpg" alt="David Donnell, Digital Advisor, in the Colorado Front Range foothills" loading="lazy" width="640" height="841" />
-          </div>
-          <div class="about-body">
-          <p>
-            I spent eight years designing enterprise software for construction and field operations
-            teams at companies like Trimble, where the tools either fit how people
-            work or they don't get used. I know what good technology looks like from the inside,
-            and I know what it looks like when it misses.
-          </p>
-          <p>
-            Most business owners I talk to aren't looking for AI. They're looking for fewer
-            headaches. I start by understanding the real pain points in your day-to-day: what's
-            repetitive, what's falling through the cracks, what takes three people when it should
-            take one. Then I build the smallest tool that fixes it.
-          </p>
-          <p>
-            I've been in Denver since 2008 and I work almost exclusively with local businesses.
-            I'd rather help a Front Range contractor free up ten hours a week than pitch remotely
-            to clients I'll never meet.
-          </p>
-          </div>
-        </div>
-        <div class="about-skills">
-          <span class="section-label">What I do</span>
-          <div class="skills-grid">
-            <span class="skill-tag">Product Design</span>
-            <span class="skill-tag">Claude Co-work Setup</span>
-            <span class="skill-tag">Buzz AI Setup</span>
-            <span class="skill-tag">Custom CMS Development</span>
-            <span class="skill-tag">AI Workflow Automation</span>
-            <span class="skill-tag">Website Design &amp; Development</span>
-            <span class="skill-tag">AI Readiness Assessment</span>
-            <span class="skill-tag">Process Optimization</span>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CTA -->
-  <section class="cta-section" id="contact">
-    <div class="container">
-      <div class="cta-card tx tx-grain tx-bloom">
-        <h2>Ready to get your hours back?</h2>
-        <p>
-          Book a free 30-minute call. Tell me what's eating your time, and we'll
-          figure out whether a small tool can fix it, and exactly what it would cost.
+    <!-- About -->
+    <section class="section rule-top" id="about">
+      <div class="wrap">
+        <div class="sect-head">
+          <h2 class="label">About David Donnell</h2>
+          <span class="label">Digital Advisor &middot; Denver since 2008</span>
+        </div>
+        <div class="about-grid">
+          <figure class="about-photo well well-shallow">
+            <img src="/assets/david-donnell-portrait.jpg" alt="David Donnell, Digital Advisor, in the Colorado Front Range foothills" loading="lazy" width="640" height="841" />
+          </figure>
+          <div class="about-body rise">
+            <p class="about-p">
+              Most business owners I talk to aren't looking for AI. They're
+              looking for fewer headaches.
+            </p>
+            <div class="about-copy">
+              <p>
+                I spent eight years designing enterprise software for
+                construction and field operations teams at companies like
+                Trimble, where the tools either fit how people work or they
+                don't get used. I know what good technology looks like from
+                the inside, and I know what it looks like when it misses.
+              </p>
+              <p>
+                I start by understanding the real pain points in your
+                day-to-day: what's repetitive, what's falling through the
+                cracks, what takes three people when it should take one. Then
+                I build the smallest tool that fixes it.
+              </p>
+              <p>
+                I've been in Denver since 2008 and I work almost exclusively
+                with local businesses. I'd rather help a Front Range
+                contractor free up ten hours a week than pitch remotely to
+                clients I'll never meet.
+              </p>
+            </div>
+            <div class="about-tools">
+              <span class="label">What I do</span>
+              <p>
+                Product Design, Claude Co-work Setup, Buzz AI Setup, Custom
+                CMS Development, AI Workflow Automation, Website Design
+                &amp; Development, AI Readiness Assessment, Process
+                Optimization.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="contact rule-top" id="contact">
+      <div class="wrap contact-inner rise">
+        <h2 class="h2 contact-h">Ready to get your hours <em class="accent">back?</em></h2>
+        <p class="lead">
+          Book a free 30-minute call. Tell me what's eating your time, and
+          we'll figure out whether a small tool can fix it, and exactly what
+          it would cost.
         </p>
-        <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=home-ctaband" target="_blank" rel="noopener noreferrer" class="btn btn-gradient btn-lg" data-ga="book_call" data-ga-params='{"placement":"home-ctaband"}'>
-          Book Your Free Call
-        </a>
-        <p class="cta-detail">No pressure. No pitch deck. Just a real conversation.</p>
+        <div class="contact-actions deck">
+          <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=home-ctaband" target="_blank" rel="noopener noreferrer" class="key key-lg key-primary" data-ga="book_call" data-ga-params='{"placement":"home-ctaband"}'>Book your free call</a>
+          <a href="mailto:davidadonnell@gmail.com" class="key key-lg" data-ga="contact_email" data-ga-params='{"placement":"home-ctaband"}'>davidadonnell@gmail.com</a>
+        </div>
+        <span class="label">No pressure. No pitch deck. Just a real conversation.</span>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer>
-    <div class="logo">David Donnell <span>·</span> Digital Advisor</div>
-    <p>Denver, CO · daviddonnell.com</p>
-    <a href="mailto:davidadonnell@gmail.com">davidadonnell@gmail.com</a>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap foot">
+      <div class="foot-col">
+        <span class="foot-mark">David Donnell</span>
+        <span class="foot-meta">Digital Advisor &middot; Denver, CO</span>
+      </div>
+      <nav class="foot-links" aria-label="Footer">
+        <a href="mailto:davidadonnell@gmail.com">Email</a>
+        <a href="/work.html">Work</a>
+        <a href="https://calendly.com/davidadonnell/30min?utm_source=site&amp;utm_campaign=home-footer" target="_blank" rel="noopener noreferrer" data-ga="book_call" data-ga-params='{"placement":"home-footer"}'>Book a call</a>
+      </nav>
+      <span class="foot-colophon">&copy; 2026 David Donnell</span>
+    </div>
   </footer>
 
   <script>
+    /* Load sequence driver. The curtain itself runs on CSS; this turns
+       the counter wheels and burns the once-per-session flag. */
     (function () {
-      var SEL = '.hero-badge, .hero h1, .hero p, .hero-ctas,' +
-                '.how-header, .step,' +
-                '.services-header, .card,' +
-                '.work-header, .clientwork-header,' +
-                '.clients-head, .client-list, .stat-box,' +
-                '.about-head, .about-photo-wrap, .about-body,' +
-                '.cta-card';
-      var targets = Array.prototype.slice.call(document.querySelectorAll(SEL));
-      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      // No IntersectionObserver or user prefers reduced motion: just show everything.
-      if (reduce || !('IntersectionObserver' in window)) {
-        targets.forEach(function (el) { el.classList.add('reveal-in'); });
+      var curtain = document.getElementById('curtain');
+      if (!curtain) return;
+      if (document.documentElement.classList.contains('no-curtain')) {
+        curtain.remove();
         return;
       }
+      try { sessionStorage.setItem('ddcom-curtain-shown', '1'); } catch (e) { /* private browsing: it plays every visit */ }
 
-      // Stagger each element by its position among reveal siblings (capped).
-      targets.forEach(function (el) {
-        var i = 0, sib = el.previousElementSibling;
-        while (sib) {
-          if (sib.matches && sib.matches(SEL)) i++;
-          sib = sib.previousElementSibling;
+      var ones = document.getElementById('odo-1');
+      var tens = document.getElementById('odo-10');
+      var hund = document.getElementById('odo-100');
+      var CELL = 1.6;   // em, one digit's height
+      var START = 150;  // ms, in step with the dimension arms
+      var DUR = 1200;
+
+      function set(el, pos) { el.style.transform = 'translateY(' + (-pos * CELL) + 'em)'; }
+      function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+
+      var t0 = performance.now();
+      (function tick(now) {
+        var t = Math.min(Math.max((now - t0 - START) / DUR, 0), 1);
+        if (t >= 1) {
+          set(ones, 0); set(tens, 0); set(hund, 1);
+        } else {
+          // A real odometer: the ones wheel turns freely, and each wheel
+          // above it only moves while the one below rolls from 9 to 0.
+          var v = ease(t) * 100;
+          var o = v % 10;
+          set(ones, o);
+          set(tens, Math.floor(v / 10) % 10 + Math.max(0, o - 9));
+          set(hund, Math.max(0, v - 99));
+          requestAnimationFrame(tick);
         }
-        el.style.setProperty('--reveal-i', Math.min(i, 4));
-      });
+      })(t0);
 
-      var observerFired = false;
-      var io = new IntersectionObserver(function (entries) {
-        observerFired = true;
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('reveal-in');
-            io.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-
-      targets.forEach(function (el) { io.observe(el); });
-
-      // Failsafe: if the observer never reports (odd environments, embedded or
-      // offscreen views), reveal everything rather than stranding the page blank.
-      setTimeout(function () {
-        if (observerFired) return;
-        io.disconnect();
-        targets.forEach(function (el) { el.classList.add('reveal-in'); });
-      }, 2000);
+      setTimeout(function () { curtain.remove(); }, 2700);
     })();
 
-    /* Mobile menu */
+    /* Scroll reveal for .rise. If the observer never reports (embedded
+       or offscreen views), show everything rather than strand it. */
     (function () {
-      var nav = document.querySelector('nav');
+      var els = Array.prototype.slice.call(document.querySelectorAll('.rise'));
+      function showAll() { els.forEach(function (el) { el.classList.add('in'); }); }
+      if (!('IntersectionObserver' in window) ||
+          matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        showAll();
+        return;
+      }
+      var fired = false;
+      var io = new IntersectionObserver(function (entries) {
+        fired = true;
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            en.target.classList.add('in');
+            io.unobserve(en.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -10% 0px' });
+      els.forEach(function (el) { io.observe(el); });
+      setTimeout(function () {
+        if (fired) return;
+        io.disconnect();
+        showAll();
+      }, 2500);
+    })();
+
+    /* Mobile menu: the menu key holds down while its deck is out. */
+    (function () {
+      var header = document.querySelector('.site-header');
       var btn = document.querySelector('.nav-toggle');
-      if (!nav || !btn) return;
+      if (!header || !btn) return;
       function close() {
-        nav.classList.remove('menu-open');
+        header.classList.remove('menu-open');
+        btn.classList.remove('is-pressed');
         btn.setAttribute('aria-expanded', 'false');
       }
       btn.addEventListener('click', function () {
-        var open = nav.classList.toggle('menu-open');
+        var open = header.classList.toggle('menu-open');
+        btn.classList.toggle('is-pressed', open);
         btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       });
-      nav.addEventListener('click', function (e) {
-        if (e.target.closest('.nav-links a')) close();
+      header.addEventListener('click', function (e) {
+        if (e.target.closest('.hdr-keys a')) close();
       });
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') close();
